@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2.5 -0.5 31 32" shape-rendering="crispEdges">
+  <title>Happy Mac</title>
+  <rect x="2" y="1" width="22" height="28" rx="1.5" fill="#e3dac4" stroke="#1a201a" stroke-width="2"/>
+  <rect x="5" y="4" width="16" height="13" fill="#d7e7c8" stroke="#1a201a" stroke-width="2"/>
+  <rect x="9" y="8" width="2" height="3" fill="#1a201a"/>
+  <rect x="15" y="8" width="2" height="3" fill="#1a201a"/>
+  <rect x="8" y="12" width="2" height="2" fill="#1a201a"/>
+  <rect x="10" y="13" width="6" height="2" fill="#1a201a"/>
+  <rect x="16" y="12" width="2" height="2" fill="#1a201a"/>
+  <rect x="13" y="21" width="8" height="2" fill="#1a201a"/>
+</svg>
