@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dorokhov Daniil — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+                 "Helvetica Neue", system-ui, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, monospace;
+    --serif: "Newsreader", "Iowan Old Style", "Palatino Linotype", Georgia, "Times New Roman", serif;
+
+    --ink:        #f5f5f7;
+    --ink-soft:   rgba(245,245,247,0.62);
+    --ink-faint:  rgba(245,245,247,0.34);
+    --accent:      #E4442A;
+    --accent-soft: #FF8F73;
+  }
+
+  html, body { height: auto; min-height: 100%; }
+  body {
+    background: #000;
+    color: var(--ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;          /* the page scrolls: hero → résumé → projects */
+  }
+  body.locked { overflow: hidden; }
+
+  /* ---------------- top bar (language only) ---------------- */
+  .topbar {
+    position: fixed; inset: 0 0 auto 0;
+    z-index: 60;
+    display: flex; align-items: center; justify-content: flex-end;
+    padding: 22px clamp(20px, 4vw, 56px);
+  }
+  .lang {
+    display: flex; align-items: center;
+    border: 1px solid rgba(255,255,255,0.28);
+    border-radius: 18px;
+    overflow: hidden;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.02em;
+  }
+  .lang button {
+    appearance: none; background: transparent; border: 0; cursor: pointer;
+    color: rgba(255,255,255,0.55);
+    padding: 6px 12px; font: inherit;
+    transition: background .25s ease, color .25s ease;
+  }
+  .lang button.active { background: #fff; color: #000; }
+
+  /* ---------------- hero (full viewport, left-aligned) ---------------- */
+  .hero {
+    position: relative;
+    height: 100svh; min-height: 560px;
+    display: flex; flex-direction: column;
+    align-items: flex-start; justify-content: center;
+    text-align: left;
+    padding: 0 clamp(28px, 9vw, 150px);
+    overflow: hidden;
+  }
+  .hero::before {
+    content: ""; position: absolute; left: 18%; top: 42%;
+    width: 90vmin; height: 90vmin; transform: translate(-50%,-50%);
+    background: radial-gradient(circle at center,
+        rgba(255,255,255,0.07) 0%,
+        rgba(255,255,255,0.025) 36%,
+        transparent 64%);
+    z-index: 0; pointer-events: none;
+  }
+  .hero-inner { position: relative; z-index: 1; width: 100%; max-width: 1100px; }
+
+  .hello {
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: clamp(20px, 3.4vw, 44px);
+    line-height: 1.1; letter-spacing: 0;
+    color: #ffffff;
+    min-height: 1.2em;
+    white-space: pre;
+  }
+  .caret {
+    display: inline-block; width: 0.56em; height: 1.05em;
+    background: #fff; margin-left: 2px;
+    transform: translateY(0.16em);
+    animation: blink 1.05s step-end infinite;
+  }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  .name {
+    margin-top: 14px;
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(48px, 12vw, 172px);
+    line-height: 0.98; letter-spacing: -0.015em;
+    color: #ffffff;
+    text-wrap: balance;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .caret { animation: none; }
+  }
+
+  /* ============================================================
+     CLASSIC MACINTOSH (compact Mac, 1984) — right of the hero
+     ============================================================ */
+  .mac-zone {
+    position: absolute; top: 50%; right: clamp(36px, 7vw, 150px);
+    transform: translateY(-50%);
+    z-index: 2;
+    display: flex; flex-direction: column; align-items: center; gap: 20px;
+  }
+  .classic-mac {
+    --w: clamp(230px, 24vw, 320px);
+    position: relative;
+    width: var(--w); height: calc(var(--w) * 1.30);
+    cursor: pointer;
+    transform-origin: 50% 34%;
+    transition: transform .35s cubic-bezier(.2,.8,.2,1), filter .35s ease;
+    will-change: transform;
+  }
+  .classic-mac:hover { transform: translateY(-6px); filter: brightness(1.04); }
+
+  /* beige body */
+  .mac-body {
+    position: absolute; inset: 0;
+    border-radius: 26px 26px 18px 18px / 22px 22px 16px 16px;
+    background:
+      linear-gradient(150deg, #ece5d4 0%, #ddd4be 30%, #cabfa3 78%, #b8ac8d 100%);
+    box-shadow:
+      inset 0 3px 5px rgba(255,255,255,0.55),
+      inset 0 -10px 18px rgba(120,108,80,0.35),
+      inset 8px 0 14px rgba(255,255,255,0.18),
+      inset -8px 0 16px rgba(110,100,72,0.30),
+      0 30px 60px rgba(0,0,0,0.55),
+      0 6px 14px rgba(0,0,0,0.4);
+  }
+  /* subtle plastic grain */
+  .mac-body::after {
+    content:""; position:absolute; inset:0; border-radius:inherit;
+    background:
+      radial-gradient(120% 60% at 50% -10%, rgba(255,255,255,0.35), transparent 60%),
+      radial-gradient(90% 50% at 50% 110%, rgba(90,80,55,0.35), transparent 55%);
+    mix-blend-mode: soft-light; pointer-events:none;
+  }
+
+  /* recessed face around the screen */
+  .mac-face {
+    position: absolute; left: 9%; right: 9%; top: 8%;
+    height: 50%;
+    border-radius: 16px;
+    background: linear-gradient(160deg, #c7bca0, #d7cdb6);
+    box-shadow:
+      inset 0 2px 4px rgba(95,86,60,0.55),
+      inset 0 -2px 3px rgba(255,255,255,0.4);
+    display: grid; place-items: center;
+  }
+  /* the dark bezel + glass */
+  .mac-bezel {
+    position: relative;
+    width: 78%; height: 80%;
+    border-radius: 9px;
+    background: #1b1c1a;
+    padding: 9%;
+    box-shadow:
+      inset 0 0 0 3px #0c0d0b,
+      inset 0 4px 10px rgba(0,0,0,0.8),
+      0 1px 1px rgba(255,255,255,0.35);
+  }
+  .mac-screen {
+    position: relative; width: 100%; height: 100%;
+    border-radius: 4px;
+    background: #d7e7c8; /* idle phosphor wash */
+    overflow: hidden;
+    box-shadow: inset 0 0 14px rgba(0,0,0,0.7);
+  }
+  /* CRT curvature highlight */
+  .mac-screen::after {
+    content:""; position:absolute; inset:0; border-radius:4px;
+    background: radial-gradient(120% 90% at 32% 18%, rgba(255,255,255,0.35), transparent 55%);
+    pointer-events:none; z-index: 5;
+  }
+  .mac-screen .boot {
+    position:absolute; inset:0; display:grid; place-items:center; gap:0;
+    background: #e7efe0;
+  }
+  .happy-mac { width: 38%; image-rendering: pixelated; transition: opacity .5s ease; }
+  .mac-screen.revealed .happy-mac { opacity: 0; }
+  .mac-screen .hint {
+    position:absolute; inset:0;
+    display:grid; place-items:center;
+    text-align:center; font-family:"Silkscreen",monospace;
+    font-size: clamp(11px, 1.15vw, 15px); line-height:1.55;
+    color:#2c3326; letter-spacing:0.05em;
+    opacity:0; transition:opacity .4s ease;
+  }
+  .mac-screen .hint.show { opacity:1; }
+  .mac-screen .hint-txt { white-space:pre-line; }
+  .mac-screen .hint-txt::after { content:"_"; animation: caretblink 1s steps(2) infinite; }
+  @keyframes caretblink { 50% { opacity:0; } }
+  @keyframes hintblink { 50% { opacity:0.25; } }
+
+  /* attract glow behind the Macintosh — a soft "click me" pulse, like a game hint */
+  .classic-mac::before {
+    content:""; position:absolute; inset:-32%;
+    border-radius:50%; pointer-events:none;
+    background: radial-gradient(circle at 50% 50%,
+      rgba(255,138,110,0.88) 0%,
+      rgba(228,68,42,0.55) 28%,
+      rgba(228,68,42,0.22) 50%,
+      transparent 70%);
+    filter: blur(30px);
+    opacity:0;
+  }
+  body.cue-ready .classic-mac::before { animation: macGlow 2.2s ease-in-out infinite; }
+  @keyframes macGlow {
+    0%,100% { opacity:0.30; transform:scale(0.93); }
+    50%     { opacity:0.85; transform:scale(1.09); }
+  }
+
+  /* brand row: rainbow apple + Macintosh wordmark */
+  .mac-brand {
+    position:absolute; left:11%; right:11%; bottom:13.5%;
+    display:flex; align-items:center; gap:9px;
+  }
+  .apple6 { width: clamp(15px,1.5vw,20px); height:auto; flex:0 0 auto; }
+  .mac-word {
+    font-family: var(--serif); font-style:italic; font-weight:500;
+    font-size: clamp(15px,1.7vw,22px); color:#6b6047;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+    letter-spacing:0.01em;
+  }
+  /* floppy slot */
+  .mac-floppy {
+    position:absolute; right:14%; bottom:7%;
+    width:32%; height:5px; border-radius:3px;
+    background:#33301f; box-shadow: inset 0 1px 2px rgba(0,0,0,0.8), 0 1px 0 rgba(255,255,255,0.4);
+  }
+  /* base foot lip */
+  .mac-foot {
+    position:absolute; left:6%; right:6%; bottom:-2px; height:5%;
+    border-radius: 0 0 16px 16px;
+    background: linear-gradient(180deg,#b5a988,#9c906f);
+  }
+  .mac-caption {
+    font-family:"Silkscreen",monospace; font-size:11px; letter-spacing:0.18em;
+    text-transform:uppercase; color: var(--ink-faint);
+  }
+
+  @media (max-width: 880px) {
+    .mac-zone { display: none; }
+  }
+
+  /* ============================================================
+     CLASSIC SYSTEM OS  (1-bit home screen, fills viewport on enter)
+     ============================================================ */
+  .os {
+    position: fixed; inset: 0; z-index: 90;
+    opacity: 0; pointer-events: none;
+    transform-origin: 0 0;
+    background-color: #3f7e88;
+    background-image:
+      repeating-conic-gradient(rgba(255,255,255,0.10) 0% 25%, transparent 0% 50%);
+    background-size: 3px 3px;
+    image-rendering: pixelated;
+    font-family: "Silkscreen", monospace;
+    color: #000;
+    overflow: hidden;
+  }
+  .os.live { pointer-events: auto; }
+
+  .os-menubar {
+    position: absolute; top: 0; left: 0; right: 0; height: 26px;
+    background: linear-gradient(#ffffff, #eef0f2);
+    border-bottom: 2px solid #000;
+    display: flex; align-items: center; gap: 22px;
+    padding: 0 12px; font-size: 11px;
+  }
+  .os-menubar .apple-mini { width: 13px; height: 15px; display:block; }
+  .os-menubar .mright { margin-left:auto; display:flex; align-items:center; gap:16px; }
+
+  .os-icon {
+    position: absolute; width: 76px; text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+    user-select: none;
+  }
+  .os-icon svg { image-rendering: pixelated; }
+  .os-icon .lbl {
+    font-size: 10px; background: #fff; padding: 1px 4px;
+    border: 1px solid #000; line-height: 1.2;
+  }
+  .os-icon.hd { top: 40px; right: 22px; }
+  .os-icon.folder { top: 134px; right: 30px; }
+  .os-icon.trash { bottom: 24px; right: 24px; }
+
+  .os-window {
+    position: absolute; top: 84px; left: 60px;
+    width: min(440px, 60vw);
+    background: linear-gradient(#fdfdfd, #e9ebee);
+    border: 2px solid #000; border-radius: 7px;
+    box-shadow: 6px 7px 0 rgba(0,0,0,0.30);
+  }
+  .os-titlebar {
+    height: 22px; border-bottom: 2px solid #000; border-radius: 5px 5px 0 0;
+    display: flex; align-items: center; padding: 0 6px; gap: 8px;
+    background-image: repeating-linear-gradient(#cfd6df 0 1px, #fff 1px 3px);
+    cursor: grab;
+  }
+  .os-titlebar:active { cursor: grabbing; }
+  .os-icon { cursor: grab; }
+  .os-titlebar .os-lights { display: flex; align-items: center; gap: 6px; flex:0 0 auto; }
+  .os-titlebar .lite {
+    width: 13px; height: 13px; border: 2px solid #000; border-radius: 3px; display:block;
+    box-shadow: inset -1px -1px 0 rgba(0,0,0,0.25), inset 1px 1px 0 rgba(255,255,255,0.55);
+  }
+  .os-titlebar .lite.r { background: #ff6b5e; cursor: pointer; }
+  .os-titlebar .lite.y { background: #ffc23d; }
+  .os-titlebar .lite.g { background: #3ec65b; }
+  .os-titlebar .ttl { background:#fff; padding: 0 8px; font-size: 11px; margin: 0 auto; border-radius: 3px; }
+  .os-winbody { padding: 18px 20px 22px; }
+  .os-winbody .hi { font-size: 14px; line-height: 1.5; }
+  .os-winbody .sub {
+    font-family: "VT323", monospace; font-size: 20px; line-height: 1.25;
+    margin-top: 12px; color: #1f5fae;
+  }
+  .blink2 { animation: hintblink 1s steps(2) infinite; }
+
+  .os-exit {
+    position:absolute; left:50%; bottom:14px; transform:translateX(-50%);
+    font-size:10px; background:#000; color:#fff; padding:4px 10px;
+    letter-spacing:0.08em; cursor:pointer;
+  }
+
+  .entering .topbar, .entering .hero-inner { opacity:0; transition:opacity .5s ease; }
+
+  /* ============================================================
+     RÉSUMÉ — the site IS the CV. Dark editorial dossier.
+     ============================================================ */
+  .scroll-cue {
+    position: absolute; left: clamp(28px, 9vw, 150px); bottom: 42px;
+    display: flex; align-items: center; gap: 12px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.24em; text-transform: uppercase;
+    color: rgba(245,245,247,0.42);
+  }
+  .scroll-cue .bar {
+    width: 44px; height: 1px; background: rgba(245,245,247,0.3); position: relative; overflow: hidden;
+  }
+  .scroll-cue .bar::after {
+    content:""; position:absolute; inset:0; background: var(--accent);
+    animation: cueSlide 2.4s cubic-bezier(.6,0,.3,1) infinite;
+  }
+  @keyframes cueSlide { 0% { transform: translateX(-100%);} 55%,100% { transform: translateX(100%);} }
+
+  .cv { position: relative; z-index: 1; background: #000; }
+
+  /* track switcher — one person, two lenses */
+  .track-bar {
+    position: sticky; top: 0; z-index: 40;
+    background: rgba(0,0,0,0.82);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    border-bottom: 1px solid rgba(245,245,247,0.13);
+  }
+  .tb-in {
+    max-width: 1180px; margin: 0 auto;
+    padding: 13px clamp(28px, 9vw, 150px);
+    display: flex; align-items: center; gap: clamp(14px, 3vw, 34px); flex-wrap: wrap;
+  }
+  .tb-label {
+    font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: rgba(245,245,247,0.34);
+  }
+  /* ---- career fork: one line arrives, three branches leave ---- */
+  .fork { border-bottom: 1px solid rgba(245,245,247,0.13); }
+  .fork-in {
+    max-width: 1180px; margin: 0 auto;
+    padding: clamp(40px, 5vw, 66px) clamp(28px, 9vw, 150px) clamp(34px, 4vw, 52px);
+  }
+  .fork-note {
+    font-size: 14.5px; line-height: 1.62; color: rgba(245,245,247,0.55);
+    max-width: 60ch; margin-bottom: clamp(26px, 3.4vw, 42px); text-wrap: pretty;
+  }
+  .fork-stage { position: relative; height: 260px; }
+  .fork-stage svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .fork-stage .fork-m { display: none; }
+  .fork-stage .fb { fill: none; stroke: rgba(245,245,247,0.16); stroke-width: 1.2; }
+  .fork-stage .c-dot { fill: var(--accent); }
+  .fork-stage .fp {
+    fill: none; stroke: var(--accent); stroke-width: 1.7;
+    stroke-dasharray: 1; stroke-dashoffset: 1;
+    opacity: 0; transition: stroke-dashoffset .75s cubic-bezier(.3,.85,.2,1), opacity .25s ease;
+    filter: drop-shadow(0 0 6px rgba(228,68,42,0.6));
+  }
+  #fork[data-active="aqa"] .p-aqa,
+  #fork[data-active="pm"]  .p-pm,
+  #fork[data-active="ml"]  .p-ml { opacity: 1; stroke-dashoffset: 0; }
+
+  /* past roles sitting on the trunk */
+  .past { position: absolute; inset: 0; pointer-events: none; }
+  .pw {
+    position: absolute;
+    display: flex; flex-direction: column; gap: 3px;
+    /* mobile turns this into a row with a dot on the rail */
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: rgba(245,245,247,0.62);
+  }
+  .pw i { font-style: normal; font-size: 9px; color: rgba(245,245,247,0.32); }
+  .pw.p1 { left: 0.8%; top: calc(50% + 13px); }
+  .pw.p2 { left: 15%; bottom: calc(50% + 13px); }
+  .pw.p3 { left: 29.2%; top: calc(50% + 13px); }
+
+  /* the three futures — dot + label, no chrome */
+  #trackOpts { position: absolute; inset: 0; }
+  .fork-btn {
+    position: absolute; left: 60%;
+    transform: translateY(-7px);
+    appearance: none; background: transparent; border: 0; padding: 0;
+    cursor: pointer; text-align: left;
+    display: flex; align-items: flex-start; gap: 13px;
+    max-width: 40%;
+    transition: transform .3s cubic-bezier(.2,.8,.2,1);
+  }
+  .fork-btn:hover { transform: translateY(-7px) translateX(3px); }
+  .fdot {
+    width: 7px; height: 7px; border-radius: 50%; flex: 0 0 auto;
+    margin-top: 3.5px;
+    background: rgba(245,245,247,0.28);
+    transition: background .3s ease, box-shadow .3s ease, transform .3s ease;
+  }
+  .ftxt { display: flex; flex-direction: column; gap: 5px; }
+  .ftxt b {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+    letter-spacing: 0.13em; text-transform: uppercase;
+    color: rgba(245,245,247,0.55);
+    transition: color .3s ease;
+  }
+  .fork-btn:hover .ftxt b { color: rgba(245,245,247,0.92); }
+  .fork-btn:hover .fdot { background: rgba(245,245,247,0.6); }
+  .fork-btn.on .fdot {
+    background: var(--accent); transform: scale(1.25);
+    box-shadow: 0 0 12px rgba(228,68,42,0.85);
+  }
+  .fork-btn.on .ftxt b { color: var(--accent); }
+
+  .fork-btn.fk1 { top: 10%; }
+  .fork-btn.fk2 { top: 50%; }
+  .fork-btn.fk3 { top: 90%; }
+
+  /* ---- mobile: the same horizontal fork, compressed ---- */
+  @media (max-width: 860px) {
+    .fork-stage { height: 210px; }
+    .fork-stage .fork-d { display: none; }
+    .fork-stage .fork-m { display: block; }
+    .fork-btn, .fork-btn.fk1, .fork-btn.fk2, .fork-btn.fk3 { left: 39%; max-width: 61%; }
+    .ftxt b { font-size: 9.5px; letter-spacing: 0.1em; line-height: 1.35; }
+    .fdot { width: 6px; height: 6px; margin-top: 2.5px; }
+    .fork-btn, .fork-btn.fk1 { transform: translateY(-6px); }
+    .fork-btn.fk2 { transform: translateY(-6px); }
+    .fork-btn.fk3 { transform: translateY(-6px); }
+    .fork-btn:hover, .fork-btn:hover.fk1, .fork-btn:hover.fk2, .fork-btn:hover.fk3 { transform: translateY(-6px) translateX(2px); }
+    .pw { font-size: 8.5px; letter-spacing: 0.08em; gap: 2px; }
+    .pw i { font-size: 8px; }
+    .pw.p1 { left: 0.8%; top: calc(50% + 11px); }
+    .pw.p2 { left: 9.5%; bottom: calc(50% + 11px); }
+    .pw.p3 { left: 18.2%; top: calc(50% + 11px); }
+  }
+  @media (max-width: 520px) {
+    .fork-stage { height: 186px; }
+    .fork-btn, .fork-btn.fk1, .fork-btn.fk2, .fork-btn.fk3 { max-width: 60%; }
+    .pw { font-size: 8px; }
+  }
+
+  .sec {
+    max-width: 1180px; margin: 0 auto;
+    padding: clamp(72px, 9vw, 130px) clamp(28px, 9vw, 150px);
+    border-top: 1px solid rgba(245,245,247,0.13);
+  }
+  .sec-head {
+    display: flex; align-items: baseline; gap: 16px;
+    margin-bottom: clamp(34px, 4vw, 58px);
+  }
+  .sec-num {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.2em;
+    color: var(--accent); padding-top: 6px;
+  }
+  .sec-title {
+    font-family: var(--serif); font-weight: 400;
+    font-size: clamp(26px, 3.6vw, 46px); letter-spacing: -0.02em; color: #fff;
+  }
+
+  /* --- 01 about --- */
+  .lead {
+    font-family: var(--serif); font-weight: 400;
+    font-size: clamp(21px, 2.5vw, 33px); line-height: 1.42;
+    letter-spacing: -0.01em; color: rgba(245,245,247,0.9);
+    max-width: 24ch; text-wrap: pretty;
+  }
+  .about-grid {
+    display: grid; grid-template-columns: 1.15fr 1fr;
+    gap: clamp(30px, 5vw, 80px); align-items: start;
+  }
+  .about-body p {
+    font-size: 16px; line-height: 1.72; color: rgba(245,245,247,0.62);
+    margin-bottom: 15px; max-width: 46ch; text-wrap: pretty;
+  }
+  .about-body p b { color: #fff; font-weight: 500; }
+  .path {
+    display: flex; align-items: center; gap: 10px; margin-top: 26px;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em;
+    color: rgba(245,245,247,0.5); flex-wrap: wrap;
+  }
+  .path i { color: var(--accent); font-style: normal; }
+  /* career trajectory — answers "why three companies": each move is a level up */
+  .track { margin-top: 30px; display: grid; gap: 0; }
+  .tr-step {
+    display: grid; grid-template-columns: 52px 1fr auto; gap: 14px; align-items: baseline;
+    padding: 11px 0; border-top: 1px solid rgba(245,245,247,0.09);
+    position: relative; padding-left: 18px;
+  }
+  .tr-step::before {
+    content:""; position:absolute; left:0; top:50%; transform:translateY(-50%);
+    width:7px; height:7px; border-radius:50%;
+    border:1px solid rgba(245,245,247,0.4); background:transparent;
+  }
+  .tr-step.now::before { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 10px rgba(228,68,42,0.75); }
+  .tr-y { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.12em; color: rgba(245,245,247,0.4); }
+  .tr-r { font-size: 14px; color: rgba(245,245,247,0.82); }
+  .tr-step.now .tr-r { color: #fff; }
+  .tr-c { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; color: rgba(245,245,247,0.42); }
+  /* AI thread marker — the 2026 differentiator, made scannable */
+  .ai {
+    display: inline-block; font-style: normal; font-family: var(--font-mono);
+    font-size: 9px; letter-spacing: 0.14em; color: var(--accent);
+    border: 1px solid rgba(228,68,42,0.55); border-radius: 3px;
+    padding: 1px 5px; margin-right: 8px; transform: translateY(-1.5px);
+  }
+
+  .metrics {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1px; margin-top: clamp(46px, 6vw, 76px);
+    background: rgba(245,245,247,0.13);
+    border: 1px solid rgba(245,245,247,0.13);
+  }
+  .metric { background: #000; padding: 26px 22px 24px; }
+  .metric .v {
+    font-family: var(--serif); font-size: clamp(30px, 4vw, 50px);
+    line-height: 1; letter-spacing: -0.03em; color: #fff;
+  }
+  .metric .v small { font-size: 0.42em; letter-spacing: 0; color: rgba(245,245,247,0.5); margin-left: 4px; }
+  .metric .k {
+    margin-top: 12px; font-family: var(--font-mono); font-size: 10px;
+    line-height: 1.55; letter-spacing: 0.13em; text-transform: uppercase;
+    color: rgba(245,245,247,0.44);
+  }
+
+  /* --- 02 experience --- */
+  .job {
+    display: grid; grid-template-columns: 250px 1fr;
+    gap: clamp(24px, 5vw, 66px);
+    padding: clamp(30px, 3.6vw, 46px) 0;
+    border-top: 1px solid rgba(245,245,247,0.09);
+  }
+  .job:first-of-type { border-top: 0; padding-top: 0; }
+  .job-co {
+    font-family: var(--serif); font-size: clamp(21px, 2.2vw, 28px);
+    letter-spacing: -0.01em; color: #fff; line-height: 1.15;
+  }
+  .job-role {
+    margin-top: 9px; font-size: 15.5px; line-height: 1.5; font-weight: 500;
+    color: var(--accent);
+  }
+  .job-when {
+    margin-top: 12px; font-family: var(--font-mono); font-size: 10.5px;
+    letter-spacing: 0.14em; color: rgba(245,245,247,0.4);
+  }
+  /* what the company is, for anyone outside the market */
+  .job-what {
+    margin-top: 14px; padding-top: 13px;
+    border-top: 1px solid rgba(245,245,247,0.11);
+    font-size: 13.5px; line-height: 1.6; color: rgba(245,245,247,0.62);
+    max-width: 34ch; text-wrap: pretty;
+  }
+  .job-what b { color: rgba(245,245,247,0.86); font-weight: 500; }
+  .job-ctx {
+    font-size: 15px; line-height: 1.66; color: rgba(245,245,247,0.58);
+    margin-bottom: 20px; max-width: 62ch; text-wrap: pretty;
+  }
+  .job ul { list-style: none; display: grid; gap: 13px; }
+  .job li {
+    position: relative; padding-left: 22px;
+    font-size: 15.5px; line-height: 1.62; color: rgba(245,245,247,0.72);
+    max-width: 66ch; text-wrap: pretty;
+  }
+  .job li::before {
+    content: ""; position: absolute; left: 0; top: 0.66em;
+    width: 9px; height: 1px; background: var(--accent);
+  }
+  .job li b { color: #fff; font-weight: 600; }
+  .job li:empty { display: none; }
+  .stack {
+    display: flex; flex-wrap: wrap; gap: 7px; margin-top: 22px;
+  }
+  .stack span {
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em;
+    color: rgba(245,245,247,0.55);
+    border: 1px solid rgba(245,245,247,0.17);
+    border-radius: 18px; padding: 5px 11px;
+  }
+
+  /* --- 03 skills --- */
+  .skills { display: grid; gap: 1px; background: rgba(245,245,247,0.13); border-top: 1px solid rgba(245,245,247,0.13); }
+  .skill {
+    background: #000; display: grid; grid-template-columns: 250px 1fr;
+    gap: clamp(20px, 5vw, 66px); padding: 22px 0;
+    border-bottom: 1px solid rgba(245,245,247,0.13);
+  }
+  .skill dt {
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.15em;
+    text-transform: uppercase; color: rgba(245,245,247,0.45); padding-top: 3px;
+  }
+  .skill dd { font-size: 15.5px; line-height: 1.6; color: rgba(245,245,247,0.78); max-width: 72ch; }
+
+  /* --- 04 education --- */
+  .edu { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(26px, 4vw, 60px); }
+  .edu-item .e-school { font-family: var(--serif); font-size: clamp(19px,2vw,25px); color: #fff; letter-spacing: -0.01em; }
+  .edu-item .e-what { margin-top: 9px; font-size: 15px; line-height: 1.62; color: rgba(245,245,247,0.6); max-width: 46ch; }
+  .edu-item .e-tag {
+    display: inline-block; margin-top: 12px;
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent);
+  }
+
+  /* --- 05 projects --- */
+  .projects { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .proj {
+    border: 1px solid rgba(245,245,247,0.15);
+    padding: clamp(24px, 2.6vw, 34px);
+    display: flex; flex-direction: column; gap: 12px;
+    text-decoration: none; color: inherit;
+    transition: border-color .3s ease, background .3s ease, transform .3s ease;
+  }
+  .proj:hover { border-color: var(--accent); background: rgba(228,68,42,0.07); transform: translateY(-3px); }
+  .proj .p-top { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+  .proj .p-name { font-family: var(--serif); font-size: clamp(22px,2.4vw,30px); color: #fff; letter-spacing: -0.01em; }
+  .proj .p-arrow { font-family: var(--font-mono); font-size: 14px; color: var(--accent); }
+  .proj .p-desc { font-size: 15px; line-height: 1.62; color: rgba(245,245,247,0.62); text-wrap: pretty; }
+  .proj .p-meta { margin-top: auto; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(245,245,247,0.4); }
+
+  /* --- contact --- */
+  .contact { text-align: left; }
+  .contact .big {
+    font-family: var(--serif); font-weight: 400;
+    font-size: clamp(38px, 8vw, 110px); line-height: 1; letter-spacing: -0.035em; color: #fff;
+  }
+  .links { display: flex; flex-wrap: wrap; gap: 10px 34px; margin-top: clamp(30px, 4vw, 50px); }
+  .links a {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em;
+    color: rgba(245,245,247,0.68); text-decoration: none;
+    border-bottom: 1px solid rgba(245,245,247,0.25); padding-bottom: 3px;
+    transition: color .25s ease, border-color .25s ease;
+  }
+  .links a:hover { color: var(--accent); border-color: var(--accent); }
+  .foot {
+    max-width: 1180px; margin: 0 auto;
+    padding: 26px clamp(28px, 9vw, 150px) 44px;
+    display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: rgba(245,245,247,0.3);
+  }
+
+  /* reveal on scroll */
+  .rv { opacity: 0; transform: translateY(26px); transition: opacity .8s cubic-bezier(.2,.7,.3,1), transform .8s cubic-bezier(.2,.7,.3,1); }
+  .rv.in { opacity: 1; transform: none; }
+
+  @media (max-width: 900px) {
+    .about-grid, .job, .skill, .edu, .projects { grid-template-columns: 1fr; }
+    .metrics { grid-template-columns: repeat(2, 1fr); }
+    .lead { max-width: none; }
+    .job header { display: flex; flex-direction: column; gap: 4px; }
+    .job-when { margin-top: 4px; }
+    .job-what { max-width: none; margin-top: 12px; padding-top: 11px; }
+    .job-ctx, .job li, .skill dd, .edu-item .e-what { max-width: none; }
+  }
+
+  /* ---- phones ---- */
+  @media (max-width: 620px) {
+    .hero { padding: 0 22px; min-height: 100svh; height: 100svh; }
+    .hello { font-size: clamp(19px, 6.2vw, 27px); }
+    .name { font-size: clamp(54px, 19vw, 92px); line-height: 0.94; letter-spacing: -0.035em; }
+    .scroll-cue { left: 22px; bottom: 30px; font-size: 9px; letter-spacing: 0.18em; }
+    .topbar { padding: 16px 20px; }
+
+    .sec { padding: 54px 22px; }
+    .sec-head { margin-bottom: 26px; gap: 12px; }
+    .sec-title { font-size: clamp(24px, 7vw, 32px); }
+    .lead { font-size: clamp(19px, 5.6vw, 24px); }
+    .about-body p { font-size: 15.5px; }
+
+    .metrics { grid-template-columns: 1fr 1fr; }
+    .metric { padding: 18px 15px 17px; }
+    .metric .v { font-size: clamp(26px, 8vw, 34px); }
+    .metric .k { margin-top: 9px; font-size: 9px; letter-spacing: 0.1em; }
+
+    .job { padding: 26px 0; gap: 18px; }
+    .job-co { font-size: 20px; }
+    .job-role { font-size: 14.5px; }
+    .job li { font-size: 15px; padding-left: 18px; }
+    .stack { gap: 6px; margin-top: 18px; }
+    .stack span { font-size: 9.5px; padding: 4px 9px; }
+
+    .skill { grid-template-columns: 1fr; gap: 7px; padding: 18px 0; }
+    .skill dt { padding-top: 0; }
+    .skill dd { font-size: 15px; }
+
+    .projects { gap: 14px; }
+    .proj { padding: 22px 20px; }
+    .proj .p-name { font-size: 24px; }
+
+    .contact .big { font-size: clamp(34px, 11vw, 52px); }
+    .links { gap: 12px 22px; margin-top: 26px; }
+    .links a { font-size: 11px; }
+    .foot { padding: 22px 22px 36px; font-size: 9px; }
+
+    .fork-in { padding: 40px 22px 34px; }
+    .fork-note { font-size: 14px; margin-bottom: 24px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rv { opacity: 1; transform: none; transition: none; }
+    .scroll-cue .bar::after { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+  <header class="topbar" id="topbar">
+    <div class="lang" id="lang">
+      <button data-lang="en" class="active">EN</button>
+      <button data-lang="ru">RU</button>
+    </div>
+  </header>
+
+  <section class="hero" id="hero" data-screen-label="Hero">
+    <div class="hero-inner">
+      <h1 class="hello"><span id="typed"></span><span class="caret" id="caret"></span></h1>
+      <div class="name">Dorokhov Daniil</div>
+    </div>
+
+    <!-- ===== Classic Macintosh ===== -->
+    <div class="mac-zone">
+      <div class="classic-mac" id="mac" role="button" tabindex="0" aria-label="Open the Macintosh">
+        <div class="mac-body"></div>
+        <div class="mac-face">
+          <div class="mac-bezel">
+            <div class="mac-screen" id="macScreen">
+              <div class="boot">
+                <svg class="happy-mac" viewBox="0 0 26 31" shape-rendering="crispEdges" aria-hidden="true">
+                  <rect x="2" y="1" width="22" height="28" fill="#dfe9d6" stroke="#1a201a" stroke-width="2"/>
+                  <rect x="5" y="4" width="16" height="13" fill="#fff" stroke="#1a201a" stroke-width="2"/>
+                  <rect x="9" y="8" width="2" height="3" fill="#1a201a"/>
+                  <rect x="15" y="8" width="2" height="3" fill="#1a201a"/>
+                  <rect x="8" y="12" width="2" height="2" fill="#1a201a"/>
+                  <rect x="10" y="13" width="6" height="2" fill="#1a201a"/>
+                  <rect x="16" y="12" width="2" height="2" fill="#1a201a"/>
+                  <rect x="13" y="21" width="8" height="2" fill="#1a201a"/>
+                </svg>
+              </div>
+              <div class="hint" id="macHint"><span class="hint-txt"></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="mac-brand">
+          <svg class="apple6" viewBox="0 0 100 122" aria-hidden="true">
+            <defs><clipPath id="ap">
+              <path d="M73.8 64.4c-.1-11.9 9.7-17.6 10.2-17.9-5.6-8.1-14.2-9.3-17.3-9.4-7.3-.7-14.4 4.3-18.1 4.3-3.8 0-9.5-4.2-15.6-4.1-8 .1-15.4 4.7-19.5 11.8-8.4 14.5-2.1 36 6 47.8 4 5.8 8.7 12.2 14.9 12 6-.2 8.3-3.9 15.5-3.9s9.3 3.9 15.6 3.8c6.5-.1 10.5-5.9 14.4-11.7 4.6-6.6 6.4-13.1 6.5-13.4-.1-.1-12.4-4.8-12.5-19z"/>
+              <path d="M61.5 29.3c3.3-4 5.5-9.6 4.9-15.1-4.7.2-10.5 3.1-13.9 7.1-3 3.5-5.7 9.2-5 14.6 5.3.4 10.7-2.7 14-6.6z"/>
+            </clipPath></defs>
+            <g clip-path="url(#ap)">
+              <rect x="0" y="0"   width="100" height="21" fill="#61bb46"/>
+              <rect x="0" y="20"  width="100" height="21" fill="#fdb827"/>
+              <rect x="0" y="40"  width="100" height="21" fill="#f5821f"/>
+              <rect x="0" y="60"  width="100" height="21" fill="#e03a3e"/>
+              <rect x="0" y="80"  width="100" height="21" fill="#963d97"/>
+              <rect x="0" y="100" width="100" height="22" fill="#009ddc"/>
+            </g>
+          </svg>
+          <span class="mac-word">Macintosh</span>
+        </div>
+        <div class="mac-floppy"></div>
+        <div class="mac-foot"></div>
+      </div>
+      <div class="mac-caption" data-i18n-os="caption">Macintosh · 1984</div>
+    </div>
+    <div class="scroll-cue">
+      <span class="bar"></span>
+      <span data-i18n-cv="cue">Scroll — this page is the résumé</span>
+    </div>
+  </section>
+
+  <!-- ================= THE RÉSUMÉ ================= -->
+  <main class="cv">
+
+    <section class="fork" id="fork" data-active="aqa" data-screen-label="Career fork">
+      <div class="fork-in">
+        <p class="fork-note" data-i18n-cv="fk">Four years building test automation that became an internal product with AI inside. The directions I am interested in:</p>
+        <div class="fork-stage">
+          <svg class="fork-d" viewBox="0 0 1000 320" preserveAspectRatio="none" aria-hidden="true">
+            <path class="fb" d="M 8 160 H 380" vector-effect="non-scaling-stroke"></path>
+            <path class="fb" d="M 380 160 C 470 160, 500 32, 600 32" vector-effect="non-scaling-stroke"></path>
+            <path class="fb" d="M 380 160 H 600" vector-effect="non-scaling-stroke"></path>
+            <path class="fb" d="M 380 160 C 470 160, 500 288, 600 288" vector-effect="non-scaling-stroke"></path>
+            <path class="fp p-aqa" d="M 8 160 H 380 C 470 160, 500 32, 600 32" pathLength="1" vector-effect="non-scaling-stroke"></path>
+            <path class="fp p-pm"  d="M 8 160 H 600" pathLength="1" vector-effect="non-scaling-stroke"></path>
+            <path class="fp p-ml"  d="M 8 160 H 380 C 470 160, 500 288, 600 288" pathLength="1" vector-effect="non-scaling-stroke"></path>
+            <circle class="c-dot" cx="8" cy="160" r="2.6"></circle>
+            <circle class="c-dot" cx="150" cy="160" r="2.6"></circle>
+            <circle class="c-dot" cx="292" cy="160" r="2.6"></circle>
+          </svg>
+          <svg class="fork-m" viewBox="0 0 1000 320" preserveAspectRatio="none" aria-hidden="true">
+            <path class="fb" d="M 8 160 H 250" vector-effect="non-scaling-stroke"></path>
+            <path class="fb" d="M 250 160 C 310 160, 330 34, 390 34" vector-effect="non-scaling-stroke"></path>
+            <path class="fb" d="M 250 160 H 390" vector-effect="non-scaling-stroke"></path>
+            <path class="fb" d="M 250 160 C 310 160, 330 286, 390 286" vector-effect="non-scaling-stroke"></path>
+            <path class="fp p-aqa" d="M 8 160 H 250 C 310 160, 330 34, 390 34" pathLength="1" vector-effect="non-scaling-stroke"></path>
+            <path class="fp p-pm"  d="M 8 160 H 390" pathLength="1" vector-effect="non-scaling-stroke"></path>
+            <path class="fp p-ml"  d="M 8 160 H 250 C 310 160, 330 286, 390 286" pathLength="1" vector-effect="non-scaling-stroke"></path>
+            <circle class="c-dot" cx="8" cy="160" r="2.6"></circle>
+            <circle class="c-dot" cx="95" cy="160" r="2.6"></circle>
+            <circle class="c-dot" cx="182" cy="160" r="2.6"></circle>
+          </svg>
+          <div class="past">
+            <span class="pw p1"><i>2022</i>MyOffice</span>
+            <span class="pw p2"><i>2024</i>Avroid</span>
+            <span class="pw p3"><i>2025</i>R7</span>
+          </div>
+          <div id="trackOpts">
+            <button data-track-btn="aqa" class="on fork-btn fk1">
+              <span class="fdot"></span>
+              <span class="ftxt"><b data-i18n-cv="tb1">Lead AQA</b></span>
+            </button>
+            <button data-track-btn="pm" class="fork-btn fk2">
+              <span class="fdot"></span>
+              <span class="ftxt"><b data-i18n-cv="tb2">Product Manager · AI</b></span>
+            </button>
+            <button data-track-btn="ml" class="fork-btn fk3">
+              <span class="fdot"></span>
+              <span class="ftxt"><b data-i18n-cv="tb3">AI / LLM Engineer</b></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 01 — about -->
+    <section class="sec" id="about" data-screen-label="01 About">
+      <div class="sec-head rv">
+        <span class="sec-num">01</span>
+        <h2 class="sec-title" data-i18n-cv="s1">Who I am</h2>
+      </div>
+      <div class="about-grid">
+        <p class="lead rv" data-i18n-cv="lead">I build test automation as an engineering product — from zero to a production platform.</p>
+        <div class="about-body rv">
+          <p data-i18n-cv="ab1">At R7 I assembled the full testing pipeline for a corporate server in eighteen months: environment preparation went from <b>three days to thirty minutes</b>, ~400 automated tests cover nine product modules, and an LLM is wired into the pipeline with formal validation of its output.</p>
+          <p data-i18n-cv="ab2">I lead the automation team — an automation engineer, an intern I grew from scratch, and two manual QA — and own hiring, mentoring and department-wide training. Test cases live in git and go through code review, like any other code.</p>
+          <div class="track">
+            <div class="tr-step"><span class="tr-y">2022</span><span class="tr-r" data-i18n-cv="t1">QA Engineer</span><span class="tr-c">MyOffice</span></div>
+            <div class="tr-step"><span class="tr-y">2024</span><span class="tr-r" data-i18n-cv="t2">First QA in the company</span><span class="tr-c">Avroid</span></div>
+            <div class="tr-step now"><span class="tr-y">2025</span><span class="tr-r" data-i18n-cv="t3">Lead AQA · own team</span><span class="tr-c">R7</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="metrics rv">
+        <div class="metric">
+          <div class="v" data-i18n-cv="mv1">30<small>min</small></div>
+          <div class="k" data-i18n-cv="m1">Environment prep<br>was 3 days</div>
+        </div>
+        <div class="metric">
+          <div class="v" data-i18n-cv="mv2">~400</div>
+          <div class="k" data-i18n-cv="m2">Automated tests<br>9 modules</div>
+        </div>
+        <div class="metric">
+          <div class="v" data-i18n-cv="mv3">474</div>
+          <div class="k" data-i18n-cv="m3">API endpoints<br>80 domains</div>
+        </div>
+        <div class="metric">
+          <div class="v" data-i18n-cv="mv4">~10<small>min</small></div>
+          <div class="k" data-i18n-cv="m4">CI verdict<br>per commit</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 — experience -->
+    <section class="sec" id="experience" data-screen-label="02 Experience">
+      <div class="sec-head rv">
+        <span class="sec-num">02</span>
+        <h2 class="sec-title" data-i18n-cv="s2">Experience</h2>
+      </div>
+
+      <article class="job rv">
+        <header>
+          <div class="job-co">R7</div>
+          <div class="job-role" data-i18n-cv="j1r">Lead AQA — Corporate Server</div>
+          <div class="job-when">02/2025 — NOW</div>
+          <p class="job-what" data-i18n-cv="j1w">One of the two vendors that replaced Microsoft 365 across Russian government and enterprise. Corporate Server is the <b>direct analogue of Google Workspace · Microsoft 365</b> — self-hosted on the customer's own metal.</p>
+        </header>
+        <div>
+          <p class="job-ctx" data-i18n-cv="j1c">A corporate web platform — mail, drive, calendar, projects, administration. I joined as the first QA on the product: automation, infrastructure and process were built from nothing.</p>
+          <ul>
+            <li data-i18n-cv="j1a">Cut release environment prep from <b>3 days to 30 minutes</b> — Ansible plus Jenkins install pipelines across <b>11 servers and 5 Linux families</b>, online / offline / Docker. Testing now starts the day a build lands.</li>
+            <li data-i18n-cv="j1b">Built the automation framework on Python, Playwright and pytest: <b>~400 tests over 9 modules</b>, with the entire TestIT case pool moved into code.</li>
+            <li data-i18n-cv="j1c2">Stood up API automation — a contract layer generated from OpenAPI across <b>474 endpoints / 80 domains</b>, plus functional scenarios on critical domains and a separate security suite.</li>
+            <li data-i18n-cv="j1d"><em class="ai">AI</em>Wrote a TestIT CLI that generates a test from a case with an LLM, then validates it through AST and cross-checks calls against the Page Object. Authoring a test takes <b>minutes instead of 15–30</b>.</li>
+            <li data-i18n-cv="j1e">Moved Jenkins to Infrastructure as Code — <b>9 folders, 23 jobs</b> deployed from one file, plus an orchestrator running tests across 10 environments with a Telegram digest.</li>
+            <li data-i18n-cv="j1f"><em class="ai">AI</em>CI on GitHub Actions: fail-fast smoke → regression → <b>AI triage of every failure</b> → artifacts. Verdict per commit in ~10 minutes; failure analysis in seconds instead of hours.</li>
+            <li data-i18n-cv="j1g">Made releases transparent for the customer — an HTML report per test plan, AI analysis of install logs with secrets masked, Telegram digests. <b>Used in release acceptance</b>; the platform is already reused beyond the product.</li>
+          </ul>
+          <div class="stack" data-i18n-cv="st1">
+            <span>Python</span><span>Playwright</span><span>pytest</span><span>schemathesis</span><span>Jenkins</span><span>Job DSL</span><span>Groovy</span><span>Ansible</span><span>GitHub Actions</span><span>TestIT</span><span>Docker</span><span>Linux</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="job rv">
+        <header>
+          <div class="job-co">Avroid</div>
+          <div class="job-role" data-i18n-cv="j2r">AQA Engineer</div>
+          <div class="job-when">03/2024 — 02/2025</div>
+          <p class="job-what" data-i18n-cv="j2w">Part of Fplus, one of Russia's largest IT holdings. The product is the <b>direct analogue of Windows Subsystem for Android</b> — Android apps running in isolated containers inside a mobile Linux OS.</p>
+        </header>
+        <div>
+          <p class="job-ctx" data-i18n-cv="j2c">A startup — the company's first QA hire.</p>
+          <ul>
+            <li data-i18n-cv="j2a">Set up testing from scratch: process, documentation, and automation in Python.</li>
+            <li data-i18n-cv="j2b">Built a support Telegram bot integrated with CRM and the issue tracker — owned it from problem statement to rollout; still in use today.</li>
+            <li data-i18n-cv="j2c2">Department infrastructure: GitLab, and a hardware ESP32 rig for input testing.</li>
+            <li data-i18n-cv="j2d">A RAG system over the Aurora OS documentation plus an agent, for the support team — an answer grounded in the docs, and automatic reproduction of the scenario on a mobile-Linux emulator.</li>
+          </ul>
+          <div class="stack" data-i18n-cv="st2"><span>Python</span><span>Docker</span><span>GitLab</span><span>Jenkins</span></div>
+        </div>
+      </article>
+
+      <article class="job rv">
+        <header>
+          <div class="job-co">MyOffice</div>
+          <div class="job-role" data-i18n-cv="j3r">QA Engineer — Release Acceptance</div>
+          <div class="job-when">08/2022 — 03/2024</div>
+          <p class="job-what" data-i18n-cv="j3w">The market leader in Russian office software and the <b>direct analogue of Microsoft Office</b> — the default suite across federal ministries and the country's largest enterprises, on web, desktop and mobile.</p>
+        </header>
+        <div>
+          <p class="job-ctx" data-i18n-cv="j3c">Final gate on B2B products before release, across every platform.</p>
+          <ul>
+            <li data-i18n-cv="j3a">Owned the go / no-go call on build readiness, working across development, DevOps, security and customers.</li>
+            <li data-i18n-cv="j3b">Introduced API testing to the department (Postman, Newman in CLI, documentation) — it became the department standard.</li>
+            <li data-i18n-cv="j3c2">Covered an absent DevOps for six months — Docker Compose, Python mock servers, Jenkins builds — then handed the system over.</li>
+          </ul>
+          <div class="stack" data-i18n-cv="st3"><span>Python</span><span>Selenium</span><span>Appium</span><span>Postman</span><span>Newman</span><span>Docker</span><span>Jenkins</span></div>
+        </div>
+      </article>
+    </section>
+
+    <!-- 03 — skills -->
+    <section class="sec" id="skills" data-screen-label="03 Toolkit">
+      <div class="sec-head rv">
+        <span class="sec-num">03</span>
+        <h2 class="sec-title" data-i18n-cv="s3">Toolkit</h2>
+      </div>
+      <dl class="skills rv">
+        <div class="skill"><dt data-i18n-cv="k1">Languages</dt><dd data-i18n-cv="k1v">Python <span style="opacity:.5">(primary)</span>, Bash, Groovy, SQL</dd></div>
+        <div class="skill"><dt data-i18n-cv="k2">Automation</dt><dd data-i18n-cv="k2v">Playwright, pytest, Selenium, Appium, requests, schemathesis, Postman / Newman</dd></div>
+        <div class="skill"><dt data-i18n-cv="k3">Testing</dt><dd data-i18n-cv="k3v">UI, API (REST, contracts from OpenAPI), integration, regression, security</dd></div>
+        <div class="skill"><dt data-i18n-cv="k4">CI/CD &amp; Infra</dt><dd data-i18n-cv="k4v">Jenkins (Job DSL), Infrastructure as Code, Ansible, GitHub Actions, Docker, Git</dd></div>
+        <div class="skill"><dt data-i18n-cv="k5">AI in testing</dt><dd data-i18n-cv="k5v"><em class="ai">AI</em>LLM test generation with AST validation, automatic triage of failures and logs</dd></div>
+        <div class="skill"><dt data-i18n-cv="k6">Platforms</dt><dd data-i18n-cv="k6v">Web, Linux (RedOS, Astra, Alt, Debian, Ubuntu), macOS</dd></div>
+        <div class="skill"><dt data-i18n-cv="k7">Leadership</dt><dd data-i18n-cv="k7v">Automation team, hiring, mentoring, department training</dd></div>
+      </dl>
+    </section>
+
+    <!-- 04 — education -->
+    <section class="sec" id="education" data-screen-label="04 Education">
+      <div class="sec-head rv">
+        <span class="sec-num">04</span>
+        <h2 class="sec-title" data-i18n-cv="s4">Education</h2>
+      </div>
+      <div class="edu rv">
+        <div class="edu-item">
+          <div class="e-school" data-i18n-cv="e1s">Plekhanov Russian University of Economics</div>
+          <div class="e-what" data-i18n-cv="e1w">Bachelor's, Business Informatics</div>
+        </div>
+        <div class="edu-item">
+          <div class="e-school" data-i18n-cv="e2s">HSE University — Computer Science</div>
+          <div class="e-what" data-i18n-cv="e2w">Calculus, discrete mathematics, algorithms and data structures, computer architecture and operating systems. In progress: machine learning and recommender systems.</div>
+          <span class="e-tag" data-i18n-cv="e2t">Auditing student</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 — projects -->
+    <section class="sec" id="projects" data-screen-label="05 Projects">
+      <div class="sec-head rv">
+        <span class="sec-num">05</span>
+        <h2 class="sec-title" data-i18n-cv="s5">Side projects</h2>
+      </div>
+      <div class="projects rv">
+        <a class="proj" href="https://apps.apple.com/us/app/p-r-o/id6749865568?l=ru" target="_blank" rel="noopener">
+          <div class="p-top">
+            <span class="p-name">P.R.O.</span>
+            <span class="p-arrow">↗</span>
+          </div>
+          <div class="p-desc" data-i18n-cv="p1d"><em class="ai">AI</em>A sports statistics app with AI. I built the backend and the AI features — recommendations, goals, forecasting, and the assistant.</div>
+          <div class="p-meta">iOS · App Store</div>
+        </a>
+        <a class="proj" href="https://github.com/ananasDDA" target="_blank" rel="noopener">
+          <div class="p-top">
+            <span class="p-name">PRO Local AI Lab</span>
+            <span class="p-arrow">↗</span>
+          </div>
+          <div class="p-desc" data-i18n-cv="p2d">Running LLMs and VLMs locally on iPhone — MLX, llama.cpp, Core ML, Whisper, Hugging Face.</div>
+          <div class="p-meta">On-device · Research</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- contact -->
+    <section class="sec contact" id="contact" data-screen-label="Contact">
+      <div class="rv">
+        <div class="big" data-i18n-cv="ct">Let's talk.</div>
+        <div class="links">
+          <a href="mailto:dorokhov.daniil69@gmail.com">dorokhov.daniil69@gmail.com</a>
+          <a href="https://t.me/ananasDDA" target="_blank" rel="noopener">TELEGRAM — @ananasDDA</a>
+          <a href="https://github.com/ananasDDA" target="_blank" rel="noopener">GITHUB — ananasDDA</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="foot">
+      <span>Dorokhov Daniil</span>
+      <span data-i18n-cv="ft">Lead AQA / Tech Lead QA Automation</span>
+    </div>
+  </main>
+
+  <!-- ===== Classic System OS (revealed on enter) ===== -->
+  <div class="os" id="os" data-screen-label="Classic OS">
+    <div class="os-menubar">
+      <svg class="apple-mini" viewBox="0 0 100 122" aria-hidden="true">
+        <defs><clipPath id="apm">
+          <path d="M73.8 64.4c-.1-11.9 9.7-17.6 10.2-17.9-5.6-8.1-14.2-9.3-17.3-9.4-7.3-.7-14.4 4.3-18.1 4.3-3.8 0-9.5-4.2-15.6-4.1-8 .1-15.4 4.7-19.5 11.8-8.4 14.5-2.1 36 6 47.8 4 5.8 8.7 12.2 14.9 12 6-.2 8.3-3.9 15.5-3.9s9.3 3.9 15.6 3.8c6.5-.1 10.5-5.9 14.4-11.7 4.6-6.6 6.4-13.1 6.5-13.4-.1-.1-12.4-4.8-12.5-19z"/>
+          <path d="M61.5 29.3c3.3-4 5.5-9.6 4.9-15.1-4.7.2-10.5 3.1-13.9 7.1-3 3.5-5.7 9.2-5 14.6 5.3.4 10.7-2.7 14-6.6z"/>
+        </clipPath></defs>
+        <g clip-path="url(#apm)">
+          <rect x="0" y="0"   width="100" height="21" fill="#61bb46"/>
+          <rect x="0" y="20"  width="100" height="21" fill="#fdb827"/>
+          <rect x="0" y="40"  width="100" height="21" fill="#f5821f"/>
+          <rect x="0" y="60"  width="100" height="21" fill="#e03a3e"/>
+          <rect x="0" y="80"  width="100" height="21" fill="#963d97"/>
+          <rect x="0" y="100" width="100" height="22" fill="#009ddc"/>
+        </g>
+      </svg>
+      <span class="mi" style="font-weight:700">File</span>
+      <span class="mi">Edit</span>
+      <span class="mi">View</span>
+      <span class="mi">Special</span>
+      <span class="mright"><span id="osClock">10:09</span></span>
+    </div>
+
+    <div class="os-window">
+      <div class="os-titlebar">
+        <div class="os-lights">
+          <span class="lite r" id="osClose" title="Close"></span>
+          <span class="lite y" title="Minimize"></span>
+          <span class="lite g" title="Zoom"></span>
+        </div>
+        <span class="ttl">Welcome</span>
+      </div>
+      <div class="os-winbody">
+        <div class="hi" data-i18n-os="welcome">Welcome to Macintosh.</div>
+        <div class="sub" data-i18n-os="sub">Hello, my name is Dorokhov Daniil.<br>The desktop is being built<span class="blink2">_</span></div>
+      </div>
+    </div>
+
+    <div class="os-icon hd">
+      <svg width="40" height="28" viewBox="0 0 40 28" shape-rendering="crispEdges" aria-hidden="true">
+        <rect x="1" y="3" width="38" height="20" fill="#e8eaee" stroke="#000" stroke-width="2"/>
+        <rect x="5" y="8" width="16" height="2" fill="#7b8794"/>
+        <rect x="5" y="12" width="10" height="2" fill="#7b8794"/>
+        <rect x="30" y="8" width="5" height="5" fill="#36b34a"/>
+      </svg>
+      <span class="lbl">Macintosh HD</span>
+    </div>
+    <div class="os-icon folder">
+      <svg width="40" height="28" viewBox="0 0 40 28" shape-rendering="crispEdges" aria-hidden="true">
+        <rect x="2" y="5" width="16" height="4" fill="#7bb0e8" stroke="#000" stroke-width="2"/>
+        <rect x="2" y="8" width="36" height="17" fill="#9cc6f3" stroke="#000" stroke-width="2"/>
+      </svg>
+      <span class="lbl">Projects</span>
+    </div>
+    <div class="os-icon trash">
+      <svg width="26" height="30" viewBox="0 0 26 30" shape-rendering="crispEdges" aria-hidden="true">
+        <rect x="1" y="3" width="24" height="3" fill="#000"/>
+        <rect x="4" y="6" width="18" height="21" fill="#d8dde3" stroke="#000" stroke-width="2"/>
+        <rect x="9" y="10" width="2" height="13" fill="#000"/>
+        <rect x="15" y="10" width="2" height="13" fill="#000"/>
+      </svg>
+      <span class="lbl">Trash</span>
+    </div>
+
+    <div class="os-exit" id="osExit" data-i18n-os="exit">◄ Shut Down</div>
+  </div>
+
+<script>
+(function () {
+  'use strict';
+
+  // remembered choice wins; otherwise follow the browser's languages
+  function detectLang() {
+    const list = navigator.languages && navigator.languages.length
+      ? navigator.languages : [navigator.language || 'en'];
+    for (const t of list) {
+      const p = String(t).toLowerCase();
+      if (p.startsWith('ru') || p.startsWith('be') || p.startsWith('uk') || p.startsWith('kk')) return 'ru';
+      if (p.startsWith('en')) return 'en';
+    }
+    return 'en';
+  }
+  let lang = localStorage.getItem('dd_lang') || detectLang();
+
+  // typed greeting line (terminal style); name stays static below it
+  const TYPE = { en: "Hello, my name is", ru: "Привет, меня зовут" };
+  const prefersReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let typeTimer = null;
+  function typeLine(text) {
+    clearTimeout(typeTimer);
+    const el = document.getElementById('typed');
+    if (prefersReduce) { el.textContent = text; return; }
+    el.textContent = '';
+    let i = 0;
+    (function step() {
+      el.textContent = text.slice(0, i);
+      if (i <= text.length) { i++; typeTimer = setTimeout(step, i < 4 ? 130 : 68); }
+    })();
+  }
+
+  // ---- OS strings (localized) ----
+  const OS_STR = {
+    en: {
+      hint: "click to enter",
+      caption: "Macintosh · 1984",
+      welcome: "Welcome to Macintosh.",
+      sub: "Hello, my name is Dorokhov Daniil.<br>The desktop is being built<span class=\"blink2\">_</span>",
+      exit: "◄ Shut Down"
+    },
+    ru: {
+      hint: "нажми, чтобы войти",
+      caption: "Macintosh · 1984",
+      welcome: "Добро пожаловать в Macintosh.",
+      sub: "Привет, меня зовут Дорохов Даниил.<br>Рабочий стол собирается<span class=\"blink2\">_</span>",
+      exit: "◄ Выключить"
+    }
+  };
+
+  /* ---------------- résumé copy (RU; EN lives in the markup) ---------------- */
+  const CV_AQA_RU = {
+    cue: "Листай — эта страница и есть резюме",
+    j1w: "Один из двух вендоров, заменивших Microsoft 365 в госсекторе и крупном бизнесе. Корпоративный сервер — <b>аналог Google Workspace · Microsoft 365</b>, развёрнутый на железе заказчика.",
+    j2w: "Входит в Fplus — один из крупнейших ИТ-холдингов России. Продукт — <b>аналог Windows Subsystem for Android</b>: Android-приложения в изолированных контейнерах внутри мобильного Linux.",
+    j3w: "Лидер рынка офисного ПО и <b>аналог Microsoft Office</b> — пакет по умолчанию в федеральных министерствах и крупнейших компаниях — веб, десктоп, мобайл.",
+    tb: "Смотреть как", tb1: "Lead AQA", tb2: "Продакт-менеджер · AI", tb3: "AI / LLM инженер",
+    j2d: "RAG-система по документации ОС Аврора и агент для отдела поддержки: ответ с опорой на документацию и автоматическое воспроизведение сценария на эмуляторе мобильного Linux.",
+    t1: "QA-инженер", t2: "Первый QA в компании", t3: "Lead AQA · своя команда",
+    s1: "Кто я", s2: "Опыт", s3: "Инструменты", s4: "Образование", s5: "Пет-проекты",
+    lead: "Строю автоматизацию тестирования как инженерный продукт — с нуля до production-платформы.",
+    ab1: "В Р7 за полтора года собрал полный конвейер тестирования корпоративного сервера: подготовка стендов сократилась с <b>3 дней до 30 минут</b>, ~400 автотестов покрывают 9 модулей продукта, LLM встроена в пайплайн с формальной валидацией результата.",
+    ab2: "Веду команду автоматизации — инженер автоматизации, стажёр, выращенный с нуля, и двое ручных тестировщиков. Найм, менторство, обучение отдела. Тест-кейсы живут в git и проходят код-ревью — как любой другой код.",
+    m1: "Подготовка стендов<br>было 3 дня",
+    m2: "Автотестов<br>9 модулей",
+    m3: "Эндпоинтов API<br>80 доменов",
+    m4: "Вердикт CI<br>на каждый коммит",
+    j1r: "Lead AQA — Корпоративный сервер",
+    j1c: "Корпоративная веб-платформа — почта, диск, календарь, проекты, администрирование. Пришёл первым QA на продукт: автоматизация, инфраструктура и процессы выстроены с нуля.",
+    j1a: "Сократил подготовку стендов к релизу с <b>3 дней до 30 минут</b> — Ansible и install-пайплайны Jenkins на <b>11 серверов и 5 семейств Linux</b>, online / offline / Docker. Тестирование стартует в день выхода сборки.",
+    j1b: "Построил фреймворк автотестов на Python, Playwright и pytest: <b>~400 тестов на 9 модулей</b>, весь пул тест-кейсов TestIT переведён в код.",
+    j1c2: "Поднял API-автотесты — контрактный слой автогенерацией из OpenAPI на <b>474 эндпоинта / 80 доменов</b>, плюс функциональные сценарии по критичным доменам и отдельный контур тестов безопасности.",
+    j1d: "<em class=\"ai\">AI</em>Сделал CLI для TestIT: <b>LLM-генерация автотеста из тест-кейса</b> с валидацией через AST и сверкой вызовов с Page Object. Создание теста — <b>минуты вместо 15–30</b>.",
+    j1e: "Перевёл Jenkins на Infrastructure as Code — <b>9 папок, 23 job</b> разворачиваются из одного файла, плюс оркестратор, прогоняющий тесты по 10 стендам со сводкой в Telegram.",
+    j1f: "<em class=\"ai\">AI</em>CI на GitHub Actions: smoke с fail-fast → regression → <b>AI-разбор каждого падения</b> → артефакты. Результат по коммиту за ~10 минут; разбор падений — секунды вместо часов.",
+    j1g: "Сделал релиз прозрачным для заказчика — HTML-отчёт по тест-плану, AI-анализ install-логов с маскированием секретов, Telegram-дайджесты. <b>Используется при приёмке релизов</b>; платформа уже переиспользуется за пределами продукта.",
+    j2r: "AQA-инженер",
+    j2c: "Стартап — первый QA в компании.",
+    j2a: "Выстроил тестирование с нуля: процессы, документация, автоматизация на Python.",
+    j2b: "Telegram-бот поддержки с интеграцией CRM и трекера — от постановки проблемы до внедрения; работает до сих пор.",
+    j2c2: "Инфраструктура отдела: GitLab, аппаратный стенд на ESP32 для тестов пользовательского ввода.",
+    j3r: "QA-инженер — выходной контроль релизов",
+    j3c: "Приёмочное тестирование B2B-продуктов перед релизом на всех платформах.",
+    j3a: "Решение о готовности сборки; взаимодействие с разработкой, DevOps, ИБ и заказчиками.",
+    j3b: "Ввёл в отделе API-тестирование (Postman, Newman в CLI, документация) — стало стандартом отдела.",
+    j3c2: "Полгода закрывал задачи отсутствовавшего DevOps — Docker Compose, мок-серверы на Python, сборки в Jenkins — и передал систему.",
+    k1: "Языки", k2: "Автоматизация", k3: "Тестирование", k4: "CI/CD и инфраструктура",
+    k5: "AI в тестировании", k6: "Платформы", k7: "Управление",
+    k3v: "UI, API (REST, контракты из OpenAPI), интеграционное, регрессионное, безопасность",
+    k4v: "Jenkins (Job DSL), Infrastructure as Code, Ansible, GitHub Actions, Docker, Git",
+    k5v: "<em class=\"ai\">AI</em>LLM-генерация тестов с AST-валидацией, автоматический разбор падений и логов",
+    k6v: "Веб, Linux (RedOS, Astra, Alt, Debian, Ubuntu), macOS",
+    k7v: "Команда автоматизации, найм, менторство, обучение отдела",
+    e1s: "РЭУ им. Г.В. Плеханова", e1w: "Бакалавриат, бизнес-информатика",
+    e2s: "НИУ ВШЭ — факультет компьютерных наук",
+    e2w: "Математический анализ, дискретная математика, алгоритмы и структуры данных, архитектура компьютера и ОС. В процессе — машинное обучение и рекомендательные системы.",
+    e2t: "Вольнослушатель",
+    p1d: "<em class=\"ai\">AI</em>Спортивное приложение с AI. Сделал бэкенд и AI-функции — рекомендации, цели, прогноз, ассистент.",
+    p2d: "Локальный запуск LLM и VLM на iPhone — MLX, llama.cpp, Core ML, Whisper, Hugging Face.",
+    ct: "Свяжемся.",
+    ft: "Lead AQA / Tech Lead QA Automation"
+  };
+  // the markup itself is the English AQA track
+  const CV_AQA_EN = {};
+  document.querySelectorAll('[data-i18n-cv]').forEach(el => {
+    CV_AQA_EN[el.getAttribute('data-i18n-cv')] = el.innerHTML;
+  });
+
+  const CV_PM_EN = {
+    tb: "Read me as", tb1: "Lead AQA", tb2: "Product Manager \u00b7 AI", tb3: "AI / LLM Engineer",
+    st1: CV_AQA_EN.st1, st2: CV_AQA_EN.st2, st3: CV_AQA_EN.st3,
+    j2d: "A second product for the same team: a RAG system over the Aurora OS documentation plus an agent \u2014 support got an answer grounded in the docs and the scenario reproduced on a mobile-Linux emulator.",
+    cue: "Scroll \u2014 this page is the r\u00e9sum\u00e9",
+    s1: "Who I am", s2: "Experience", s3: "Toolkit", s4: "Education", s5: "Own products",
+    lead: "An engineer moving into AI/ML product management. I take AI out of the demo and into production.",
+    ab1: "At R7 I found the product's real bottleneck myself, then built and now own an internal platform where an LLM does actual work \u2014 generating tests, triaging failures, reading logs and screenshots \u2014 with validated output, cost control, and graceful degradation that never breaks the pipeline.",
+    ab2: "In parallel, as a co-founder, I shipped an AI-powered app to the App Store and launched an iOS app for local LLM inference. Four years of engineering underneath, business informatics at Plekhanov, CS courses at HSE. I look for roles where someone has to decide <b>where AI creates value \u2014 and where it only makes the product more expensive</b>.",
+    mv1: "30<small>min</small>", m1: "Time-to-test<br>was 3 days",
+    mv2: "\u22123<small>days</small>", m2: "Off the release<br>cycle",
+    mv3: "~10<small>min</small>", m3: "Feedback<br>per commit",
+    mv4: "1<small>app</small>", m4: "Shipped to App Store<br>as co-founder",
+    t1: "Release acceptance \u00b7 stakeholders", t2: "First QA \u00b7 built the process", t3: "Platform owner \u00b7 own team",
+    j1r: "Lead AQA \u00b7 initiator and owner of the internal testing platform",
+    j1w: CV_AQA_EN.j1w, j2w: CV_AQA_EN.j2w, j3w: CV_AQA_EN.j3w,
+    j1c: "I joined as the first engineer on the product. Formally Lead AQA \u2014 but I initiated, designed and now grow the automation platform as an internal product: finding the bottlenecks, shaping the plan, and defending it to leadership.",
+    j1a: "<b>Found the main bottleneck and removed it.</b> Release environment prep took 3 days and the release idled. Down to 30 minutes via automated deployment across 11 servers and 5 OS families. Business result: testing starts the day a build lands \u2014 three days off the release cycle.",
+    j1b: "<b>Built an internal product for test-result analysis</b> \u2014 REST API plus web UI, a pipeline from raw data to verdict: metric enrichment, LLM analysis, Vision comparison of reference and actual screenshots, a quality gate with configurable thresholds and pass/fail, webhooks, a self-contained HTML report. Integrated into CI — <b>three testing teams and the developers</b> use it.",
+    j1c2: "<em class=\"ai\">AI</em><b>Decided where AI applies \u2014 not just how to add it.</b> An LLM earns its place in test generation and failure triage; where it doesn't, the call is skipped on a green run.",
+    j1d: "<em class=\"ai\">AI</em>Cost and safety by design: rate limiting and a queue, secrets masked before every request, a model outage never breaks the pipeline, and a path to on-prem already in place.",
+    j1e: "<b>Made the outcome visible to the B2B customer</b> \u2014 an HTML report per test plan, executive summaries and Telegram digests, used in release acceptance. Before that, test status lived only inside the team.",
+    j1f: "<b>Proved the platform is reusable</b> \u2014 another product's tests run on the same infrastructure with no rewriting.",
+    j1g: "Process metrics I owned: time-to-test <b>3 days \u2192 30 minutes</b>; test authoring 15\u201330 minutes \u2192 minutes; failure triage hours \u2192 seconds; feedback per commit ~10 minutes. Team: an automation engineer, an intern, two manual QA part-time \u2014 plus hiring, mentoring and department training.",
+    j2r: "AQA Engineer \u00b7 first QA in the company",
+    j2c: "A startup \u2014 no QA culture to inherit.",
+    j2a: "Spotted the support team's problem, proposed the fix and drove it to rollout: a Python Telegram bot integrated with CRM and the issue tracker. Still running today.",
+    j2b: "Built the testing process from scratch \u2014 process, documentation, automation.",
+    j2c2: "Took part in hiring and training support staff.",
+    j3r: "QA Engineer \u00b7 release acceptance",
+    j3c: "The final gate on B2B products before release, across every platform.",
+    j3a: "Owned the go / no-go call on build readiness \u2014 stakeholder communication on both sides of the release.",
+    j3b: "Worked across development, DevOps, security and customers to get a build out the door.",
+    j3c2: "Covered an absent DevOps engineer for six months.",
+    k1: "Product", k1v: "Finding bottlenecks and prioritisation, process metrics (time-to-test, cycle time, release readiness), requirements and acceptance",
+    k2: "AI in product", k2v: "<em class=\"ai\">AI</em>Judging where LLM and VLM apply, guardrails and answer validation, cost control, degradation without outage, local-inference trade-offs, cloud vs on-prem",
+    k3: "Stakeholders", k3v: "B2B customers, executive summaries, release acceptance, communication across development, DevOps and security",
+    k4: "Tech base", k4v: "Python, REST API, CI/CD, Docker, Linux \u2014 I judge feasibility and speak the same language as engineers",
+    k5: "Delivery", k5v: "From idea to public release, including Apple review and App Store launch",
+    k6: "Tools", k6v: "TestIT, Jira, Confluence, Git, Cursor and AI assistants in daily work",
+    k7: "Leadership", k7v: "Automation team, hiring, mentoring, department training",
+    e1s: CV_AQA_EN.e1s, e1w: "Bachelor's, Business Informatics \u2014 business process modelling, requirements analysis, enterprise economics.",
+    e2s: CV_AQA_EN.e2s, e2w: CV_AQA_EN.e2w, e2t: CV_AQA_EN.e2t,
+    p1d: "<em class=\"ai\">AI</em><b>Co-founder.</b> Took it from idea to the App Store, Apple review included. I own the AI features \u2014 recommendations, goals matched to fitness level, progress forecasting, the assistant \u2014 and help decide which AI features users actually need.",
+    p2d: "Product hypothesis: privacy and no subscription as the value. Forces explicit trade-offs between model quality, speed and device memory.",
+    ct: "Let's talk.", ft: "Product Manager \u00b7 AI/ML"
+  };
+
+  const CV_PM_RU = {
+    tb: "\u0421\u043c\u043e\u0442\u0440\u0435\u0442\u044c \u043a\u0430\u043a", tb1: "Lead AQA", tb2: "\u041f\u0440\u043e\u0434\u0430\u043a\u0442-\u043c\u0435\u043d\u0435\u0434\u0436\u0435\u0440 \u00b7 AI", tb3: "AI / LLM \u0438\u043d\u0436\u0435\u043d\u0435\u0440",
+    st1: CV_AQA_EN.st1, st2: CV_AQA_EN.st2, st3: CV_AQA_EN.st3,
+    j2d: "\u0412\u0442\u043e\u0440\u043e\u0439 \u043f\u0440\u043e\u0434\u0443\u043a\u0442 \u0434\u043b\u044f \u0442\u043e\u0439 \u0436\u0435 \u043a\u043e\u043c\u0430\u043d\u0434\u044b: RAG \u043f\u043e \u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442\u0430\u0446\u0438\u0438 \u041e\u0421 \u0410\u0432\u0440\u043e\u0440\u0430 \u043f\u043b\u044e\u0441 \u0430\u0433\u0435\u043d\u0442 \u2014 \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u043a\u0430 \u043f\u043e\u043b\u0443\u0447\u0430\u043b\u0430 \u043e\u0442\u0432\u0435\u0442 \u0441 \u043e\u043f\u043e\u0440\u043e\u0439 \u043d\u0430 \u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442\u0430\u0446\u0438\u044e \u0438 \u0432\u043e\u0441\u043f\u0440\u043e\u0438\u0437\u0432\u0435\u0434\u0435\u043d\u0438\u0435 \u0441\u0446\u0435\u043d\u0430\u0440\u0438\u044f \u043d\u0430 \u044d\u043c\u0443\u043b\u044f\u0442\u043e\u0440\u0435 \u043c\u043e\u0431\u0438\u043b\u044c\u043d\u043e\u0433\u043e Linux.",
+    cue: "\u041b\u0438\u0441\u0442\u0430\u0439 \u2014 \u044d\u0442\u0430 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0430 \u0438 \u0435\u0441\u0442\u044c \u0440\u0435\u0437\u044e\u043c\u0435",
+    s1: "\u041a\u0442\u043e \u044f", s2: "\u041e\u043f\u044b\u0442", s3: "\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442\u044b", s4: "\u041e\u0431\u0440\u0430\u0437\u043e\u0432\u0430\u043d\u0438\u0435", s5: "\u0421\u043e\u0431\u0441\u0442\u0432\u0435\u043d\u043d\u044b\u0435 \u043f\u0440\u043e\u0434\u0443\u043a\u0442\u044b",
+    lead: "\u0418\u043d\u0436\u0435\u043d\u0435\u0440, \u043f\u0435\u0440\u0435\u0445\u043e\u0434\u044f\u0449\u0438\u0439 \u0432 AI/ML product management. \u0412\u044b\u0432\u043e\u0436\u0443 AI \u0438\u0437 \u0434\u0435\u043c\u043e \u0432 \u043f\u0440\u043e\u0434\u0430\u043a\u0448\u043d.",
+    ab1: "\u0412 \u04207 \u0441\u0430\u043c \u043d\u0430\u0448\u0451\u043b \u0443\u0437\u043a\u043e\u0435 \u043c\u0435\u0441\u0442\u043e \u043f\u0440\u043e\u0434\u0443\u043a\u0442\u0430, \u043f\u043e\u0441\u0442\u0440\u043e\u0438\u043b \u0438 \u0440\u0430\u0437\u0432\u0438\u0432\u0430\u044e \u0432\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u044e\u044e \u043f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u0443, \u0433\u0434\u0435 LLM \u0432\u044b\u043f\u043e\u043b\u043d\u044f\u0435\u0442 \u0440\u0435\u0430\u043b\u044c\u043d\u0443\u044e \u0440\u0430\u0431\u043e\u0442\u0443 \u2014 \u0433\u0435\u043d\u0435\u0440\u0438\u0440\u0443\u0435\u0442 \u0442\u0435\u0441\u0442\u044b, \u0440\u0430\u0437\u0431\u0438\u0440\u0430\u0435\u0442 \u043f\u0430\u0434\u0435\u043d\u0438\u044f, \u0430\u043d\u0430\u043b\u0438\u0437\u0438\u0440\u0443\u0435\u0442 \u043b\u043e\u0433\u0438 \u0438 \u0441\u043a\u0440\u0438\u043d\u0448\u043e\u0442\u044b \u2014 \u0441 \u0432\u0430\u043b\u0438\u0434\u0430\u0446\u0438\u0435\u0439 \u0440\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442\u0430, \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u0435\u043c \u0440\u0430\u0441\u0445\u043e\u0434\u043e\u0432 \u0438 \u0434\u0435\u0433\u0440\u0430\u0434\u0430\u0446\u0438\u0435\u0439 \u0431\u0435\u0437 \u043f\u0430\u0434\u0435\u043d\u0438\u044f \u043f\u0430\u0439\u043f\u043b\u0430\u0439\u043d\u0430.",
+    ab2: "\u041f\u0430\u0440\u0430\u043b\u043b\u0435\u043b\u044c\u043d\u043e \u043a\u0430\u043a \u0441\u043e\u043e\u0441\u043d\u043e\u0432\u0430\u0442\u0435\u043b\u044c \u0434\u043e\u0432\u0451\u043b \u0434\u043e App Store \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u0441 AI-\u0444\u0443\u043d\u043a\u0446\u0438\u044f\u043c\u0438 \u0438 \u0437\u0430\u043f\u0443\u0441\u0442\u0438\u043b iOS-\u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u0434\u043b\u044f \u043b\u043e\u043a\u0430\u043b\u044c\u043d\u043e\u0433\u043e \u0438\u043d\u0444\u0435\u0440\u0435\u043d\u0441\u0430 LLM. \u041f\u043e\u0434 \u044d\u0442\u0438\u043c \u2014 4 \u0433\u043e\u0434\u0430 \u0438\u043d\u0436\u0435\u043d\u0435\u0440\u043d\u043e\u0439 \u0440\u0430\u0431\u043e\u0442\u044b, \u0431\u0438\u0437\u043d\u0435\u0441-\u0438\u043d\u0444\u043e\u0440\u043c\u0430\u0442\u0438\u043a\u0430 \u0420\u042d\u0423 \u0438 \u043a\u0443\u0440\u0441\u044b \u0424\u041a\u041d \u0412\u0428\u042d. \u0418\u0449\u0443 \u0440\u043e\u043b\u044c, \u0433\u0434\u0435 \u043d\u0443\u0436\u043d\u043e \u0440\u0435\u0448\u0430\u0442\u044c, <b>\u0433\u0434\u0435 AI \u0441\u043e\u0437\u0434\u0430\u0451\u0442 \u0446\u0435\u043d\u043d\u043e\u0441\u0442\u044c, \u0430 \u0433\u0434\u0435 \u0442\u043e\u043b\u044c\u043a\u043e \u0443\u0434\u043e\u0440\u043e\u0436\u0430\u0435\u0442 \u043f\u0440\u043e\u0434\u0443\u043a\u0442</b>.",
+    mv1: "30<small>\u043c\u0438\u043d</small>", m1: "Time-to-test<br>\u0431\u044b\u043b\u043e 3 \u0434\u043d\u044f",
+    mv2: "\u22123<small>\u0434\u043d\u044f</small>", m2: "\u0421\u0440\u0435\u0437\u0430\u043b \u0441 \u0446\u0438\u043a\u043b\u0430<br>\u0440\u0435\u043b\u0438\u0437\u0430",
+    mv3: "~10<small>\u043c\u0438\u043d</small>", m3: "\u041e\u0431\u0440\u0430\u0442\u043d\u0430\u044f \u0441\u0432\u044f\u0437\u044c<br>\u043d\u0430 \u043a\u043e\u043c\u043c\u0438\u0442",
+    mv4: "1<small>\u0430\u043f\u043f</small>", m4: "\u0412 App Store<br>\u043a\u0430\u043a \u0441\u043e\u043e\u0441\u043d\u043e\u0432\u0430\u0442\u0435\u043b\u044c",
+    t1: "\u041f\u0440\u0438\u0451\u043c\u043a\u0430 \u0440\u0435\u043b\u0438\u0437\u043e\u0432 \u00b7 \u0441\u0442\u0435\u0439\u043a\u0445\u043e\u043b\u0434\u0435\u0440\u044b", t2: "\u041f\u0435\u0440\u0432\u044b\u0439 QA \u00b7 \u0432\u044b\u0441\u0442\u0440\u043e\u0438\u043b \u043f\u0440\u043e\u0446\u0435\u0441\u0441", t3: "\u0412\u043b\u0430\u0434\u0435\u043b\u0435\u0446 \u043f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u044b \u00b7 \u0441\u0432\u043e\u044f \u043a\u043e\u043c\u0430\u043d\u0434\u0430",
+    j1r: "Lead AQA \u00b7 \u0438\u043d\u0438\u0446\u0438\u0430\u0442\u043e\u0440 \u0438 \u0432\u043b\u0430\u0434\u0435\u043b\u0435\u0446 \u0432\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0435\u0439 \u043f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u044b \u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f",
+    j1w: CV_AQA_RU.j1w, j2w: CV_AQA_RU.j2w, j3w: CV_AQA_RU.j3w,
+    j1c: "\u041f\u0440\u0438\u0448\u0451\u043b \u043f\u0435\u0440\u0432\u044b\u043c \u0438\u043d\u0436\u0435\u043d\u0435\u0440\u043e\u043c \u043d\u0430 \u043f\u0440\u043e\u0434\u0443\u043a\u0442. \u0424\u043e\u0440\u043c\u0430\u043b\u044c\u043d\u0430\u044f \u0440\u043e\u043b\u044c \u2014 Lead AQA; \u043f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u0443 \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0437\u0430\u0446\u0438\u0438 \u0438\u043d\u0438\u0446\u0438\u0438\u0440\u043e\u0432\u0430\u043b, \u0441\u043f\u0440\u043e\u0435\u043a\u0442\u0438\u0440\u043e\u0432\u0430\u043b \u0438 \u0440\u0430\u0437\u0432\u0438\u0432\u0430\u044e \u043a\u0430\u043a \u0432\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043f\u0440\u043e\u0434\u0443\u043a\u0442: \u0441\u0430\u043c \u043d\u0430\u0445\u043e\u0434\u0438\u043b \u0443\u0437\u043a\u0438\u0435 \u043c\u0435\u0441\u0442\u0430, \u0444\u043e\u0440\u043c\u0438\u0440\u043e\u0432\u0430\u043b \u043f\u043b\u0430\u043d \u0438 \u0437\u0430\u0449\u0438\u0449\u0430\u043b \u0435\u0433\u043e \u043f\u0435\u0440\u0435\u0434 \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u043e\u043c.",
+    j1a: "<b>\u041d\u0430\u0448\u0451\u043b \u0433\u043b\u0430\u0432\u043d\u044b\u0439 bottleneck \u0438 \u0443\u0431\u0440\u0430\u043b \u0435\u0433\u043e.</b> \u041f\u043e\u0434\u0433\u043e\u0442\u043e\u0432\u043a\u0430 \u0441\u0442\u0435\u043d\u0434\u043e\u0432 \u0437\u0430\u043d\u0438\u043c\u0430\u043b\u0430 3 \u0434\u043d\u044f \u2014 \u0440\u0435\u043b\u0438\u0437 \u043f\u0440\u043e\u0441\u0442\u0430\u0438\u0432\u0430\u043b. \u0421\u0432\u0451\u043b \u043a 30 \u043c\u0438\u043d\u0443\u0442\u0430\u043c \u0447\u0435\u0440\u0435\u0437 \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0437\u0430\u0446\u0438\u044e \u0440\u0430\u0437\u0432\u0451\u0440\u0442\u044b\u0432\u0430\u043d\u0438\u044f \u043d\u0430 11 \u0441\u0435\u0440\u0432\u0435\u0440\u0430\u0445 \u0438 5 \u0441\u0435\u043c\u0435\u0439\u0441\u0442\u0432\u0430\u0445 \u041e\u0421. \u0420\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442 \u0434\u043b\u044f \u0431\u0438\u0437\u043d\u0435\u0441\u0430: \u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435 \u0441\u0442\u0430\u0440\u0442\u0443\u0435\u0442 \u0432 \u0434\u0435\u043d\u044c \u0432\u044b\u0445\u043e\u0434\u0430 \u0441\u0431\u043e\u0440\u043a\u0438, \u0446\u0438\u043a\u043b \u0440\u0435\u043b\u0438\u0437\u0430 \u043a\u043e\u0440\u043e\u0447\u0435 \u043d\u0430 \u0442\u0440\u043e\u0435 \u0441\u0443\u0442\u043e\u043a.",
+    j1b: "<b>\u0421\u043e\u0431\u0440\u0430\u043b \u0432\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043f\u0440\u043e\u0434\u0443\u043a\u0442 \u0434\u043b\u044f \u0430\u043d\u0430\u043b\u0438\u0437\u0430 \u0440\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442\u043e\u0432 \u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f:</b> REST API \u0438 \u0432\u0435\u0431-\u0438\u043d\u0442\u0435\u0440\u0444\u0435\u0439\u0441, \u043f\u0430\u0439\u043f\u043b\u0430\u0439\u043d \u043e\u0442 \u0437\u0430\u0433\u0440\u0443\u0437\u043a\u0438 \u0434\u0430\u043d\u043d\u044b\u0445 \u0434\u043e \u0432\u0435\u0440\u0434\u0438\u043a\u0442\u0430: \u043e\u0431\u043e\u0433\u0430\u0449\u0435\u043d\u0438\u0435 \u043c\u0435\u0442\u0440\u0438\u043a\u0430\u043c\u0438, LLM-\u0430\u043d\u0430\u043b\u0438\u0437, Vision-\u0441\u0440\u0430\u0432\u043d\u0435\u043d\u0438\u0435 \u044d\u0442\u0430\u043b\u043e\u043d\u043d\u044b\u0445 \u0438 \u0444\u0430\u043a\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u0445 \u0441\u043a\u0440\u0438\u043d\u0448\u043e\u0442\u043e\u0432, quality gate \u0441 \u043d\u0430\u0441\u0442\u0440\u0430\u0438\u0432\u0430\u0435\u043c\u044b\u043c\u0438 \u043f\u043e\u0440\u043e\u0433\u0430\u043c\u0438 \u0438 \u0432\u0435\u0440\u0434\u0438\u043a\u0442\u043e\u043c pass/fail, webhook-\u0443\u0432\u0435\u0434\u043e\u043c\u043b\u0435\u043d\u0438\u044f, self-contained HTML-\u043e\u0442\u0447\u0451\u0442. \u0418\u043d\u0442\u0435\u0433\u0440\u0438\u0440\u043e\u0432\u0430\u043d \u0432 CI \u2014 \u043f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u043e\u0439 \u043f\u043e\u043b\u044c\u0437\u0443\u044e\u0442\u0441\u044f <b>\u0442\u0440\u0438 \u043a\u043e\u043c\u0430\u043d\u0434\u044b \u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f \u0438 \u0440\u0430\u0437\u0440\u0430\u0431\u043e\u0442\u0447\u0438\u043a\u0438</b>.",
+    j1c2: "<em class=\"ai\">AI</em><b>\u041f\u0440\u0438\u043d\u0438\u043c\u0430\u043b \u0440\u0435\u0448\u0435\u043d\u0438\u044f \u043e \u043f\u0440\u0438\u043c\u0435\u043d\u0438\u043c\u043e\u0441\u0442\u0438 AI, \u0430 \u043d\u0435 \u0442\u043e\u043b\u044c\u043a\u043e \u043e \u0432\u043d\u0435\u0434\u0440\u0435\u043d\u0438\u0438.</b> \u0413\u0434\u0435 LLM \u043e\u043f\u0440\u0430\u0432\u0434\u0430\u043d\u0430 \u2014 \u0433\u0435\u043d\u0435\u0440\u0430\u0446\u0438\u044f \u0442\u0435\u0441\u0442\u043e\u0432 \u0438 \u0440\u0430\u0437\u0431\u043e\u0440 \u043f\u0430\u0434\u0435\u043d\u0438\u0439; \u0433\u0434\u0435 \u043d\u0435\u0442 \u2014 \u0432\u044b\u0437\u043e\u0432 \u043f\u0440\u043e\u043f\u0443\u0441\u043a\u0430\u0435\u0442\u0441\u044f \u043d\u0430 \u0437\u0435\u043b\u0451\u043d\u043e\u043c \u043f\u0440\u043e\u0433\u043e\u043d\u0435.",
+    j1d: "<em class=\"ai\">AI</em>\u0421\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c \u0438 \u0431\u0435\u0437\u043e\u043f\u0430\u0441\u043d\u043e\u0441\u0442\u044c \u0437\u0430\u043b\u043e\u0436\u0435\u043d\u044b \u0432 \u0434\u0438\u0437\u0430\u0439\u043d: rate limiting \u0438 \u043e\u0447\u0435\u0440\u0435\u0434\u044c, \u043c\u0430\u0441\u043a\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435 \u0441\u0435\u043a\u0440\u0435\u0442\u043e\u0432 \u043f\u0435\u0440\u0435\u0434 \u043e\u0442\u043f\u0440\u0430\u0432\u043a\u043e\u0439, \u043e\u0442\u043a\u0430\u0437 \u043c\u043e\u0434\u0435\u043b\u0438 \u043d\u0435 \u0440\u043e\u043d\u044f\u0435\u0442 \u043f\u0430\u0439\u043f\u043b\u0430\u0439\u043d, \u0437\u0430\u043b\u043e\u0436\u0435\u043d \u043f\u0435\u0440\u0435\u0445\u043e\u0434 \u043d\u0430 on-prem.",
+    j1e: "<b>\u0421\u0434\u0435\u043b\u0430\u043b \u0440\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442 \u0432\u0438\u0434\u0438\u043c\u044b\u043c \u0434\u043b\u044f B2B-\u0437\u0430\u043a\u0430\u0437\u0447\u0438\u043a\u0430:</b> HTML-\u043e\u0442\u0447\u0451\u0442 \u043f\u043e \u0442\u0435\u0441\u0442-\u043f\u043b\u0430\u043d\u0443, executive-\u0441\u0432\u043e\u0434\u043a\u0438 \u0438 \u0434\u0430\u0439\u0434\u0436\u0435\u0441\u0442\u044b \u0432 Telegram \u2014 \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u044e\u0442\u0441\u044f \u043f\u0440\u0438 \u043f\u0440\u0438\u0451\u043c\u043a\u0435 \u0440\u0435\u043b\u0438\u0437\u043e\u0432. \u0414\u043e \u044d\u0442\u043e\u0433\u043e \u0441\u0442\u0430\u0442\u0443\u0441 \u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u043e\u0432\u0430\u043b \u0442\u043e\u043b\u044c\u043a\u043e \u0432\u043d\u0443\u0442\u0440\u0438 \u043a\u043e\u043c\u0430\u043d\u0434\u044b.",
+    j1f: "<b>\u0414\u043e\u043a\u0430\u0437\u0430\u043b \u043f\u0435\u0440\u0435\u0438\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0435\u043c\u043e\u0441\u0442\u044c \u043f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u044b:</b> \u0442\u0435\u0441\u0442\u044b \u0434\u0440\u0443\u0433\u043e\u0433\u043e \u043f\u0440\u043e\u0434\u0443\u043a\u0442\u0430 \u043a\u043e\u043c\u043f\u0430\u043d\u0438\u0438 \u043f\u043e\u0434\u043a\u043b\u044e\u0447\u0435\u043d\u044b \u043a \u0442\u043e\u0439 \u0436\u0435 \u0438\u043d\u0444\u0440\u0430\u0441\u0442\u0440\u0443\u043a\u0442\u0443\u0440\u0435 \u0431\u0435\u0437 \u043f\u0435\u0440\u0435\u043f\u0438\u0441\u044b\u0432\u0430\u043d\u0438\u044f.",
+    j1g: "\u041c\u0435\u0442\u0440\u0438\u043a\u0438 \u043f\u0440\u043e\u0446\u0435\u0441\u0441\u0430, \u043a\u043e\u0442\u043e\u0440\u044b\u043c\u0438 \u0443\u043f\u0440\u0430\u0432\u043b\u044f\u043b: time-to-test <b>3 \u0434\u043d\u044f \u2192 30 \u043c\u0438\u043d\u0443\u0442</b>; \u0441\u043e\u0437\u0434\u0430\u043d\u0438\u0435 \u0442\u0435\u0441\u0442\u0430 15\u201330 \u043c\u0438\u043d\u0443\u0442 \u2192 \u043c\u0438\u043d\u0443\u0442\u044b; \u0440\u0430\u0437\u0431\u043e\u0440 \u043f\u0430\u0434\u0435\u043d\u0438\u044f \u0447\u0430\u0441\u044b \u2192 \u0441\u0435\u043a\u0443\u043d\u0434\u044b; \u043e\u0431\u0440\u0430\u0442\u043d\u0430\u044f \u0441\u0432\u044f\u0437\u044c \u043f\u043e \u043a\u043e\u043c\u043c\u0438\u0442\u0443 ~10 \u043c\u0438\u043d\u0443\u0442. \u041a\u043e\u043c\u0430\u043d\u0434\u0430: \u0438\u043d\u0436\u0435\u043d\u0435\u0440 \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0437\u0430\u0446\u0438\u0438, \u0441\u0442\u0430\u0436\u0451\u0440, \u0434\u0432\u043e\u0435 \u0440\u0443\u0447\u043d\u044b\u0445 \u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0449\u0438\u043a\u043e\u0432 \u0447\u0430\u0441\u0442\u0438\u0447\u043d\u043e; \u043d\u0430\u0439\u043c, \u043c\u0435\u043d\u0442\u043e\u0440\u0441\u0442\u0432\u043e, \u043e\u0431\u0443\u0447\u0435\u043d\u0438\u0435 \u043e\u0442\u0434\u0435\u043b\u0430.",
+    j2r: "AQA-\u0438\u043d\u0436\u0435\u043d\u0435\u0440 \u00b7 \u043f\u0435\u0440\u0432\u044b\u0439 QA \u0432 \u043a\u043e\u043c\u043f\u0430\u043d\u0438\u0438",
+    j2c: "\u0421\u0442\u0430\u0440\u0442\u0430\u043f \u2014 QA-\u043a\u0443\u043b\u044c\u0442\u0443\u0440\u044b \u0434\u043e \u043c\u0435\u043d\u044f \u043d\u0435 \u0431\u044b\u043b\u043e.",
+    j2a: "\u0423\u0432\u0438\u0434\u0435\u043b \u043f\u0440\u043e\u0431\u043b\u0435\u043c\u0443 \u043e\u0442\u0434\u0435\u043b\u0430 \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u043a\u0438, \u043f\u0440\u0435\u0434\u043b\u043e\u0436\u0438\u043b \u0440\u0435\u0448\u0435\u043d\u0438\u0435 \u0438 \u0434\u043e\u0432\u0451\u043b \u0434\u043e \u0432\u043d\u0435\u0434\u0440\u0435\u043d\u0438\u044f: Telegram-\u0431\u043e\u0442 \u043d\u0430 Python \u0441 \u0438\u043d\u0442\u0435\u0433\u0440\u0430\u0446\u0438\u0435\u0439 CRM \u0438 \u0442\u0440\u0435\u043a\u0435\u0440\u0430. \u0420\u0430\u0431\u043e\u0442\u0430\u0435\u0442 \u043f\u043e \u0441\u0435\u0439 \u0434\u0435\u043d\u044c.",
+    j2b: "\u0412\u044b\u0441\u0442\u0440\u043e\u0438\u043b \u043f\u0440\u043e\u0446\u0435\u0441\u0441\u044b \u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f \u0441 \u043d\u0443\u043b\u044f \u2014 \u043f\u0440\u043e\u0446\u0435\u0441\u0441, \u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442\u0430\u0446\u0438\u044f, \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0437\u0430\u0446\u0438\u044f.",
+    j2c2: "\u0423\u0447\u0430\u0441\u0442\u0432\u043e\u0432\u0430\u043b \u0432 \u043d\u0430\u0439\u043c\u0435 \u0438 \u043e\u0431\u0443\u0447\u0435\u043d\u0438\u0438 \u0441\u043e\u0442\u0440\u0443\u0434\u043d\u0438\u043a\u043e\u0432 \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u043a\u0438.",
+    j3r: "QA-\u0438\u043d\u0436\u0435\u043d\u0435\u0440 \u00b7 \u043f\u0440\u0438\u0451\u043c\u043e\u0447\u043d\u044b\u0439 \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u044c \u0440\u0435\u043b\u0438\u0437\u043e\u0432",
+    j3c: "\u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0439 \u0433\u0435\u0439\u0442 \u043f\u0435\u0440\u0435\u0434 \u0440\u0435\u043b\u0438\u0437\u043e\u043c B2B-\u043f\u0440\u043e\u0434\u0443\u043a\u0442\u043e\u0432 \u043d\u0430 \u0432\u0441\u0435\u0445 \u043f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u0430\u0445.",
+    j3a: "\u0420\u0435\u0448\u0435\u043d\u0438\u0435 \u043e \u0433\u043e\u0442\u043e\u0432\u043d\u043e\u0441\u0442\u0438 \u0441\u0431\u043e\u0440\u043a\u0438 \u2014 \u043e\u043f\u044b\u0442 \u043a\u043e\u043c\u043c\u0443\u043d\u0438\u043a\u0430\u0446\u0438\u0438 \u0441\u043e \u0441\u0442\u0435\u0439\u043a\u0445\u043e\u043b\u0434\u0435\u0440\u0430\u043c\u0438 \u043f\u043e \u043e\u0431\u0435 \u0441\u0442\u043e\u0440\u043e\u043d\u044b \u0440\u0435\u043b\u0438\u0437\u0430.",
+    j3b: "\u0412\u0437\u0430\u0438\u043c\u043e\u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0435 \u0441 \u0440\u0430\u0437\u0440\u0430\u0431\u043e\u0442\u043a\u043e\u0439, DevOps, \u0418\u0411 \u0438 \u0437\u0430\u043a\u0430\u0437\u0447\u0438\u043a\u0430\u043c\u0438, \u0447\u0442\u043e\u0431\u044b \u0441\u0431\u043e\u0440\u043a\u0430 \u0432\u044b\u0448\u043b\u0430.",
+    j3c2: "\u041f\u043e\u043b\u0433\u043e\u0434\u0430 \u0437\u0430\u043a\u0440\u044b\u0432\u0430\u043b \u0437\u0430\u0434\u0430\u0447\u0438 \u043e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u043e\u0432\u0430\u0432\u0448\u0435\u0433\u043e DevOps-\u0438\u043d\u0436\u0435\u043d\u0435\u0440\u0430.",
+    k1: "\u041f\u0440\u043e\u0434\u0443\u043a\u0442", k1v: "\u041f\u043e\u0438\u0441\u043a \u0443\u0437\u043a\u0438\u0445 \u043c\u0435\u0441\u0442 \u0438 \u043f\u0440\u0438\u043e\u0440\u0438\u0442\u0438\u0437\u0430\u0446\u0438\u044f, \u043c\u0435\u0442\u0440\u0438\u043a\u0438 \u043f\u0440\u043e\u0446\u0435\u0441\u0441\u0430 (time-to-test, cycle time, release readiness), \u0442\u0440\u0435\u0431\u043e\u0432\u0430\u043d\u0438\u044f \u0438 \u043f\u0440\u0438\u0451\u043c\u043a\u0430",
+    k2: "AI \u0432 \u043f\u0440\u043e\u0434\u0443\u043a\u0442\u0435", k2v: "<em class=\"ai\">AI</em>\u041e\u0446\u0435\u043d\u043a\u0430 \u043f\u0440\u0438\u043c\u0435\u043d\u0438\u043c\u043e\u0441\u0442\u0438 LLM \u0438 VLM, guardrails \u0438 \u0432\u0430\u043b\u0438\u0434\u0430\u0446\u0438\u044f \u043e\u0442\u0432\u0435\u0442\u043e\u0432, \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u044c \u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u0438, \u0434\u0435\u0433\u0440\u0430\u0434\u0430\u0446\u0438\u044f \u0431\u0435\u0437 \u043e\u0442\u043a\u0430\u0437\u0430 \u0441\u0435\u0440\u0432\u0438\u0441\u0430, \u043b\u043e\u043a\u0430\u043b\u044c\u043d\u044b\u0439 \u0438\u043d\u0444\u0435\u0440\u0435\u043d\u0441 \u0438 \u0435\u0433\u043e trade-off, \u043e\u0431\u043b\u0430\u043a\u043e \u0438\u043b\u0438 on-prem",
+    k3: "\u0421\u0442\u0435\u0439\u043a\u0445\u043e\u043b\u0434\u0435\u0440\u044b", k3v: "B2B-\u0437\u0430\u043a\u0430\u0437\u0447\u0438\u043a\u0438, executive-\u0441\u0432\u043e\u0434\u043a\u0438, \u043f\u0440\u0438\u0451\u043c\u043a\u0430 \u0440\u0435\u043b\u0438\u0437\u043e\u0432, \u043a\u043e\u043c\u043c\u0443\u043d\u0438\u043a\u0430\u0446\u0438\u044f \u0441 \u0440\u0430\u0437\u0440\u0430\u0431\u043e\u0442\u043a\u043e\u0439, DevOps \u0438 \u0418\u0411",
+    k4: "\u0422\u0435\u0445\u043d\u0438\u0447\u0435\u0441\u043a\u0430\u044f \u0431\u0430\u0437\u0430", k4v: "Python, REST API, CI/CD, Docker, Linux \u2014 \u043e\u0446\u0435\u043d\u0438\u0432\u0430\u044e \u0440\u0435\u0430\u043b\u0438\u0437\u0443\u0435\u043c\u043e\u0441\u0442\u044c \u0438 \u0433\u043e\u0432\u043e\u0440\u044e \u0441 \u0440\u0430\u0437\u0440\u0430\u0431\u043e\u0442\u043a\u043e\u0439 \u043d\u0430 \u043e\u0434\u043d\u043e\u043c \u044f\u0437\u044b\u043a\u0435",
+    k5: "\u0417\u0430\u043f\u0443\u0441\u043a", k5v: "\u041e\u0442 \u0438\u0434\u0435\u0438 \u0434\u043e \u043f\u0443\u0431\u043b\u0438\u043a\u0430\u0446\u0438\u0438, \u0432\u043a\u043b\u044e\u0447\u0430\u044f \u0440\u0435\u0432\u044c\u044e Apple \u0438 \u0432\u044b\u0445\u043e\u0434 \u0432 App Store",
+    k6: "\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442\u044b", k6v: "TestIT, Jira, Confluence, Git, Cursor \u0438 AI-\u0430\u0441\u0441\u0438\u0441\u0442\u0435\u043d\u0442\u044b \u0432 \u0435\u0436\u0435\u0434\u043d\u0435\u0432\u043d\u043e\u0439 \u0440\u0430\u0431\u043e\u0442\u0435",
+    k7: "\u0423\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435", k7v: "\u041a\u043e\u043c\u0430\u043d\u0434\u0430 \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0437\u0430\u0446\u0438\u0438, \u043d\u0430\u0439\u043c, \u043c\u0435\u043d\u0442\u043e\u0440\u0441\u0442\u0432\u043e, \u043e\u0431\u0443\u0447\u0435\u043d\u0438\u0435 \u043e\u0442\u0434\u0435\u043b\u0430",
+    e1s: CV_AQA_RU.e1s, e1w: "\u0411\u0430\u043a\u0430\u043b\u0430\u0432\u0440\u0438\u0430\u0442, \u0431\u0438\u0437\u043d\u0435\u0441-\u0438\u043d\u0444\u043e\u0440\u043c\u0430\u0442\u0438\u043a\u0430 \u2014 \u043c\u043e\u0434\u0435\u043b\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435 \u0431\u0438\u0437\u043d\u0435\u0441-\u043f\u0440\u043e\u0446\u0435\u0441\u0441\u043e\u0432, \u0430\u043d\u0430\u043b\u0438\u0437 \u0442\u0440\u0435\u0431\u043e\u0432\u0430\u043d\u0438\u0439, \u044d\u043a\u043e\u043d\u043e\u043c\u0438\u043a\u0430 \u043f\u0440\u0435\u0434\u043f\u0440\u0438\u044f\u0442\u0438\u044f.",
+    e2s: CV_AQA_RU.e2s, e2w: CV_AQA_RU.e2w, e2t: CV_AQA_RU.e2t,
+    p1d: "<em class=\"ai\">AI</em><b>\u0421\u043e\u043e\u0441\u043d\u043e\u0432\u0430\u0442\u0435\u043b\u044c.</b> \u0414\u043e\u0432\u0451\u043b \u043e\u0442 \u0438\u0434\u0435\u0438 \u0434\u043e App Store, \u0432\u043a\u043b\u044e\u0447\u0430\u044f \u0440\u0435\u0432\u044c\u044e Apple. \u041e\u0442\u0432\u0435\u0447\u0430\u044e \u0437\u0430 AI-\u0444\u0443\u043d\u043a\u0446\u0438\u043e\u043d\u0430\u043b \u2014 \u0440\u0435\u043a\u043e\u043c\u0435\u043d\u0434\u0430\u0446\u0438\u0438, \u0446\u0435\u043b\u0438 \u043f\u043e\u0434 \u0443\u0440\u043e\u0432\u0435\u043d\u044c \u043f\u043e\u0434\u0433\u043e\u0442\u043e\u0432\u043a\u0438, \u043f\u0440\u043e\u0433\u043d\u043e\u0437 \u043f\u0440\u043e\u0433\u0440\u0435\u0441\u0441\u0430, \u0430\u0441\u0441\u0438\u0441\u0442\u0435\u043d\u0442 \u2014 \u0438 \u0443\u0447\u0430\u0441\u0442\u0432\u0443\u044e \u0432 \u0440\u0435\u0448\u0435\u043d\u0438\u044f\u0445, \u043a\u0430\u043a\u0438\u0435 AI-\u0444\u0438\u0447\u0438 \u0432\u043e\u043e\u0431\u0449\u0435 \u043d\u0443\u0436\u043d\u044b \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044e.",
+    p2d: "\u041f\u0440\u043e\u0434\u0443\u043a\u0442\u043e\u0432\u0430\u044f \u0433\u0438\u043f\u043e\u0442\u0435\u0437\u0430: \u043f\u0440\u0438\u0432\u0430\u0442\u043d\u043e\u0441\u0442\u044c \u0438 \u043e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0438\u0435 \u043f\u043e\u0434\u043f\u0438\u0441\u043a\u0438 \u043a\u0430\u043a \u0446\u0435\u043d\u043d\u043e\u0441\u0442\u044c. \u0422\u0440\u0435\u0431\u0443\u0435\u0442 \u044f\u0432\u043d\u044b\u0445 trade-off \u043c\u0435\u0436\u0434\u0443 \u043a\u0430\u0447\u0435\u0441\u0442\u0432\u043e\u043c \u043c\u043e\u0434\u0435\u043b\u0438, \u0441\u043a\u043e\u0440\u043e\u0441\u0442\u044c\u044e \u0438 \u043f\u0430\u043c\u044f\u0442\u044c\u044e \u0443\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432\u0430.",
+    ct: "\u0421\u0432\u044f\u0436\u0435\u043c\u0441\u044f.", ft: "Product Manager \u00b7 AI/ML"
+  };
+
+  const CV_ML_EN = {
+    tb: "Read me as", tb1: "Lead AQA", tb2: "Product Manager \u00b7 AI", tb3: "AI / LLM Engineer",
+    cue: "Scroll \u2014 this page is the r\u00e9sum\u00e9",
+    s1: "Who I am", s2: "Experience", s3: "Toolkit", s4: "Education", s5: "AI projects",
+    lead: "An engineer specialising in putting LLMs and VLMs into production.",
+    ab1: "At R7 I embedded language models into the testing pipeline: <b>code generation with formal validation</b>, Vision analysis of screenshots, automatic triage of every failure \u2014 with call-cost control and degradation that never takes the service down.",
+    ab2: "Outside work: the AI features of an app published on the App Store, and an iOS app for local LLM inference. I'm building the classical-ML foundation through HSE CS courses \u2014 machine learning and recommender systems in progress.",
+    mv1: "4", m1: "LLM &amp; VLM providers<br>in production",
+    mv2: "1000s", m2: "Screenshots per run<br>checked by VLM",
+    mv3: "100<small>%</small>", m3: "Generated tests pass<br>AST validation",
+    mv4: "2", m4: "AI products shipped<br>cloud and on-device",
+    t1: "Release acceptance \u00b7 QA Engineer", t2: "First QA \u00b7 RAG and agents", t3: "LLM in the pipeline \u00b7 Lead AQA",
+    j1r: "Lead AQA \u00b7 AI engineering in the testing pipeline",
+    j1w: CV_AQA_EN.j1w, j2w: CV_AQA_EN.j2w, j3w: CV_AQA_EN.j3w,
+    st1: "<span>Python</span><span>LLM APIs</span><span>DeepSeek</span><span>Grok</span><span>Kimi</span><span>Jupyter</span><span>Papermill</span><span>Playwright</span><span>pytest</span><span>Jenkins</span><span>GitHub Actions</span><span>Docker</span><span>Linux</span>",
+    st2: "<span>Python</span><span>RAG</span><span>Agents</span><span>Docker</span><span>GitLab</span>",
+    st3: "<span>Python</span><span>Selenium</span><span>Appium</span><span>requests</span><span>Docker</span><span>Jenkins</span>",
+    j1c: "First QA on the product. I built the automation platform from scratch and embedded LLMs exactly where a model does real work \u2014 never as decoration.",
+    j1a: "<em class=\"ai\">AI</em><b>LLM code generation for autotests</b> from TestIT cases: the prompt is assembled from case steps, Page Object sources, fixtures and reference tests of the module; the model's answer is checked by AST parsing, import and fixture control, and cross-checking calls against the real Page Object. On a validation error \u2014 an automatic retry carrying the problem description. Test authoring: <b>minutes instead of 15\u201330</b>.",
+    j1b: "<em class=\"ai\">AI</em><b>A test-result analysis service</b>: REST API plus web UI, a pipeline from upload to verdict \u2014 report parsing, metric enrichment, LLM analysis of the statistics (DeepSeek), <b>Vision comparison of reference and actual screenshots</b> (Grok), a quality gate with thresholds and a pass/fail verdict, webhook notifications. Rate limiting and a queue for AI calls keep load and cost under control.",
+    j1c2: "<em class=\"ai\">AI</em><b>Vision analysis of visual regression \u2014 thousands of screenshots per run.</b> Replaced manual review of pixel-diff output with a VLM pipeline: reference/actual pairs assembled with name normalisation, a prompt carrying CV metrics (comparison score, contours) and test-case context, and a structured JSON verdict \u2014 status, severity, confidence, recommendation. With no reference available it degrades to analysing the actual screenshots at reduced confidence; token cost is accounted per session; only failed tests are analysed. I also prototyped an embeddings-based comparison.",
+    j1d: "<em class=\"ai\">AI</em><b>Automatic failure triage in CI</b>: JUnit XML and logs are parsed, and for every failed test the model (Kimi K2.5) returns a cause and a recommendation, published to the GitHub Step Summary. <b>Seconds instead of hours.</b> On a green run the model is never called.",
+    j1e: "<em class=\"ai\">AI</em><b>AI analysis of install logs</b> in Jenkins pipelines: secrets masked before sending, model chosen by parameter, a model outage never affects the pipeline result, and a path to on-prem inference is in place.",
+    j1f: "<b>Platform prototype on Jupyter + Papermill</b>: a five-notebook pipeline \u2014 repository analysis, test-scenario parsing, adapting tests to 4 OS and browser configurations, AI analysis of PDF reports, README generation \u2014 driven programmatically through Papermill and the Jupyter Server REST API, deployed in Docker on a VPS. Once proven, it moved into production Jenkins and GitHub Actions pipelines.",
+    j1g: "The engineering foundation under all of it: ~400 Playwright and pytest tests, Infrastructure as Code, 11 servers across 5 Linux families.",
+    j2r: "AQA Engineer \u00b7 first QA in the company",
+    j2c: "A startup \u2014 the company's first QA hire.",
+    j2a: "<em class=\"ai\">AI</em><b>RAG over the Aurora OS documentation, plus an agent</b>, for the support team \u2014 one project: an answer grounded in the documentation, and automatic reproduction of the scenario on a mobile-Linux emulator.",
+    j2b: "Testing process from scratch and automation in Python.",
+    j2c2: "A support Telegram bot integrated with CRM and the issue tracker \u2014 still running today.",
+    j2d: "",
+    j3r: "QA Engineer \u00b7 release acceptance",
+    j3c: "Acceptance of B2B products before release, across every platform.",
+    j3a: "UI and API automation: Selenium, Appium, requests.",
+    j3b: "Six months covering an absent DevOps engineer: Docker Compose, Python mock servers, Jenkins builds.",
+    j3c2: "",
+    k1: "Languages", k1v: "Python <span style=\"opacity:.5\">(primary)</span>, Swift, Bash, SQL",
+    k2: "LLM &amp; VLM", k2v: "<em class=\"ai\">AI</em>API integration (DeepSeek, Grok, Kimi, OpenAI-compatible), RAG, agent scenarios, prompt engineering with guardrails, validation of model output (AST, cross-checks against the codebase), Vision analysis, call-cost control, graceful degradation",
+    k3: "Local inference", k3v: "MLX, llama.cpp, Core ML, Hugging Face, Whisper, TTS \u2014 and the quality / speed / memory trade-offs between them",
+    k4: "Data &amp; experiments", k4v: "pandas, numpy, Jupyter, Papermill",
+    k5: "Infrastructure", k5v: "Docker, Jenkins, GitHub Actions, REST API, Git, Linux",
+    k6: "Maths &amp; CS", k6v: "Calculus, discrete mathematics, algorithms and data structures, computer architecture and operating systems; machine learning and recommender systems in progress",
+    k7: "Leadership", k7v: "Automation team, hiring, mentoring, department training",
+    e1s: CV_AQA_EN.e1s, e1w: CV_AQA_EN.e1w, e2s: CV_AQA_EN.e2s, e2w: CV_AQA_EN.e2w, e2t: CV_AQA_EN.e2t,
+    p1d: "<em class=\"ai\">AI</em>Backend and AI features: personal recommendations, goals matched to fitness level, progress forecasting, an athlete assistant. Taken from idea to publication on the App Store.",
+    p2d: "<em class=\"ai\">AI</em>An iOS app running language and multimodal models directly on iPhone \u2014 no cloud, no subscription. <b>MLX, llama.cpp (GGUF), Core ML, Apple Intelligence</b>; models pulled from Hugging Face. Text, images (VLM), speech recognition (Whisper) and synthesis (TTS). Automatic model selection for the device, with tokens/sec, latency and memory metrics.",
+    ct: "Let's talk.", ft: "AI / LLM Engineer"
+  };
+
+  const CV_ML_RU = {
+    tb: "\u0421\u043c\u043e\u0442\u0440\u0435\u0442\u044c \u043a\u0430\u043a", tb1: "Lead AQA", tb2: "\u041f\u0440\u043e\u0434\u0430\u043a\u0442-\u043c\u0435\u043d\u0435\u0434\u0436\u0435\u0440 \u00b7 AI", tb3: "AI / LLM \u0438\u043d\u0436\u0435\u043d\u0435\u0440",
+    cue: "\u041b\u0438\u0441\u0442\u0430\u0439 \u2014 \u044d\u0442\u0430 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0430 \u0438 \u0435\u0441\u0442\u044c \u0440\u0435\u0437\u044e\u043c\u0435",
+    s1: "\u041a\u0442\u043e \u044f", s2: "\u041e\u043f\u044b\u0442", s3: "\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442\u044b", s4: "\u041e\u0431\u0440\u0430\u0437\u043e\u0432\u0430\u043d\u0438\u0435", s5: "AI-\u043f\u0440\u043e\u0435\u043a\u0442\u044b",
+    lead: "\u0418\u043d\u0436\u0435\u043d\u0435\u0440 \u0441\u043e \u0441\u043f\u0435\u0446\u0438\u0430\u043b\u0438\u0437\u0430\u0446\u0438\u0435\u0439 \u043d\u0430 \u043f\u0440\u0438\u043c\u0435\u043d\u0435\u043d\u0438\u0438 LLM \u0438 VLM \u0432 production.",
+    ab1: "\u0412 \u04207 \u0432\u0441\u0442\u0440\u043e\u0438\u043b \u044f\u0437\u044b\u043a\u043e\u0432\u044b\u0435 \u043c\u043e\u0434\u0435\u043b\u0438 \u0432 \u043a\u043e\u043d\u0432\u0435\u0439\u0435\u0440 \u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f: <b>\u0433\u0435\u043d\u0435\u0440\u0430\u0446\u0438\u044f \u043a\u043e\u0434\u0430 \u0441 \u0444\u043e\u0440\u043c\u0430\u043b\u044c\u043d\u043e\u0439 \u0432\u0430\u043b\u0438\u0434\u0430\u0446\u0438\u0435\u0439</b>, Vision-\u0430\u043d\u0430\u043b\u0438\u0437 \u0441\u043a\u0440\u0438\u043d\u0448\u043e\u0442\u043e\u0432, \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u0439 \u0440\u0430\u0437\u0431\u043e\u0440 \u043a\u0430\u0436\u0434\u043e\u0433\u043e \u043f\u0430\u0434\u0435\u043d\u0438\u044f \u2014 \u0441 \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u0435\u043c \u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u0438 \u0432\u044b\u0437\u043e\u0432\u043e\u0432 \u0438 \u0434\u0435\u0433\u0440\u0430\u0434\u0430\u0446\u0438\u0435\u0439 \u0431\u0435\u0437 \u043e\u0442\u043a\u0430\u0437\u0430 \u0441\u0435\u0440\u0432\u0438\u0441\u0430.",
+    ab2: "\u0412\u043d\u0435 \u0440\u0430\u0431\u043e\u0442\u044b: AI-\u0444\u0443\u043d\u043a\u0446\u0438\u0438 \u0432 \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0438, \u043e\u043f\u0443\u0431\u043b\u0438\u043a\u043e\u0432\u0430\u043d\u043d\u043e\u043c \u0432 App Store, \u0438 iOS-\u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u0434\u043b\u044f \u043b\u043e\u043a\u0430\u043b\u044c\u043d\u043e\u0433\u043e \u0438\u043d\u0444\u0435\u0440\u0435\u043d\u0441\u0430 LLM. \u0421\u0442\u0440\u043e\u044e \u0444\u0443\u043d\u0434\u0430\u043c\u0435\u043d\u0442 \u043f\u043e\u0434 \u043a\u043b\u0430\u0441\u0441\u0438\u0447\u0435\u0441\u043a\u0438\u0439 ML: \u043a\u0443\u0440\u0441\u044b \u0424\u041a\u041d \u0412\u0428\u042d, \u0432 \u043f\u0440\u043e\u0446\u0435\u0441\u0441\u0435 \u043c\u0430\u0448\u0438\u043d\u043d\u043e\u0435 \u043e\u0431\u0443\u0447\u0435\u043d\u0438\u0435 \u0438 \u0440\u0435\u043a\u043e\u043c\u0435\u043d\u0434\u0430\u0442\u0435\u043b\u044c\u043d\u044b\u0435 \u0441\u0438\u0441\u0442\u0435\u043c\u044b.",
+    mv1: "4", m1: "\u041f\u0440\u043e\u0432\u0430\u0439\u0434\u0435\u0440\u0430 LLM \u0438 VLM<br>\u0432 production",
+    mv2: "1000\u0441", m2: "\u0421\u043a\u0440\u0438\u043d\u0448\u043e\u0442\u043e\u0432 \u0437\u0430 \u043f\u0440\u043e\u0433\u043e\u043d<br>\u043f\u0440\u043e\u0432\u0435\u0440\u044f\u0435\u0442 VLM",
+    mv3: "100<small>%</small>", m3: "\u0421\u0433\u0435\u043d\u0435\u0440\u0438\u0440\u043e\u0432\u0430\u043d\u043d\u044b\u0445 \u0442\u0435\u0441\u0442\u043e\u0432<br>\u043f\u0440\u043e\u0445\u043e\u0434\u044f\u0442 AST-\u0432\u0430\u043b\u0438\u0434\u0430\u0446\u0438\u044e",
+    mv4: "2", m4: "AI-\u043f\u0440\u043e\u0434\u0443\u043a\u0442\u0430 \u0432\u044b\u043f\u0443\u0449\u0435\u043d\u043e<br>\u043e\u0431\u043b\u0430\u043a\u043e \u0438 on-device",
+    t1: "\u041f\u0440\u0438\u0451\u043c\u043a\u0430 \u0440\u0435\u043b\u0438\u0437\u043e\u0432 \u00b7 QA-\u0438\u043d\u0436\u0435\u043d\u0435\u0440", t2: "\u041f\u0435\u0440\u0432\u044b\u0439 QA \u00b7 RAG \u0438 \u0430\u0433\u0435\u043d\u0442\u044b", t3: "LLM \u0432 \u043a\u043e\u043d\u0432\u0435\u0439\u0435\u0440\u0435 \u00b7 Lead AQA",
+    j1r: "Lead AQA \u00b7 AI-\u0438\u043d\u0436\u0435\u043d\u0435\u0440\u0438\u044f \u0432 \u043a\u043e\u043d\u0432\u0435\u0439\u0435\u0440\u0435 \u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f",
+    j1w: CV_AQA_RU.j1w, j2w: CV_AQA_RU.j2w, j3w: CV_AQA_RU.j3w,
+    st1: CV_ML_EN.st1, st2: CV_ML_EN.st2, st3: CV_ML_EN.st3,
+    j1c: "\u041f\u0440\u0438\u0448\u0451\u043b \u043f\u0435\u0440\u0432\u044b\u043c QA \u043d\u0430 \u043f\u0440\u043e\u0434\u0443\u043a\u0442. \u041f\u043e\u0441\u0442\u0440\u043e\u0438\u043b \u043f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u0443 \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0437\u0430\u0446\u0438\u0438 \u0441 \u043d\u0443\u043b\u044f \u0438 \u0432\u0441\u0442\u0440\u043e\u0438\u043b \u0432 \u043d\u0435\u0451 LLM \u0442\u0430\u043c, \u0433\u0434\u0435 \u043c\u043e\u0434\u0435\u043b\u044c \u0434\u0435\u043b\u0430\u0435\u0442 \u0440\u0435\u0430\u043b\u044c\u043d\u0443\u044e \u0440\u0430\u0431\u043e\u0442\u0443 \u2014 \u0430 \u043d\u0435 \u0440\u0430\u0434\u0438 \u0433\u0430\u043b\u043e\u0447\u043a\u0438.",
+    j1a: "<em class=\"ai\">AI</em><b>LLM-\u0433\u0435\u043d\u0435\u0440\u0430\u0446\u0438\u044f \u043a\u043e\u0434\u0430 \u0430\u0432\u0442\u043e\u0442\u0435\u0441\u0442\u043e\u0432</b> \u0438\u0437 \u0442\u0435\u0441\u0442-\u043a\u0435\u0439\u0441\u043e\u0432 TestIT: \u043f\u0440\u043e\u043c\u043f\u0442 \u0441\u043e\u0431\u0438\u0440\u0430\u0435\u0442\u0441\u044f \u0438\u0437 \u0448\u0430\u0433\u043e\u0432 \u043a\u0435\u0439\u0441\u0430, \u0438\u0441\u0445\u043e\u0434\u043d\u0438\u043a\u043e\u0432 Page Object, \u0444\u0438\u043a\u0441\u0442\u0443\u0440 \u0438 \u0440\u0435\u0444\u0435\u0440\u0435\u043d\u0441\u043d\u044b\u0445 \u0442\u0435\u0441\u0442\u043e\u0432 \u043c\u043e\u0434\u0443\u043b\u044f; \u043e\u0442\u0432\u0435\u0442 \u043c\u043e\u0434\u0435\u043b\u0438 \u043f\u0440\u043e\u0445\u043e\u0434\u0438\u0442 \u043f\u0440\u043e\u0432\u0435\u0440\u043a\u0443 \u0447\u0435\u0440\u0435\u0437 AST-\u043f\u0430\u0440\u0441\u0438\u043d\u0433, \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u044c \u0438\u043c\u043f\u043e\u0440\u0442\u043e\u0432 \u0438 \u0444\u0438\u043a\u0441\u0442\u0443\u0440, \u0441\u0432\u0435\u0440\u043a\u0443 \u0432\u044b\u0437\u043e\u0432\u043e\u0432 \u0441 \u0440\u0435\u0430\u043b\u044c\u043d\u044b\u043c Page Object; \u043f\u0440\u0438 \u043e\u0448\u0438\u0431\u043a\u0435 \u0432\u0430\u043b\u0438\u0434\u0430\u0446\u0438\u0438 \u2014 \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u0439 retry \u0441 \u043e\u043f\u0438\u0441\u0430\u043d\u0438\u0435\u043c \u043f\u0440\u043e\u0431\u043b\u0435\u043c\u044b. \u0421\u043e\u0437\u0434\u0430\u043d\u0438\u0435 \u0442\u0435\u0441\u0442\u0430: <b>\u043c\u0438\u043d\u0443\u0442\u044b \u0432\u043c\u0435\u0441\u0442\u043e 15\u201330</b>.",
+    j1b: "<em class=\"ai\">AI</em><b>\u0421\u0435\u0440\u0432\u0438\u0441 \u0430\u043d\u0430\u043b\u0438\u0437\u0430 \u0440\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442\u043e\u0432 \u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f</b>: REST API \u0438 \u0432\u0435\u0431-\u0438\u043d\u0442\u0435\u0440\u0444\u0435\u0439\u0441, \u043f\u0430\u0439\u043f\u043b\u0430\u0439\u043d \u043e\u0442 \u0437\u0430\u0433\u0440\u0443\u0437\u043a\u0438 \u0434\u043e \u0432\u0435\u0440\u0434\u0438\u043a\u0442\u0430 \u2014 \u043f\u0430\u0440\u0441\u0438\u043d\u0433 \u043e\u0442\u0447\u0451\u0442\u043e\u0432, \u043e\u0431\u043e\u0433\u0430\u0449\u0435\u043d\u0438\u0435 \u043c\u0435\u0442\u0440\u0438\u043a\u0430\u043c\u0438, LLM-\u0430\u043d\u0430\u043b\u0438\u0437 \u0441\u0442\u0430\u0442\u0438\u0441\u0442\u0438\u043a\u0438 (DeepSeek), <b>Vision-\u0441\u0440\u0430\u0432\u043d\u0435\u043d\u0438\u0435 \u044d\u0442\u0430\u043b\u043e\u043d\u043d\u044b\u0445 \u0438 \u0444\u0430\u043a\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u0445 \u0441\u043a\u0440\u0438\u043d\u0448\u043e\u0442\u043e\u0432</b> (Grok), quality gate \u0441 \u043f\u043e\u0440\u043e\u0433\u0430\u043c\u0438 \u0438 \u0432\u0435\u0440\u0434\u0438\u043a\u0442\u043e\u043c pass/fail, webhook-\u0443\u0432\u0435\u0434\u043e\u043c\u043b\u0435\u043d\u0438\u044f. Rate limiting \u0438 \u043e\u0447\u0435\u0440\u0435\u0434\u044c AI-\u0432\u044b\u0437\u043e\u0432\u043e\u0432 \u0434\u043b\u044f \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u044f \u043d\u0430\u0433\u0440\u0443\u0437\u043a\u0438 \u0438 \u0440\u0430\u0441\u0445\u043e\u0434\u043e\u0432.",
+    j1c2: "<em class=\"ai\">AI</em><b>Vision-\u0430\u043d\u0430\u043b\u0438\u0437 \u0432\u0438\u0437\u0443\u0430\u043b\u044c\u043d\u043e\u0439 \u0440\u0435\u0433\u0440\u0435\u0441\u0441\u0438\u0438 \u2014 \u0442\u044b\u0441\u044f\u0447\u0438 \u0441\u043a\u0440\u0438\u043d\u0448\u043e\u0442\u043e\u0432 \u0437\u0430 \u043f\u0440\u043e\u0433\u043e\u043d.</b> \u0417\u0430\u043c\u0435\u043d\u0438\u043b \u0440\u0443\u0447\u043d\u0443\u044e \u043f\u0440\u043e\u0432\u0435\u0440\u043a\u0443 \u043f\u043e\u043f\u0438\u043a\u0441\u0435\u043b\u044c\u043d\u043e\u0433\u043e \u0441\u0440\u0430\u0432\u043d\u0435\u043d\u0438\u044f \u043d\u0430 VLM-\u043f\u0430\u0439\u043f\u043b\u0430\u0439\u043d: \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0430\u044f \u0441\u0431\u043e\u0440\u043a\u0430 \u043f\u0430\u0440 \u044d\u0442\u0430\u043b\u043e\u043d/\u0444\u0430\u043a\u0442 \u0441 \u043d\u043e\u0440\u043c\u0430\u043b\u0438\u0437\u0430\u0446\u0438\u0435\u0439 \u0438\u043c\u0451\u043d, \u043f\u0440\u043e\u043c\u043f\u0442 \u0441 CV-\u043c\u0435\u0442\u0440\u0438\u043a\u0430\u043c\u0438 (comparison score, \u043a\u043e\u043d\u0442\u0443\u0440\u044b) \u0438 \u043a\u043e\u043d\u0442\u0435\u043a\u0441\u0442\u043e\u043c \u0442\u0435\u0441\u0442-\u043a\u0435\u0439\u0441\u043e\u0432, \u0441\u0442\u0440\u0443\u043a\u0442\u0443\u0440\u0438\u0440\u043e\u0432\u0430\u043d\u043d\u044b\u0439 JSON-\u0432\u0435\u0440\u0434\u0438\u043a\u0442: \u0441\u0442\u0430\u0442\u0443\u0441, \u043a\u0440\u0438\u0442\u0438\u0447\u043d\u043e\u0441\u0442\u044c, confidence, \u0440\u0435\u043a\u043e\u043c\u0435\u043d\u0434\u0430\u0446\u0438\u044f. \u041f\u0440\u0438 \u043e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0438\u0438 \u044d\u0442\u0430\u043b\u043e\u043d\u0430 \u2014 \u0434\u0435\u0433\u0440\u0430\u0434\u0430\u0446\u0438\u044f \u0434\u043e \u0430\u043d\u0430\u043b\u0438\u0437\u0430 \u0444\u0430\u043a\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u0445 \u0441\u043a\u0440\u0438\u043d\u0448\u043e\u0442\u043e\u0432 \u0441\u043e \u0441\u043d\u0438\u0436\u0435\u043d\u043d\u043e\u0439 \u0443\u0432\u0435\u0440\u0435\u043d\u043d\u043e\u0441\u0442\u044c\u044e; \u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c \u043f\u043e \u0442\u043e\u043a\u0435\u043d\u0430\u043c \u0441\u0447\u0438\u0442\u0430\u0435\u0442\u0441\u044f \u043d\u0430 \u043a\u0430\u0436\u0434\u0443\u044e \u0441\u0435\u0441\u0441\u0438\u044e; \u0430\u043d\u0430\u043b\u0438\u0437\u0438\u0440\u0443\u044e\u0442\u0441\u044f \u0442\u043e\u043b\u044c\u043a\u043e \u0443\u043f\u0430\u0432\u0448\u0438\u0435 \u0442\u0435\u0441\u0442\u044b. \u041e\u0442\u0434\u0435\u043b\u044c\u043d\u043e \u043f\u0440\u043e\u0442\u043e\u0442\u0438\u043f\u0438\u0440\u043e\u0432\u0430\u043b \u0441\u0440\u0430\u0432\u043d\u0435\u043d\u0438\u0435 \u043d\u0430 embeddings.",
+    j1d: "<em class=\"ai\">AI</em><b>\u0410\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u0439 \u0440\u0430\u0437\u0431\u043e\u0440 \u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u0432 CI</b>: \u043f\u0430\u0440\u0441\u0438\u043d\u0433 JUnit XML \u0438 \u043b\u043e\u0433\u043e\u0432, \u043f\u043e \u043a\u0430\u0436\u0434\u043e\u043c\u0443 \u0443\u043f\u0430\u0432\u0448\u0435\u043c\u0443 \u0442\u0435\u0441\u0442\u0443 \u043c\u043e\u0434\u0435\u043b\u044c (Kimi K2.5) \u0432\u043e\u0437\u0432\u0440\u0430\u0449\u0430\u0435\u0442 \u043f\u0440\u0438\u0447\u0438\u043d\u0443 \u0438 \u0440\u0435\u043a\u043e\u043c\u0435\u043d\u0434\u0430\u0446\u0438\u044e; \u0440\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442 \u043f\u0443\u0431\u043b\u0438\u043a\u0443\u0435\u0442\u0441\u044f \u0432 GitHub Step Summary. <b>\u0421\u0435\u043a\u0443\u043d\u0434\u044b \u0432\u043c\u0435\u0441\u0442\u043e \u0447\u0430\u0441\u043e\u0432.</b> \u0415\u0441\u043b\u0438 \u043f\u0440\u043e\u0433\u043e\u043d \u0437\u0435\u043b\u0451\u043d\u044b\u0439, \u0432\u044b\u0437\u043e\u0432 \u043c\u043e\u0434\u0435\u043b\u0438 \u043f\u0440\u043e\u043f\u0443\u0441\u043a\u0430\u0435\u0442\u0441\u044f.",
+    j1e: "<em class=\"ai\">AI</em><b>AI-\u0430\u043d\u0430\u043b\u0438\u0437 install-\u043b\u043e\u0433\u043e\u0432</b> \u0432 Jenkins-\u043f\u0430\u0439\u043f\u043b\u0430\u0439\u043d\u0430\u0445: \u043c\u0430\u0441\u043a\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435 \u0441\u0435\u043a\u0440\u0435\u0442\u043e\u0432 \u043f\u0435\u0440\u0435\u0434 \u043e\u0442\u043f\u0440\u0430\u0432\u043a\u043e\u0439, \u0432\u044b\u0431\u043e\u0440 \u043c\u043e\u0434\u0435\u043b\u0438 \u043f\u0430\u0440\u0430\u043c\u0435\u0442\u0440\u043e\u043c, \u043e\u0442\u043a\u0430\u0437 \u043c\u043e\u0434\u0435\u043b\u0438 \u043d\u0435 \u0432\u043b\u0438\u044f\u0435\u0442 \u043d\u0430 \u0440\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442 \u043f\u0430\u0439\u043f\u043b\u0430\u0439\u043d\u0430, \u0437\u0430\u043b\u043e\u0436\u0435\u043d \u043f\u0435\u0440\u0435\u0445\u043e\u0434 \u043d\u0430 on-prem \u0438\u043d\u0444\u0435\u0440\u0435\u043d\u0441.",
+    j1f: "<b>\u041f\u0440\u043e\u0442\u043e\u0442\u0438\u043f \u043f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u044b \u043d\u0430 Jupyter + Papermill</b>: \u043f\u0430\u0439\u043f\u043b\u0430\u0439\u043d \u0438\u0437 5 \u043d\u043e\u0443\u0442\u0431\u0443\u043a\u043e\u0432 \u2014 \u0430\u043d\u0430\u043b\u0438\u0437 \u0440\u0435\u043f\u043e\u0437\u0438\u0442\u043e\u0440\u0438\u044f, \u043f\u0430\u0440\u0441\u0438\u043d\u0433 \u0442\u0435\u0441\u0442\u043e\u0432\u044b\u0445 \u0441\u0446\u0435\u043d\u0430\u0440\u0438\u0435\u0432, \u0430\u0434\u0430\u043f\u0442\u0430\u0446\u0438\u044f \u0442\u0435\u0441\u0442\u043e\u0432 \u043f\u043e\u0434 4 \u043a\u043e\u043d\u0444\u0438\u0433\u0443\u0440\u0430\u0446\u0438\u0438 \u041e\u0421 \u0438 \u0431\u0440\u0430\u0443\u0437\u0435\u0440\u043e\u0432, AI-\u0430\u043d\u0430\u043b\u0438\u0437 PDF-\u043e\u0442\u0447\u0451\u0442\u043e\u0432, \u0433\u0435\u043d\u0435\u0440\u0430\u0446\u0438\u044f README \u2014 \u043f\u0440\u043e\u0433\u0440\u0430\u043c\u043c\u043d\u044b\u0439 \u0437\u0430\u043f\u0443\u0441\u043a \u0447\u0435\u0440\u0435\u0437 Papermill \u0438 Jupyter Server REST API, \u0434\u0435\u043f\u043b\u043e\u0439 \u0432 Docker \u043d\u0430 VPS. \u041f\u043e\u0441\u043b\u0435 \u043e\u0431\u043a\u0430\u0442\u043a\u0438 \u043f\u0435\u0440\u0435\u043d\u0435\u0441\u0451\u043d \u0432 production-\u043f\u0430\u0439\u043f\u043b\u0430\u0439\u043d\u044b Jenkins \u0438 GitHub Actions.",
+    j1g: "\u0418\u043d\u0436\u0435\u043d\u0435\u0440\u043d\u044b\u0439 \u0444\u0443\u043d\u0434\u0430\u043c\u0435\u043d\u0442 \u0432\u043e\u043a\u0440\u0443\u0433 \u044d\u0442\u043e\u0433\u043e: ~400 \u0430\u0432\u0442\u043e\u0442\u0435\u0441\u0442\u043e\u0432 \u043d\u0430 Playwright \u0438 pytest, Infrastructure as Code, 11 \u0441\u0435\u0440\u0432\u0435\u0440\u043e\u0432 \u043d\u0430 5 \u0441\u0435\u043c\u0435\u0439\u0441\u0442\u0432\u0430\u0445 Linux.",
+    j2r: "AQA-\u0438\u043d\u0436\u0435\u043d\u0435\u0440 \u00b7 \u043f\u0435\u0440\u0432\u044b\u0439 QA \u0432 \u043a\u043e\u043c\u043f\u0430\u043d\u0438\u0438",
+    j2c: "\u0421\u0442\u0430\u0440\u0442\u0430\u043f \u2014 \u043f\u0435\u0440\u0432\u044b\u0439 QA \u0432 \u043a\u043e\u043c\u043f\u0430\u043d\u0438\u0438.",
+    j2a: "<em class=\"ai\">AI</em><b>RAG \u043f\u043e \u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442\u0430\u0446\u0438\u0438 \u041e\u0421 \u0410\u0432\u0440\u043e\u0440\u0430 \u0438 \u0430\u0433\u0435\u043d\u0442</b> \u0434\u043b\u044f \u043e\u0442\u0434\u0435\u043b\u0430 \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u043a\u0438 \u2014 \u043e\u0434\u0438\u043d \u043f\u0440\u043e\u0435\u043a\u0442: \u043e\u0442\u0432\u0435\u0442 \u0441 \u043e\u043f\u043e\u0440\u043e\u0439 \u043d\u0430 \u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442\u0430\u0446\u0438\u044e \u0438 \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u043e\u0435 \u0432\u043e\u0441\u043f\u0440\u043e\u0438\u0437\u0432\u0435\u0434\u0435\u043d\u0438\u0435 \u0441\u0446\u0435\u043d\u0430\u0440\u0438\u044f \u043d\u0430 \u044d\u043c\u0443\u043b\u044f\u0442\u043e\u0440\u0435 \u043c\u043e\u0431\u0438\u043b\u044c\u043d\u043e\u0433\u043e Linux.",
+    j2b: "\u041f\u0440\u043e\u0446\u0435\u0441\u0441\u044b \u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f \u0441 \u043d\u0443\u043b\u044f \u0438 \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0437\u0430\u0446\u0438\u044f \u043d\u0430 Python.",
+    j2c2: "Telegram-\u0431\u043e\u0442 \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u043a\u0438 \u0441 \u0438\u043d\u0442\u0435\u0433\u0440\u0430\u0446\u0438\u0435\u0439 CRM \u0438 \u0442\u0440\u0435\u043a\u0435\u0440\u0430 \u2014 \u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442 \u0434\u043e \u0441\u0438\u0445 \u043f\u043e\u0440.",
+    j2d: "",
+    j3r: "QA-\u0438\u043d\u0436\u0435\u043d\u0435\u0440 \u00b7 \u043f\u0440\u0438\u0451\u043c\u043e\u0447\u043d\u044b\u0439 \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u044c \u0440\u0435\u043b\u0438\u0437\u043e\u0432",
+    j3c: "\u041f\u0440\u0438\u0451\u043c\u043a\u0430 B2B-\u043f\u0440\u043e\u0434\u0443\u043a\u0442\u043e\u0432 \u043f\u0435\u0440\u0435\u0434 \u0440\u0435\u043b\u0438\u0437\u043e\u043c \u043d\u0430 \u0432\u0441\u0435\u0445 \u043f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u0430\u0445.",
+    j3a: "\u0410\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0437\u0430\u0446\u0438\u044f UI \u0438 API: Selenium, Appium, requests.",
+    j3b: "\u041f\u043e\u043b\u0433\u043e\u0434\u0430 \u0437\u0430\u043a\u0440\u044b\u0432\u0430\u043b \u0437\u0430\u0434\u0430\u0447\u0438 DevOps: Docker Compose, \u043c\u043e\u043a-\u0441\u0435\u0440\u0432\u0435\u0440\u044b \u043d\u0430 Python, \u0441\u0431\u043e\u0440\u043a\u0438 \u0432 Jenkins.",
+    j3c2: "",
+    k1: "\u042f\u0437\u044b\u043a\u0438", k1v: "Python <span style=\"opacity:.5\">(\u043e\u0441\u043d\u043e\u0432\u043d\u043e\u0439)</span>, Swift, Bash, SQL",
+    k2: "LLM \u0438 VLM", k2v: "<em class=\"ai\">AI</em>\u0418\u043d\u0442\u0435\u0433\u0440\u0430\u0446\u0438\u044f \u043f\u043e API (DeepSeek, Grok, Kimi, OpenAI-\u0441\u043e\u0432\u043c\u0435\u0441\u0442\u0438\u043c\u044b\u0435), RAG, \u0430\u0433\u0435\u043d\u0442\u043d\u044b\u0435 \u0441\u0446\u0435\u043d\u0430\u0440\u0438\u0438, prompt engineering \u0441 guardrails, \u0432\u0430\u043b\u0438\u0434\u0430\u0446\u0438\u044f \u043e\u0442\u0432\u0435\u0442\u043e\u0432 \u043c\u043e\u0434\u0435\u043b\u0438 (AST, \u0441\u0432\u0435\u0440\u043a\u0430 \u0441 \u043a\u043e\u0434\u043e\u0432\u043e\u0439 \u0431\u0430\u0437\u043e\u0439), Vision-\u0430\u043d\u0430\u043b\u0438\u0437, \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u044c \u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u0438 \u0432\u044b\u0437\u043e\u0432\u043e\u0432, graceful degradation",
+    k3: "\u041b\u043e\u043a\u0430\u043b\u044c\u043d\u044b\u0439 \u0438\u043d\u0444\u0435\u0440\u0435\u043d\u0441", k3v: "MLX, llama.cpp, Core ML, Hugging Face, Whisper, TTS \u2014 \u0438 trade-off \u043a\u0430\u0447\u0435\u0441\u0442\u0432\u043e / \u0441\u043a\u043e\u0440\u043e\u0441\u0442\u044c / \u043f\u0430\u043c\u044f\u0442\u044c \u043c\u0435\u0436\u0434\u0443 \u043d\u0438\u043c\u0438",
+    k4: "\u0414\u0430\u043d\u043d\u044b\u0435 \u0438 \u044d\u043a\u0441\u043f\u0435\u0440\u0438\u043c\u0435\u043d\u0442\u044b", k4v: "pandas, numpy, Jupyter, Papermill",
+    k5: "\u0418\u043d\u0444\u0440\u0430\u0441\u0442\u0440\u0443\u043a\u0442\u0443\u0440\u0430", k5v: "Docker, Jenkins, GitHub Actions, REST API, Git, Linux",
+    k6: "\u041c\u0430\u0442\u0435\u043c\u0430\u0442\u0438\u043a\u0430 \u0438 CS", k6v: "\u041c\u0430\u0442\u0435\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u0439 \u0430\u043d\u0430\u043b\u0438\u0437, \u0434\u0438\u0441\u043a\u0440\u0435\u0442\u043d\u0430\u044f \u043c\u0430\u0442\u0435\u043c\u0430\u0442\u0438\u043a\u0430, \u0430\u043b\u0433\u043e\u0440\u0438\u0442\u043c\u044b \u0438 \u0441\u0442\u0440\u0443\u043a\u0442\u0443\u0440\u044b \u0434\u0430\u043d\u043d\u044b\u0445, \u0430\u0440\u0445\u0438\u0442\u0435\u043a\u0442\u0443\u0440\u0430 \u043a\u043e\u043c\u043f\u044c\u044e\u0442\u0435\u0440\u0430 \u0438 \u041e\u0421; \u0432 \u043f\u0440\u043e\u0446\u0435\u0441\u0441\u0435 \u2014 \u043c\u0430\u0448\u0438\u043d\u043d\u043e\u0435 \u043e\u0431\u0443\u0447\u0435\u043d\u0438\u0435 \u0438 \u0440\u0435\u043a\u043e\u043c\u0435\u043d\u0434\u0430\u0442\u0435\u043b\u044c\u043d\u044b\u0435 \u0441\u0438\u0441\u0442\u0435\u043c\u044b",
+    k7: "\u0423\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435", k7v: "\u041a\u043e\u043c\u0430\u043d\u0434\u0430 \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0437\u0430\u0446\u0438\u0438, \u043d\u0430\u0439\u043c, \u043c\u0435\u043d\u0442\u043e\u0440\u0441\u0442\u0432\u043e, \u043e\u0431\u0443\u0447\u0435\u043d\u0438\u0435 \u043e\u0442\u0434\u0435\u043b\u0430",
+    e1s: CV_AQA_RU.e1s, e1w: CV_AQA_RU.e1w, e2s: CV_AQA_RU.e2s, e2w: CV_AQA_RU.e2w, e2t: CV_AQA_RU.e2t,
+    p1d: "<em class=\"ai\">AI</em>\u0411\u044d\u043a\u0435\u043d\u0434 \u0438 AI-\u0444\u0443\u043d\u043a\u0446\u0438\u0438: \u043f\u0435\u0440\u0441\u043e\u043d\u0430\u043b\u044c\u043d\u044b\u0435 \u0440\u0435\u043a\u043e\u043c\u0435\u043d\u0434\u0430\u0446\u0438\u0438, \u043f\u043e\u0434\u0431\u043e\u0440 \u0446\u0435\u043b\u0435\u0439 \u043f\u043e\u0434 \u0443\u0440\u043e\u0432\u0435\u043d\u044c \u043f\u043e\u0434\u0433\u043e\u0442\u043e\u0432\u043a\u0438, \u043f\u0440\u043e\u0433\u043d\u043e\u0437 \u043f\u0440\u043e\u0433\u0440\u0435\u0441\u0441\u0430, \u0430\u0441\u0441\u0438\u0441\u0442\u0435\u043d\u0442 \u0441\u043f\u043e\u0440\u0442\u0441\u043c\u0435\u043d\u0430. \u0414\u043e\u0432\u0435\u0434\u0435\u043d\u043e \u043e\u0442 \u0438\u0434\u0435\u0438 \u0434\u043e \u043f\u0443\u0431\u043b\u0438\u043a\u0430\u0446\u0438\u0438 \u0432 App Store.",
+    p2d: "<em class=\"ai\">AI</em>iOS-\u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u0434\u043b\u044f \u0437\u0430\u043f\u0443\u0441\u043a\u0430 \u044f\u0437\u044b\u043a\u043e\u0432\u044b\u0445 \u0438 \u043c\u0443\u043b\u044c\u0442\u0438\u043c\u043e\u0434\u0430\u043b\u044c\u043d\u044b\u0445 \u043c\u043e\u0434\u0435\u043b\u0435\u0439 \u043f\u0440\u044f\u043c\u043e \u043d\u0430 iPhone \u2014 \u0431\u0435\u0437 \u043e\u0431\u043b\u0430\u043a\u0430 \u0438 \u043f\u043e\u0434\u043f\u0438\u0441\u043e\u043a. <b>MLX, llama.cpp (GGUF), Core ML, Apple Intelligence</b>; \u043c\u043e\u0434\u0435\u043b\u0438 \u0437\u0430\u0433\u0440\u0443\u0436\u0430\u044e\u0442\u0441\u044f \u0441 Hugging Face. \u0422\u0435\u043a\u0441\u0442, \u0438\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u044f (VLM), \u0440\u0430\u0441\u043f\u043e\u0437\u043d\u0430\u0432\u0430\u043d\u0438\u0435 \u0440\u0435\u0447\u0438 (Whisper) \u0438 \u0441\u0438\u043d\u0442\u0435\u0437 (TTS). \u0410\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u0439 \u043f\u043e\u0434\u0431\u043e\u0440 \u043c\u043e\u0434\u0435\u043b\u0438 \u043f\u043e\u0434 \u0436\u0435\u043b\u0435\u0437\u043e; \u043c\u0435\u0442\u0440\u0438\u043a\u0438: \u0442\u043e\u043a\u0435\u043d\u044b \u0432 \u0441\u0435\u043a\u0443\u043d\u0434\u0443, \u0437\u0430\u0434\u0435\u0440\u0436\u043a\u0430, \u043f\u0430\u043c\u044f\u0442\u044c.",
+    ct: "\u0421\u0432\u044f\u0436\u0435\u043c\u0441\u044f.", ft: "AI / LLM Engineer"
+  };
+
+  const FORK_EN = {
+    fk: "Four years building test automation that became an internal product with AI inside. The directions I am interested in:",
+    fd1: "Test automation as an engineering product",
+    fd2: "Deciding where AI earns its cost",
+    fd3: "LLMs and VLMs running in production, not in demos"
+  };
+  const FORK_RU = {
+    fk: "\u0427\u0435\u0442\u044b\u0440\u0435 \u0433\u043e\u0434\u0430 \u0441\u0442\u0440\u043e\u0438\u043b \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0437\u0430\u0446\u0438\u044e \u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f, \u043a\u043e\u0442\u043e\u0440\u0430\u044f \u0441\u0442\u0430\u043b\u0430 \u0432\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u043c \u043f\u0440\u043e\u0434\u0443\u043a\u0442\u043e\u043c \u0441 AI \u0432\u043d\u0443\u0442\u0440\u0438. \u041c\u043d\u0435 \u0438\u043d\u0442\u0435\u0440\u0435\u0441\u043d\u044b \u043d\u0430\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u044f:",
+    fd1: "\u0410\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0437\u0430\u0446\u0438\u044f \u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f \u043a\u0430\u043a \u0438\u043d\u0436\u0435\u043d\u0435\u0440\u043d\u044b\u0439 \u043f\u0440\u043e\u0434\u0443\u043a\u0442",
+    fd2: "\u0420\u0435\u0448\u0430\u044e, \u0433\u0434\u0435 AI \u043e\u043a\u0443\u043f\u0430\u0435\u0442 \u0441\u0432\u043e\u044e \u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c",
+    fd3: "LLM \u0438 VLM, \u0440\u0430\u0431\u043e\u0442\u0430\u044e\u0449\u0438\u0435 \u0432 production, \u0430 \u043d\u0435 \u0432 \u0434\u0435\u043c\u043e"
+  };
+  [CV_AQA_EN, CV_PM_EN, CV_ML_EN].forEach(d => Object.assign(d, FORK_EN));
+  [CV_AQA_RU, CV_PM_RU, CV_ML_RU].forEach(d => Object.assign(d, FORK_RU));
+
+  const CV = {
+    aqa: { en: CV_AQA_EN, ru: CV_AQA_RU },
+    pm:  { en: CV_PM_EN,  ru: CV_PM_RU  },
+    ml:  { en: CV_ML_EN,  ru: CV_ML_RU  }
+  };
+  let track = localStorage.getItem('dd_track') || 'aqa';
+  if (!CV[track]) track = 'aqa';
+
+  function paintCV() {
+    const dict = CV[track][lang] || CV[track].en;
+    document.querySelectorAll('[data-i18n-cv]').forEach(el => {
+      const k = el.getAttribute('data-i18n-cv');
+      if (dict[k] != null) el.innerHTML = dict[k];
+    });
+  }
+  function applyTrack(t) {
+    if (!CV[t]) return;
+    track = t;
+    localStorage.setItem('dd_track', t);
+    document.querySelectorAll('[data-track-btn]').forEach(b => {
+      b.classList.toggle('on', b.getAttribute('data-track-btn') === t);
+    });
+    const fork = document.getElementById('fork');
+    if (fork) fork.setAttribute('data-active', t);
+    paintCV();
+  }
+  document.getElementById('trackOpts').addEventListener('click', e => {
+    const b = e.target.closest('[data-track-btn]');
+    if (b) applyTrack(b.getAttribute('data-track-btn'));
+  });
+
+  function applyLang(l) {
+    lang = l;
+    localStorage.setItem('dd_lang', l);
+    document.documentElement.lang = l;
+    document.querySelectorAll('#lang button').forEach(b => {
+      b.classList.toggle('active', b.dataset.lang === l);
+    });
+    // the Macintosh keeps its 1984 English regardless of site language
+    document.querySelectorAll('[data-i18n-os]').forEach(el => {
+      const k = el.getAttribute('data-i18n-os');
+      if (OS_STR.en[k] != null) el.innerHTML = OS_STR.en[k];
+    });
+    typeLine(TYPE[l]);
+    paintCV();
+  }
+  document.getElementById('lang').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (b) applyLang(b.dataset.lang);
+  });
+  applyLang(lang);
+  applyTrack(track);
+
+  /* ---------------- classic OS clock ---------------- */
+  function osTick() {
+    const d = new Date();
+    let h = d.getHours(); const ap = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    document.getElementById('osClock').textContent =
+      h + ':' + String(d.getMinutes()).padStart(2,'0') + ' ' + ap;
+  }
+  osTick(); setInterval(osTick, 20000);
+
+  /* ---------------- enter / exit the screen ---------------- */
+  const mac    = document.getElementById('mac');
+  let scrollMemo = 0;
+  const screen = document.getElementById('macScreen');
+  const os     = document.getElementById('os');
+  let isIn = false, animating = false;
+
+  function enter() {
+    if (isIn || animating) return;
+    animating = true; isIn = true;
+    document.body.classList.add('entering');
+    document.body.classList.add('locked');
+    scrollMemo = window.scrollY;
+
+    if (prefersReduce) {
+      os.style.transform = 'none';
+      os.style.transition = 'opacity .4s ease';
+      os.style.opacity = '1';
+      os.classList.add('live');
+      animating = false;
+      return;
+    }
+
+    const r = screen.getBoundingClientRect();
+    const sx = r.width  / window.innerWidth;
+    const sy = r.height / window.innerHeight;
+    // start: the full OS mapped down into the tiny screen rect
+    os.style.transition = 'none';
+    os.style.opacity = '1';
+    os.style.transform = `translate(${r.left}px, ${r.top}px) scale(${sx}, ${sy})`;
+    void os.offsetWidth; // reflow
+    // fly in
+    os.style.transition = 'transform 1.15s cubic-bezier(.66,0,.34,1), opacity .35s ease';
+    os.style.transform = 'none';
+    mac.style.transition = 'opacity .8s ease .15s, transform .8s ease';
+    mac.style.opacity = '0';
+    mac.style.transform = 'scale(1.04)';
+    const done = () => { os.classList.add('live'); animating = false; os.removeEventListener('transitionend', done); };
+    os.addEventListener('transitionend', done);
+  }
+
+  function exit() {
+    if (!isIn || animating) return;
+    animating = true;
+    os.classList.remove('live');
+
+    if (prefersReduce) {
+      os.style.opacity = '0';
+      finishExit();
+      return;
+    }
+
+    const r = screen.getBoundingClientRect();
+    const sx = r.width  / window.innerWidth;
+    const sy = r.height / window.innerHeight;
+    os.style.transition = 'transform .9s cubic-bezier(.66,0,.34,1), opacity .35s ease .55s';
+    os.style.transform = `translate(${r.left}px, ${r.top}px) scale(${sx}, ${sy})`;
+    os.style.opacity = '0';
+    mac.style.opacity = '1';
+    mac.style.transform = '';
+    const done = () => { finishExit(); os.removeEventListener('transitionend', done); };
+    os.addEventListener('transitionend', done);
+  }
+  function finishExit() {
+    isIn = false; animating = false;
+    document.body.classList.remove('locked');
+    document.body.classList.remove('entering');
+    os.style.transition = 'none';
+    os.style.transform = 'none';
+    os.style.opacity = '0';
+  }
+
+  /* ---------------- attract hint: glow + typed "Click me" (2s after load) ---------------- */
+  const macHintEl  = document.getElementById('macHint');
+  const macHintTxt = macHintEl ? macHintEl.querySelector('.hint-txt') : null;
+  function typeMacHint() {
+    if (!macHintEl) return;
+    const text = 'Click\nme';
+    macHintEl.classList.add('show');
+    if (prefersReduce) { macHintTxt.textContent = text; return; }
+    let i = 0;
+    (function step() {
+      macHintTxt.textContent = text.slice(0, i);
+      if (i <= text.length) { i++; setTimeout(step, 120); }
+    })();
+  }
+  setTimeout(() => {
+    document.body.classList.add('cue-ready');
+    screen.classList.add('revealed');
+    typeMacHint();
+  }, 6000);
+
+  mac.addEventListener('click', enter);
+  mac.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); enter(); } });
+  document.getElementById('osExit').addEventListener('click', exit);
+  document.getElementById('osClose').addEventListener('click', exit);
+  window.addEventListener('keydown', e => { if (e.key === 'Escape') exit(); });
+
+  /* ---------------- draggable windows & icons ---------------- */
+  function makeDraggable(el, handle) {
+    handle = handle || el;
+    let ox = 0, oy = 0, dragging = false;
+    handle.style.touchAction = 'none';
+    handle.addEventListener('pointerdown', e => {
+      if (e.target.classList.contains('lite')) return; // let the close button work
+      dragging = true;
+      const r = el.getBoundingClientRect();
+      el.style.left = r.left + 'px'; el.style.top = r.top + 'px';
+      el.style.right = 'auto'; el.style.bottom = 'auto'; el.style.transform = 'none';
+      ox = e.clientX - r.left; oy = e.clientY - r.top;
+      el.style.zIndex = 20;
+      try { handle.setPointerCapture(e.pointerId); } catch (_) {}
+      e.preventDefault();
+    });
+    handle.addEventListener('pointermove', e => {
+      if (!dragging) return;
+      const w = el.offsetWidth, h = el.offsetHeight;
+      let nx = Math.max(0, Math.min(window.innerWidth - w, e.clientX - ox));
+      let ny = Math.max(28, Math.min(window.innerHeight - 22, e.clientY - oy));
+      el.style.left = nx + 'px'; el.style.top = ny + 'px';
+    });
+    const end = e => { dragging = false; try { handle.releasePointerCapture(e.pointerId); } catch (_) {} };
+    handle.addEventListener('pointerup', end);
+    handle.addEventListener('pointercancel', end);
+  }
+  const win = document.querySelector('.os-window');
+  if (win) makeDraggable(win, win.querySelector('.os-titlebar'));
+  document.querySelectorAll('.os-icon').forEach(ic => makeDraggable(ic));
+
+  /* ---------------- reveal résumé blocks on scroll ---------------- */
+  const rvs = document.querySelectorAll('.rv');
+  if (prefersReduce || !('IntersectionObserver' in window)) {
+    rvs.forEach(el => el.classList.add('in'));
+  } else {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(en => {
+        if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
+    rvs.forEach(el => io.observe(el));
+  }
+})();
+</script>
+</body>
+</html>
