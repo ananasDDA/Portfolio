@@ -11,7 +11,7 @@
 <meta name="theme-color" content="#000000">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Courier+Prime:wght@400;700&family=Archivo:wght@700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -643,21 +643,588 @@
     text-transform: uppercase; color: var(--accent);
   }
 
-  /* --- 05 projects --- */
-  .projects { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
-  .proj {
-    border: 1px solid rgba(245,245,247,0.15);
-    padding: clamp(24px, 2.6vw, 34px);
-    display: flex; flex-direction: column; gap: 12px;
-    text-decoration: none; color: inherit;
-    transition: border-color .3s ease, background .3s ease, transform .3s ease;
+  /* --- 05 projects: a deck of brand posters -----------------------------
+     Each card is a small poster in its own product's visual language; the
+     copy for whichever poster holds the centre appears as plain text below,
+     and the section behind glows in that product's colour.
+     Coverflow geometry is the FITA widget-picker math. Scroll frames only
+     read scrollLeft and only write styles that actually changed.        */
+  .pcar {
+    --slot: 528px; --pdesign: 500px; position: relative; z-index: 1;
+    margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw);
   }
-  .proj:hover { border-color: var(--accent); background: rgba(228,68,42,0.07); transform: translateY(-3px); }
-  .proj .p-top { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
-  .proj .p-name { font-family: var(--serif); font-size: clamp(22px,2.4vw,30px); color: #fff; letter-spacing: -0.01em; }
-  .proj .p-arrow { font-family: var(--font-mono); font-size: 14px; color: var(--accent); }
-  .proj .p-desc { font-size: 15px; line-height: 1.62; color: rgba(245,245,247,0.62); text-wrap: pretty; }
-  .proj .p-meta { margin-top: auto; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(245,245,247,0.4); }
+  .pcar-track {
+    display: flex; align-items: center;
+    overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    padding: var(--pcarPad, 30px) 0 calc(var(--pcarPad, 30px) - 8px);
+    scrollbar-width: none; -ms-overflow-style: none;
+  }
+  .pcar-track::-webkit-scrollbar { display: none; }
+  .pcar-pad { flex: 0 0 auto; }
+  .pslot {
+    flex: 0 0 var(--slot); width: var(--slot);
+    padding: 0 13px; scroll-snap-align: center;
+    display: flex; align-items: center;
+  }
+  .pcard {
+    flex: 1; height: var(--pcardH, auto);
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
+    text-decoration: none;
+    background: var(--pbg); color: var(--pink);
+    border: 1px solid var(--pline);
+    transform-origin: 50% 50%; backface-visibility: hidden;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.5);
+    contain: paint;
+  }
+  .pcar-track.no3d .pcard { transition: transform .35s ease, opacity .35s ease; }
+
+  /* poster face -- authored at --pdesign px wide and scaled by --pfit so the
+     aspect ratio is identical on every screen (no mobile recomposition) */
+  .p-art {
+    position: relative; flex: none;
+    width: var(--pdesign); height: calc(var(--pcardH, 100%) / var(--pfit, 1));
+    transform: scale(var(--pfit, 1)); transform-origin: 0 0;
+    padding: 26px 26px 24px;
+    display: flex; flex-direction: column;
+  }
+  .p-mark {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    font-family: var(--pmono); font-size: 9px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--pmuted);
+  }
+  .p-arrow { font-size: 13px; color: var(--pbrand); }
+  .p-name {
+    margin-top: 22px;
+    font-family: var(--pdisp); font-weight: 800; font-size: 12px;
+    letter-spacing: 0.3em; text-transform: uppercase; color: var(--pbrand);
+  }
+  .p-tag {
+    margin-top: 10px;
+    font-family: var(--pserif); font-weight: 400;
+    font-size: 32px; line-height: 1.04;
+    letter-spacing: -0.01em; color: var(--pink); text-wrap: balance;
+  }
+  .p-role {
+    margin-top: 12px; align-self: flex-start;
+    font-family: var(--pmono); font-size: 8.5px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--pbrand);
+    border: 1px solid var(--pbrand); border-radius: 3px; padding: 3px 7px;
+    opacity: 0.85;
+  }
+  /* the artwork block owns whatever height the header group leaves */
+  .p-deco {
+    flex: 1; margin-top: 0; padding-top: 20px;
+    display: flex; flex-direction: column; justify-content: flex-end;
+  }
+
+  /* ---- brand skins ---- */
+  .pcard[data-brand="fita"] {
+    --pbg: #F3ECDB; --pink: #23201B; --pmuted: #6E6658; --pbrand: #7A2B22;
+    --pline: rgba(40,30,20,0.15);
+    --pserif: "Cormorant Garamond", Georgia, serif;
+    --pmono: "Courier Prime", monospace;
+    --pdisp: "Archivo", system-ui, sans-serif;
+  }
+  .pcard[data-brand="fita"] .p-art {
+    background:
+      radial-gradient(90% 60% at 10% 0%, rgba(122,43,34,0.10), transparent 62%),
+      radial-gradient(80% 60% at 100% 100%, rgba(201,162,63,0.18), transparent 62%);
+  }
+  .pcard[data-brand="fita"] .p-tag { font-style: italic; }
+  /* the FITA stage: the phone face-on, a widget and the product's
+     signature features beside it, then the MCP lockup from the site */
+  .fstage { flex: 1; display: flex; align-items: stretch; gap: 16px; }
+  .fphone {
+    flex: 0 0 auto; width: 40%;
+    border-radius: 30px; padding: 6px;
+    background: linear-gradient(180deg, #33343a, #17181a 22%, #17181a 82%, #26272b);
+    box-shadow: 0 20px 38px rgba(45,32,20,0.32), inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+  .fscr {
+    position: relative; height: 100%; border-radius: 25px; overflow: hidden;
+    background: #F3ECDB;
+    display: flex; flex-direction: column; gap: 5px;
+    padding: 21px 8px 8px;
+  }
+  .fscr::before {
+    content: ""; position: absolute; top: 7px; left: 50%; transform: translateX(-50%);
+    width: 40px; height: 6px; border-radius: 3px; background: #17181a;
+  }
+  .fhead { font-family: var(--pserif); font-style: italic; font-size: 12.5px; color: #23201B; padding: 0 2px 2px; }
+  .fb-a, .fb-u { line-height: 1.45; max-width: 90%; }
+  .fb-a { align-self: flex-start; font-family: var(--pserif); font-style: italic; font-size: 10.5px; color: #23201B; padding: 0 2px; }
+  .fb-u {
+    align-self: flex-end; background: #7A2B22; color: #F3ECDB;
+    font-family: var(--pmono); font-size: 8.5px;
+    border-radius: 12px 12px 3px 12px; padding: 5px 9px;
+  }
+  /* a real widget rendered inside the conversation -- the [[widget:sleep]]
+     marker from AGENT.md: same card as on home, hypnogram colours fixed */
+  .fwid {
+    align-self: stretch; background: #fff; border-radius: 14px;
+    padding: 8px 9px 9px; box-shadow: 0 3px 10px rgba(45,32,20,0.10);
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .fwid .w-k {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 6px;
+    font-family: var(--pmono); font-size: 6.5px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: #A39B8C;
+  }
+  .fwid .w-v { font-family: var(--pdisp); font-weight: 800; font-size: 15px; line-height: 1; color: #23201B; }
+  .fwid .w-v i { font-style: normal; font-size: 8px; font-weight: 800; color: #A39B8C; margin-left: 2px; }
+  /* hypnogram: Apple-Health stepped chart across 4 lanes (awake/REM/light/deep).
+     Segments and colours are the product's fixed, non-themed scale. */
+  .hyp { display: block; width: 100%; height: 27px; }
+  .fwid .w-lg { display: flex; gap: 7px; font-family: var(--pmono); font-size: 6px; letter-spacing: 0.1em; text-transform: uppercase; color: #A39B8C; }
+  .fwid .w-lg span { display: flex; align-items: center; gap: 3px; }
+  .fwid .w-lg em { width: 4px; height: 4px; border-radius: 1px; }
+  /* the permission card the agent sends with an action */
+  .fask {
+    align-self: stretch; background: #fff; border-radius: 14px; padding: 8px 9px;
+    box-shadow: 0 3px 10px rgba(45,32,20,0.10);
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .fask p { font-family: var(--pserif); font-style: italic; font-size: 9.5px; line-height: 1.3; color: #23201B; }
+  .fask div { display: flex; gap: 5px; }
+  .fask b, .fask u {
+    font-family: var(--pmono); font-size: 6.5px; letter-spacing: 0.1em; text-transform: uppercase;
+    border-radius: 7px; padding: 4px 8px; text-decoration: none; font-weight: 400;
+  }
+  .fask b { background: #7A2B22; color: #F3ECDB; }
+  .fask u { color: #6E6658; box-shadow: inset 0 0 0 1px rgba(40,30,20,0.14); }
+  .fcomp {
+    margin-top: auto; height: 22px; border-radius: 11px;
+    background: #fff; box-shadow: inset 0 0 0 1px rgba(40,30,20,0.10);
+    display: flex; align-items: center; padding: 0 9px;
+  }
+  .fcomp::before { content: ""; width: 42%; height: 2px; border-radius: 1px; background: #EDE7DB; }
+
+  .fside { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+  .ftile {
+    background: #fff; border-radius: 20px; padding: 13px 14px 14px;
+    box-shadow: 0 6px 20px rgba(45,32,20,0.10);
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .ftile .t-lbl { font-family: var(--pmono); font-size: 7.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #A39B8C; }
+  .ftile .t-num { font-family: var(--pdisp); font-weight: 800; font-size: 27px; line-height: 1; color: #23201B; }
+  .ftile .t-num i { font-style: normal; font-size: 12px; color: #A39B8C; margin-left: 2px; }
+  .ftile .t-cap { font-family: var(--pmono); font-size: 7.5px; letter-spacing: 0.1em; color: #A39B8C; }
+  .ftile .t-hd { display: flex; align-items: center; gap: 7px; }
+  .ftile .t-hd .t-lbl { white-space: nowrap; }
+  .ftile .t-hd .t-ln { flex: 1; height: 2px; border-radius: 2px; background: #EDE7DB; overflow: hidden; }
+  .ftile .t-hd .t-ln i { display: block; height: 100%; border-radius: 2px; background: #7A2B22; }
+  .ftile .t-bar { height: 3px; border-radius: 2px; background: #EDE7DB; overflow: hidden; }
+  .ftile .t-bar i { display: block; height: 100%; background: #7A2B22; border-radius: 2px; }
+  /* week mini bar-chart under a single day-metric (widget spec #2) */
+  .twk {
+    display: flex; align-items: flex-end; gap: 3px; height: 20px; margin-top: 2px;
+    padding-bottom: 3px; border-bottom: 1px dotted rgba(110,102,88,0.5);
+  }
+  .twk i { flex: 1; background: #D5B4AE; border-radius: 1px; }
+  .twk i.on { background: #7A2B22; }
+  /* readiness battery (widget spec #14) */
+  .fbat { display: flex; align-items: center; gap: 7px; }
+  .fbat .b-box {
+    flex: 1; height: 17px; border-radius: 5px; padding: 2.5px;
+    box-shadow: inset 0 0 0 1px rgba(40,30,20,0.18);
+  }
+  .fbat .b-box i { display: block; height: 100%; border-radius: 3px; background: linear-gradient(90deg,#8DA05C,#6F8A3F); }
+  .fbat .b-n { font-family: var(--pdisp); font-weight: 800; font-size: 19px; line-height: 1; color: #23201B; }
+  /* two 1/4 tiles side by side, as on the real home grid */
+  .fquad { display: flex; gap: 8px; }
+  .fquad .ftile { flex: 1; padding: 11px 11px 12px; }
+  .fquad .t-num { font-size: 20px; }
+  .fdots { display: flex; gap: 2.5px; }
+  .fdots i { width: 4px; height: 4px; border-radius: 50%; background: #D5B4AE; }
+  .fdots i.on { background: #7A2B22; }
+  .frings { display: block; width: 100%; max-width: 62px; margin: 2px auto 0; }
+  /* StreakTile: ring + big number + 7 day-dots (widget spec §20) */
+  .fstk { position: relative; display: block; width: 46px; height: 46px; margin: 2px 0 1px; }
+  .fstk svg { display: block; width: 100%; height: 100%; }
+  .fstk b {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    font-family: var(--pdisp); font-weight: 800; font-size: 15px; color: #23201B;
+  }
+  /* the product's signature moves, spelled out */
+  .ffeat { list-style: none; margin: 2px 0 0; padding: 0 2px; display: grid; gap: 8px; }
+  .ffeat li {
+    position: relative; padding-left: 15px;
+    font-family: var(--pmono); font-size: 9.5px; line-height: 1.45;
+    color: #4E4638;
+  }
+  .ffeat li::before {
+    content: ""; position: absolute; left: 0; top: 0.58em;
+    width: 8px; height: 1px; background: #7A2B22;
+  }
+
+  /* MCP lockup, straight from the FITA site: MCP + Ф-mark + agents */
+  .fmcp {
+    margin-top: 18px; padding-top: 14px;
+    border-top: 1px solid rgba(40,30,20,0.15);
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .fm-row { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+  .fm-mcp { font-family: var(--pmono); font-weight: 700; font-size: 17px; letter-spacing: 2px; color: #23201B; }
+  .fm-mark {
+    width: 27px; height: 27px; border-radius: 8px; background: #7A2B22;
+    display: grid; place-items: center;
+    font-family: var(--pserif); font-style: italic; font-size: 16px; color: #F3ECDB;
+    box-shadow: 0 4px 10px rgba(122,43,34,0.30);
+  }
+  .fm-plus { font-family: var(--pserif); font-size: 18px; color: #9C9486; }
+  .fm-agent {
+    font-family: var(--pmono); font-size: 9.5px; color: #23201B;
+    background: #fff; border: 1px solid rgba(40,30,20,0.12); border-radius: 8px;
+    padding: 5px 10px; box-shadow: 0 2px 6px rgba(45,32,20,0.08);
+  }
+  .fm-cap { font-family: var(--pmono); font-size: 10.5px; line-height: 1.5; color: #4E4638; }
+
+  .pcard[data-brand="pro"] {
+    --pbg: #0B0610; --pink: #fff; --pmuted: rgba(255,255,255,0.58); --pbrand: #FF7AB8;
+    --pline: rgba(255,255,255,0.14);
+    --pserif: var(--serif); --pmono: var(--font-mono); --pdisp: var(--font-mono);
+  }
+  .pcard[data-brand="pro"] .p-art {
+    background:
+      radial-gradient(120% 85% at 80% 8%, rgba(212,45,120,0.52), transparent 56%),
+      radial-gradient(110% 95% at 6% 96%, rgba(120,40,150,0.46), transparent 60%);
+  }
+  /* the P.R.O. poster: the shipped app, rebuilt from the design system's own
+     kit -- ui_kits/app/HomeScreen.jsx (MetricCard 2x2, StreakWidget,
+     GoalsWidget, HeartRateWidget), TabBar.jsx and ui.jsx pal('dark'):
+     comp #1C1C1E, inComp #39393D, sec rgba(235,235,245,.6),
+     hairline 0.5px rgba(84,84,88,.55), green #34C759 / orange #FF9500 /
+     blue #007AFF / purple #AF52DE, accent #D42D78. */
+  .prologo { display: block; width: 118px; max-width: 62%; }
+  .pstage { flex: 1; display: flex; align-items: stretch; gap: 14px; }
+  .pphone {
+    flex: 0 0 auto; width: 48%;
+    border-radius: 32px; padding: 5px;
+    background: linear-gradient(180deg,#3a3a3e,#1b1b1d 20%,#1b1b1d 82%,#2c2c2e);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.22);
+  }
+  .pscr {
+    position: relative; height: 100%; border-radius: 28px; overflow: hidden;
+    background: #000; display: flex; flex-direction: column; gap: 9px;
+    padding: 21px 9px 0;
+  }
+  .pscr::before {
+    content: ""; position: absolute; top: 7px; left: 50%; transform: translateX(-50%);
+    width: 42px; height: 5px; border-radius: 3px; background: #0d0d0f;
+    box-shadow: inset 0 0 0 0.5px rgba(255,255,255,0.10);
+  }
+  /* SectionHeader: 700 22px, letter-spacing .35 */
+  .pscr .s-h {
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--font-sans); font-weight: 700; font-size: 12.5px;
+    letter-spacing: 0.35px; color: #fff; padding: 0 2px;
+  }
+  .pscr .s-h svg { opacity: 0.9; }
+  /* MetricCard grid -- Card radius 24, icon + value(+unit) + title + sub */
+  .pmg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .pmc {
+    background: #1C1C1E; border-radius: 13px; padding: 9px 9px 10px;
+    box-shadow: inset 0 0 0 0.5px rgba(84,84,88,0.55);
+    font-family: var(--font-sans);
+  }
+  .pmc .m-v { display: flex; align-items: baseline; gap: 2px; margin-top: 5px; }
+  .pmc .m-v b { font-weight: 700; font-size: 16px; line-height: 1; letter-spacing: 0.3px; color: #fff; font-variant-numeric: tabular-nums; }
+  .pmc .m-v u { text-decoration: none; font-weight: 600; font-size: 9.5px; color: #fff; }
+  .pmc .m-t { font-weight: 600; font-size: 9.5px; line-height: 1.2; color: #fff; margin-top: 5px; }
+  .pmc .m-s { font-weight: 400; font-size: 9px; line-height: 1.2; color: rgba(235,235,245,0.6); margin-top: 1px; }
+  /* StreakWidget: 46px flame circle + title + milestone + 47% orange bar */
+  .pstreak {
+    background: #1C1C1E; border-radius: 15px; padding: 10px 11px 11px;
+    box-shadow: inset 0 0 0 0.5px rgba(84,84,88,0.55);
+    font-family: var(--font-sans);
+  }
+  .pstreak .k-r { display: flex; align-items: center; gap: 9px; }
+  .pstreak .k-f {
+    width: 29px; height: 29px; border-radius: 50%; flex: 0 0 auto;
+    background: rgba(255,149,0,0.14); display: grid; place-items: center;
+  }
+  .pstreak .k-t { font-weight: 700; font-size: 11px; line-height: 1.2; color: #fff; }
+  .pstreak .k-s { font-weight: 400; font-size: 9px; line-height: 1.3; color: rgba(235,235,245,0.6); }
+  .pstreak .k-b { height: 4px; border-radius: 3px; background: #39393D; margin-top: 8px; overflow: hidden; }
+  .pstreak .k-b i { display: block; width: 47%; height: 100%; border-radius: 3px; background: #FF9500; }
+  /* TabBar: blurred bar, 0.5px top separator, accent on the current tab */
+  .ptabs {
+    margin: auto -9px 0; padding: 7px 4px 9px;
+    display: flex; background: rgba(20,20,22,0.86);
+    border-top: 0.5px solid rgba(84,84,88,0.55);
+    backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
+  }
+  .ptabs span {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;
+    font-family: var(--font-sans); font-weight: 500; font-size: 8.5px;
+    color: rgba(235,235,245,0.6);
+  }
+  .ptabs span.on { color: #D42D78; }
+  .ptabs em { font-style: normal; }
+  .pstreak .k-r > span:last-child { display: flex; flex-direction: column; gap: 1px; }
+
+  .pside { flex: 1; display: flex; flex-direction: column; gap: 9px; }
+  .pcardlet {
+    flex: 1; min-height: 0; display: flex; flex-direction: column;
+    background: #1C1C1E; border-radius: 16px; padding: 12px 13px 13px;
+    box-shadow: inset 0 0 0 0.5px rgba(84,84,88,0.55);
+    font-family: var(--font-sans);
+  }
+  /* HeartRateWidget header: title + heart glyph + "64 bpm avg" */
+  .phr-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .phr-h .h-t { font-weight: 600; font-size: 11px; color: #fff; }
+  .phr-h .h-v { display: flex; align-items: center; gap: 4px; font-weight: 700; font-size: 11px; color: #fff; }
+  .phr-h .h-v u { text-decoration: none; font-weight: 400; font-size: 9px; color: rgba(235,235,245,0.6); }
+  .phr-s { font-weight: 600; font-size: 9px; color: rgba(235,235,245,0.6); margin: 4px 0 5px; }
+  .phr svg { display: block; width: 100%; height: 100%; flex: 1; min-height: 0; }
+  /* GoalsWidget: two rows, label + percent + track */
+  .pgw .g-t { font-weight: 600; font-size: 11px; color: #fff; margin-bottom: 9px; }
+  .pgw .g-r { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 9.5px; color: #fff; }
+  .pgw .g-r em { font-style: normal; font-weight: 600; }
+  .pgw .g-b { height: 4px; border-radius: 3px; background: #39393D; overflow: hidden; }
+  .pgw .g-b i { display: block; height: 100%; border-radius: 3px; }
+  .pgw .g-g + .g-g { margin-top: 12px; }
+  /* real badge art from the design system -- never redrawn */
+  .pbadges { display: flex; align-items: center; gap: 9px; padding: 2px; }
+  .pbadges .pb-k {
+    font-family: var(--pmono); font-size: 8.5px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: rgba(235,235,245,0.6);
+  }
+  .pbadges img { width: 38px; height: 38px; object-fit: contain; filter: drop-shadow(0 5px 12px rgba(212,45,120,0.35)); }
+  .pai {
+    margin-top: 15px; padding-top: 13px;
+    border-top: 0.5px solid rgba(84,84,88,0.55);
+    display: flex; align-items: center; gap: 12px;
+  }
+  /* NeuroButton, the app's AI launcher: purple #AF52DE, radius 12 */
+  .pai .ai-pill {
+    flex: 0 0 auto; font-family: var(--font-sans); font-weight: 700; font-size: 11px;
+    color: #fff; background: #AF52DE; border-radius: 12px; padding: 7px 14px;
+    box-shadow: 0 5px 12px rgba(175,82,222,0.35);
+  }
+  .pai .ai-t { font-family: var(--pmono); font-size: 10.5px; line-height: 1.5; color: rgba(235,235,245,0.6); }
+
+  .pcard[data-brand="lab"] {
+    --pbg: #0C1014; --pink: #E9EEF3; --pmuted: rgba(233,238,243,0.55); --pbrand: #7FE0D4;
+    --pline: rgba(233,238,243,0.13);
+    --pserif: var(--serif); --pmono: var(--font-mono); --pdisp: var(--font-mono);
+  }
+  .pcard[data-brand="lab"] .p-art {
+    background:
+      radial-gradient(100% 70% at 92% 4%, rgba(127,224,212,0.16), transparent 58%),
+      linear-gradient(180deg, rgba(233,238,243,0.04), transparent 40%);
+  }
+  .lterm {
+    background: #080B0E; border: 1px solid rgba(233,238,243,0.13); border-radius: 10px;
+    padding: 13px 15px;
+    font-family: var(--pmono); font-size: 10.5px; line-height: 1.85;
+    color: rgba(233,238,243,0.66);
+  }
+  .lterm .lp { color: #7FE0D4; }
+  .lterm b { color: #E9EEF3; font-weight: 400; }
+  /* per-model benchmark table -- what the lab actually measures */
+  .ltab { margin-top: 11px; font-family: var(--pmono); font-size: 10px; }
+  .ltab .l-hd, .ltab .l-r {
+    display: grid; grid-template-columns: 1.5fr 0.7fr 0.9fr 0.8fr; gap: 8px;
+    padding: 6px 2px; align-items: baseline;
+  }
+  .ltab .l-hd {
+    font-size: 8.5px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(233,238,243,0.45); border-bottom: 1px solid rgba(233,238,243,0.13);
+  }
+  .ltab .l-r { border-bottom: 1px solid rgba(233,238,243,0.07); color: rgba(233,238,243,0.62); }
+  .ltab .l-r b { color: #E9EEF3; font-weight: 400; }
+  .ltab .l-r em { font-style: normal; color: #7FE0D4; }
+  .lchips { margin-top: 11px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .lchips span {
+    font-family: var(--pmono); font-size: 8.5px; letter-spacing: 0.1em;
+    color: rgba(233,238,243,0.58);
+    border: 1px solid rgba(233,238,243,0.17); border-radius: 999px; padding: 3px 9px;
+  }
+  /* Hugging Face lockup: models are pulled straight to the iPhone.
+     Logo is the real full-colour mark (lobehub/lobe-icons huggingface-color.svg);
+     plate colours are HF's brand yellows (Candlelight #FFD21E, Orange Peel #FF9D00). */
+  .lhf {
+    margin-top: 12px; padding: 11px 12px;
+    background: rgba(255,210,30,0.07);
+    border: 1px solid rgba(255,210,30,0.30); border-radius: 10px;
+    display: flex; align-items: center; gap: 11px;
+  }
+  .lhf .hf-m { width: 32px; height: 32px; flex: 0 0 auto; display: block; }
+  .lhf .hf-b { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+  .lhf .hf-n {
+    font-family: var(--pmono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.04em; color: #FFD21E;
+  }
+  .lhf .hf-t { font-family: var(--pmono); font-size: 9.5px; line-height: 1.45; color: rgba(233,238,243,0.62); }
+  .lhf .hf-p {
+    flex: 0 0 auto; font-family: var(--pmono); font-size: 8.5px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: #0C1014;
+    background: #FFD21E; border-radius: 999px; padding: 4px 9px;
+  }
+
+  .lfoot {
+    margin-top: 18px; padding-top: 13px;
+    border-top: 1px solid rgba(233,238,243,0.13);
+    font-family: var(--pmono); font-size: 10px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: #7FE0D4;
+  }
+
+  /* T-Travel Copilot: light T-brand surface. Candlelight yellow #FFDD2D,
+     ink #333, link blue #126DF7 -- all from the prototype's style.css. */
+  .pcard[data-brand="tt"] {
+    --pbg: #f6f7f8; --pink: #333; --pmuted: rgba(0,0,0,0.54); --pbrand: #126DF7;
+    --pline: rgba(0,0,0,0.10); --pspec: rgba(255,255,255,0.66);
+    --pserif: var(--serif); --pmono: var(--font-mono); --pdisp: var(--font-mono);
+  }
+  .pcard[data-brand="tt"] .p-art {
+    background:
+      radial-gradient(85% 55% at 88% 0%, rgba(255,221,45,0.42), transparent 62%),
+      linear-gradient(180deg, #fff 0%, #f6f7f8 46%);
+  }
+  .pcard[data-brand="tt"] .p-tag { font-style: italic; letter-spacing: -0.02em; }
+  /* prize ribbon -- the case-championship placing */
+  .ttprize {
+    margin-top: 13px; align-self: flex-start;
+    display: flex; align-items: center; gap: 8px;
+    background: #FFDD2D; border-radius: 999px; padding: 5px 13px 5px 9px;
+    box-shadow: 0 3px 10px rgba(255,221,45,0.5);
+  }
+  .ttprize svg { width: 14px; height: 14px; flex: 0 0 auto; }
+  .ttprize span {
+    font-family: var(--font-sans); font-weight: 600; font-size: 10.5px;
+    letter-spacing: 0.04em; color: #333;
+  }
+  /* the inline Copilot panel, rebuilt from .copilot-inline__* in style.css */
+  .ttchat {
+    background: #fff; border: 1px solid #e0e0e0; border-radius: 20px; overflow: hidden;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.04);
+  }
+  .ttchat .c-hd {
+    background: #FFDD2D; padding: 8px 14px; display: flex; align-items: center; gap: 7px;
+  }
+  .ttchat .c-hd b { font-family: var(--font-sans); font-weight: 600; font-size: 12px; color: #333; }
+  .ttchat .c-hd i {
+    font-style: normal; background: #333; color: #FFDD2D;
+    font-family: var(--font-sans); font-size: 8px; font-weight: 700;
+    letter-spacing: 0.5px; padding: 2px 6px; border-radius: 7px;
+  }
+  .ttchat .c-body { padding: 12px 14px; display: flex; flex-direction: column; gap: 9px; }
+  .ttmsg { display: flex; gap: 8px; max-width: 92%; font-family: var(--font-sans); }
+  .ttmsg.me { align-self: flex-end; flex-direction: row-reverse; }
+  .ttmsg .av {
+    width: 22px; height: 22px; border-radius: 50%; flex: 0 0 auto;
+    background: #f5f5f5; display: grid; place-items: center;
+  }
+  .ttmsg.me .av { background: #FFDD2D; }
+  .ttmsg .av svg { width: 12px; height: 12px; }
+  .ttmsg p {
+    background: #f5f5f5; border-radius: 14px; padding: 8px 11px;
+    font-size: 11.5px; line-height: 1.45; color: #333; margin: 0;
+  }
+  .ttmsg.me p { background: #FFDD2D; }
+  /* flight result card -- .result-card */
+  .ttres { background: #fff; border: 1px solid #eee; border-radius: 11px; padding: 10px; margin-top: 2px; }
+  .ttres .r-h {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
+    font-family: var(--font-sans); font-size: 12px; font-weight: 600; color: #333;
+  }
+  .ttres .r-d { font-family: var(--font-sans); font-size: 11px; color: #999; margin-top: 2px; }
+  .ttres .r-a { display: flex; gap: 6px; margin-top: 8px; }
+  .ttres .r-a b, .ttres .r-a i {
+    font-style: normal; font-family: var(--font-sans); font-size: 10.5px; font-weight: 500;
+    border-radius: 9px; padding: 5px 11px;
+  }
+  .ttres .r-a b { background: #FFDD2D; color: #333; }
+  .ttres .r-a i { background: #f5f5f5; color: #666; }
+  .ttchips { display: flex; flex-wrap: wrap; gap: 5px; padding: 0 14px 11px; }
+  .ttchips span {
+    font-family: var(--font-sans); font-size: 10.5px; color: #666;
+    background: #fff; border: 1px solid #e0e0e0; border-radius: 20px; padding: 5px 11px;
+  }
+  /* the four Copilot scenarios from the case (README) */
+  .ttsc { margin-top: 13px; display: grid; gap: 6px; }
+  .ttsc div {
+    display: flex; align-items: baseline; gap: 8px;
+    font-family: var(--font-sans); font-size: 10.5px; line-height: 1.4;
+  }
+  .ttsc svg { width: 13px; height: 13px; flex: 0 0 auto; transform: translateY(2px); }
+  .ttsc b { font-weight: 600; color: #333; }
+  .ttsc em { font-style: normal; color: rgba(0,0,0,0.5); }
+  /* the three integration surfaces the case shipped */
+  .ttsurf { margin-top: 12px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+  .ttsurf div {
+    background: rgba(255,255,255,0.72); border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 10px; padding: 9px 10px;
+  }
+  .ttsurf b {
+    display: block; font-family: var(--font-sans); font-weight: 600; font-size: 10.5px; color: #333;
+  }
+  .ttsurf em {
+    display: block; margin-top: 2px; font-style: normal;
+    font-family: var(--font-sans); font-size: 9.5px; line-height: 1.35; color: rgba(0,0,0,0.5);
+  }
+
+  .pcard[data-brand="soon"] {
+    --pbg: #090909; --pink: rgba(245,245,247,0.82); --pmuted: rgba(245,245,247,0.34);
+    --pbrand: rgba(245,245,247,0.42);
+    --pline: rgba(245,245,247,0.12);
+    --pserif: var(--serif); --pmono: var(--font-mono); --pdisp: var(--font-mono);
+  }
+  /* the placeholder's body fills its box the same way the real posters do */
+  .psoon {
+    flex: 1; display: grid; place-items: center;
+    border: 1px dashed rgba(245,245,247,0.16); border-radius: 4px;
+    font-family: var(--pmono); font-size: 10px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: rgba(245,245,247,0.34);
+  }
+  .pcard[data-brand="soon"] .p-art {
+    background-image: repeating-linear-gradient(-45deg, rgba(245,245,247,0.035) 0 1px, transparent 1px 11px);
+  }
+
+  /* ---- the copy for the centred poster, plain text below the deck ---- */
+  .pinfo { display: grid; margin-top: clamp(26px, 3vw, 40px); }
+  .pinfo > div {
+    grid-area: 1 / 1;
+    max-width: 62ch; margin: 0 auto; text-align: center;
+    opacity: 0; transform: translateY(9px); pointer-events: none;
+    transition: opacity .4s ease, transform .4s ease;
+  }
+  .pinfo > div.on { opacity: 1; transform: none; pointer-events: auto; }
+  .pi-k {
+    font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: rgba(245,245,247,0.44);
+  }
+  .pi-t {
+    margin-top: 11px; font-size: 16px; line-height: 1.66;
+    color: rgba(245,245,247,0.74); text-wrap: pretty;
+  }
+  .pi-t b { color: #fff; font-weight: 500; }
+  .pi-s {
+    margin-top: 14px; font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.1em; color: rgba(245,245,247,0.36);
+  }
+  .pi-l {
+    display: inline-block; margin-top: 17px;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--accent); text-decoration: none;
+    border-bottom: 1px solid rgba(228,68,42,0.45); padding-bottom: 3px;
+    transition: color .25s ease, border-color .25s ease;
+  }
+  .pi-l:hover { color: #fff; border-color: #fff; }
+
+  /* the section glows in the colour of the centred poster */
+  #projects { position: relative; isolation: isolate; }
+  #projects::before {
+    content: ""; position: absolute; left: 50%; top: 48%;
+    width: 150vw; height: 76%; transform: translate(-50%, -50%);
+    background: radial-gradient(ellipse at center, var(--glowC, transparent), transparent 68%);
+    pointer-events: none; z-index: 0;
+    transition: background .7s ease;
+  }
+  #projects > * { position: relative; z-index: 1; }
 
   /* --- contact --- */
   .contact { text-align: left; }
@@ -686,7 +1253,7 @@
   .rv.in { opacity: 1; transform: none; }
 
   @media (max-width: 900px) {
-    .about-grid, .job, .skill, .edu, .projects { grid-template-columns: 1fr; }
+    .about-grid, .job, .skill, .edu { grid-template-columns: 1fr; }
     .metrics { grid-template-columns: repeat(2, 1fr); }
     .lead { max-width: none; }
     .job header { display: flex; flex-direction: column; gap: 4px; }
@@ -725,9 +1292,11 @@
     .skill dt { padding-top: 0; }
     .skill dd { font-size: 15px; }
 
-    .projects { gap: 14px; }
-    .proj { padding: 22px 20px; }
-    .proj .p-name { font-size: 24px; }
+    /* neighbours peek; the poster keeps its desktop proportions and just scales */
+    .pcar { --slot: 76vw; }
+    .pslot { padding: 0 7px; }
+    .pinfo > div { text-align: left; }
+    .pi-t { font-size: 15px; }
 
     .contact .big { font-size: clamp(34px, 11vw, 52px); }
     .links { gap: 12px 22px; margin-top: 26px; }
@@ -848,7 +1417,7 @@
           <div id="trackOpts">
             <button data-track-btn="aqa" class="on fork-btn fk1">
               <span class="fdot"></span>
-              <span class="ftxt"><b data-i18n-cv="tb1">Lead AQA</b></span>
+              <span class="ftxt"><b data-i18n-cv="tb1">Senior / Lead AQA</b></span>
             </button>
             <button data-track-btn="pm" class="fork-btn fk2">
               <span class="fdot"></span>
@@ -876,7 +1445,7 @@
           <p data-i18n-cv="ab2">I lead the automation team — an automation engineer, an intern I grew from scratch, and two manual QA — and own hiring, mentoring and department-wide training. Test cases live in git and go through code review, like any other code.</p>
           <div class="track">
             <div class="tr-step"><span class="tr-y">2022</span><span class="tr-r" data-i18n-cv="t1">QA Engineer</span><span class="tr-c">MyOffice</span></div>
-            <div class="tr-step"><span class="tr-y">2024</span><span class="tr-r" data-i18n-cv="t2">First QA in the company</span><span class="tr-c">Avroid</span></div>
+            <div class="tr-step"><span class="tr-y">2024</span><span class="tr-r" data-i18n-cv="t2">Senior AQA</span><span class="tr-c">Avroid</span></div>
             <div class="tr-step now"><span class="tr-y">2025</span><span class="tr-r" data-i18n-cv="t3">Lead AQA · own team</span><span class="tr-c">R7</span></div>
           </div>
         </div>
@@ -977,7 +1546,7 @@
         <h2 class="sec-title" data-i18n-cv="s3">Toolkit</h2>
       </div>
       <dl class="skills rv">
-        <div class="skill"><dt data-i18n-cv="k1">Languages</dt><dd data-i18n-cv="k1v">Python <span style="opacity:.5">(primary)</span>, Bash, Groovy, SQL</dd></div>
+        <div class="skill"><dt data-i18n-cv="k1">Languages</dt><dd data-i18n-cv="k1v">Python <span style="opacity:.5">(primary)</span>, Java, Bash, Groovy, SQL</dd></div>
         <div class="skill"><dt data-i18n-cv="k2">Automation</dt><dd data-i18n-cv="k2v">Playwright, pytest, Selenium, Appium, requests, schemathesis, Postman / Newman</dd></div>
         <div class="skill"><dt data-i18n-cv="k3">Testing</dt><dd data-i18n-cv="k3v">UI, API (REST, contracts from OpenAPI), integration, regression, security</dd></div>
         <div class="skill"><dt data-i18n-cv="k4">CI/CD &amp; Infra</dt><dd data-i18n-cv="k4v">Jenkins (Job DSL), Infrastructure as Code, Ansible, GitHub Actions, Docker, Git</dd></div>
@@ -1010,25 +1579,306 @@
     <section class="sec" id="projects" data-screen-label="05 Projects">
       <div class="sec-head rv">
         <span class="sec-num">05</span>
-        <h2 class="sec-title" data-i18n-cv="s5">Side projects</h2>
+        <h2 class="sec-title" data-i18n-cv="s5">Current projects</h2>
       </div>
-      <div class="projects rv">
-        <a class="proj" href="https://apps.apple.com/us/app/p-r-o/id6749865568?l=ru" target="_blank" rel="noopener">
-          <div class="p-top">
-            <span class="p-name">P.R.O.</span>
-            <span class="p-arrow">↗</span>
+      <div class="pcar rv" id="pcar">
+        <div class="pcar-track" id="pcarTrack">
+          <div class="pcar-pad"></div>
+          <div class="pslot">
+            <a class="pcard" data-brand="fita" data-glow="122,43,34" href="https://appfita.ru" target="_blank" rel="noopener" aria-label="FITA">
+              <div class="p-art">
+                <div class="p-mark"><span data-i18n-cv="f_kind">iOS + Android · Kotlin Multiplatform</span><span class="p-arrow">↗</span></div>
+                <div class="p-name">FITA</div>
+                <div class="p-tag" data-i18n-cv="f_tag">She knows your body better than you do</div>
+                <div class="p-deco">
+                  <div class="fstage">
+                    <div class="fphone">
+                      <div class="fscr">
+                        <div class="fhead" data-i18n-cv="f_ch0">Fita</div>
+                        <span class="fb-a" data-i18n-cv="f_ch1">You slept 6 h 40 m, and deep sleep was short.</span>
+                        <div class="fwid">
+                          <div class="w-k"><span data-i18n-cv="f_wk">Sleep · tonight</span><span class="w-v">6:40</span></div>
+                          <svg class="hyp" viewBox="0 0 100 27" preserveAspectRatio="none" aria-hidden="true"><rect x="1.00" y="0.60" width="1.53" height="4.6" rx="1.3" fill="#C2683C"/><line x1="2.88" y1="2.90" x2="2.88" y2="16.10" stroke="#DAD0BE" stroke-width="0.5"/><rect x="2.88" y="13.80" width="5.75" height="4.6" rx="1.3" fill="#5A7184"/><line x1="8.97" y1="16.10" x2="8.97" y2="22.70" stroke="#DAD0BE" stroke-width="0.5"/><rect x="8.97" y="20.40" width="9.50" height="4.6" rx="1.3" fill="#3A4F63"/><line x1="18.82" y1="22.70" x2="18.82" y2="16.10" stroke="#DAD0BE" stroke-width="0.5"/><rect x="18.82" y="13.80" width="6.68" height="4.6" rx="1.3" fill="#5A7184"/><line x1="25.85" y1="16.10" x2="25.85" y2="9.50" stroke="#DAD0BE" stroke-width="0.5"/><rect x="25.85" y="7.20" width="3.40" height="4.6" rx="1.3" fill="#8FB0C7"/><line x1="29.60" y1="9.50" x2="29.60" y2="16.10" stroke="#DAD0BE" stroke-width="0.5"/><rect x="29.60" y="13.80" width="7.62" height="4.6" rx="1.3" fill="#5A7184"/><line x1="37.57" y1="16.10" x2="37.57" y2="22.70" stroke="#DAD0BE" stroke-width="0.5"/><rect x="37.57" y="20.40" width="6.21" height="4.6" rx="1.3" fill="#3A4F63"/><line x1="44.14" y1="22.70" x2="44.14" y2="16.10" stroke="#DAD0BE" stroke-width="0.5"/><rect x="44.14" y="13.80" width="6.68" height="4.6" rx="1.3" fill="#5A7184"/><line x1="51.17" y1="16.10" x2="51.17" y2="9.50" stroke="#DAD0BE" stroke-width="0.5"/><rect x="51.17" y="7.20" width="5.28" height="4.6" rx="1.3" fill="#8FB0C7"/><line x1="56.80" y1="9.50" x2="56.80" y2="2.90" stroke="#DAD0BE" stroke-width="0.5"/><rect x="56.80" y="0.60" width="1.06" height="4.6" rx="1.3" fill="#C2683C"/><line x1="58.21" y1="2.90" x2="58.21" y2="16.10" stroke="#DAD0BE" stroke-width="0.5"/><rect x="58.21" y="13.80" width="8.56" height="4.6" rx="1.3" fill="#5A7184"/><line x1="67.11" y1="16.10" x2="67.11" y2="9.50" stroke="#DAD0BE" stroke-width="0.5"/><rect x="67.11" y="7.20" width="5.75" height="4.6" rx="1.3" fill="#8FB0C7"/><line x1="73.21" y1="9.50" x2="73.21" y2="16.10" stroke="#DAD0BE" stroke-width="0.5"/><rect x="73.21" y="13.80" width="5.28" height="4.6" rx="1.3" fill="#5A7184"/><line x1="78.84" y1="16.10" x2="78.84" y2="22.70" stroke="#DAD0BE" stroke-width="0.5"/><rect x="78.84" y="20.40" width="3.40" height="4.6" rx="1.3" fill="#3A4F63"/><line x1="82.59" y1="22.70" x2="82.59" y2="16.10" stroke="#DAD0BE" stroke-width="0.5"/><rect x="82.59" y="13.80" width="5.75" height="4.6" rx="1.3" fill="#5A7184"/><line x1="88.68" y1="16.10" x2="88.68" y2="9.50" stroke="#DAD0BE" stroke-width="0.5"/><rect x="88.68" y="7.20" width="6.21" height="4.6" rx="1.3" fill="#8FB0C7"/><line x1="95.25" y1="9.50" x2="95.25" y2="16.10" stroke="#DAD0BE" stroke-width="0.5"/><rect x="95.25" y="13.80" width="2.46" height="4.6" rx="1.3" fill="#5A7184"/><line x1="98.06" y1="16.10" x2="98.06" y2="2.90" stroke="#DAD0BE" stroke-width="0.5"/><rect x="98.06" y="0.60" width="0.60" height="4.6" rx="1.3" fill="#C2683C"/></svg>
+                          <div class="w-lg">
+                            <span><em style="background:#3A4F63"></em><span data-i18n-cv="f_wd">Deep</span></span>
+                            <span><em style="background:#5A7184"></em><span data-i18n-cv="f_wc">Light</span></span>
+                            <span><em style="background:#8FB0C7"></em>REM</span>
+                            <span><em style="background:#C2683C"></em><span data-i18n-cv="f_wa">Awake</span></span>
+                          </div>
+                        </div>
+                        <span class="fb-u" data-i18n-cv="f_ch2">what then?</span>
+                        <div class="fask">
+                          <p data-i18n-cv="f_ch3">Then an easy 5 km instead of intervals. Shall I move it?</p>
+                          <div><b data-i18n-cv="f_yes">Go on</b><u data-i18n-cv="f_no">Not now</u></div>
+                        </div>
+                        <div class="fcomp"></div>
+                      </div>
+                    </div>
+                    <div class="fside">
+                      <div class="ftile">
+                        <span class="t-hd"><span class="t-lbl" data-i18n-cv="f_tl">Steps</span><span class="t-ln"><i style="width:84%"></i></span></span>
+                        <span class="t-num">8 432</span>
+                        <span class="t-cap" data-i18n-cv="f_tc">of 10 000</span>
+                        <span class="twk"><i style="height:55%"></i><i style="height:81%"></i><i style="height:66%"></i><i class="on" style="height:100%"></i><i style="height:79%"></i><i style="height:47%"></i><i style="height:75%"></i></span>
+                      </div>
+                      <div class="ftile">
+                        <span class="t-lbl" data-i18n-cv="f_rd">Readiness</span>
+                        <span class="fbat"><span class="b-n">74</span><span class="b-box"><i style="width:74%"></i></span></span>
+                        <span class="t-cap" data-i18n-cv="f_rdc">HRV · sleep · resting HR</span>
+                      </div>
+                      <div class="fquad">
+                        <div class="ftile">
+                          <span class="t-lbl" data-i18n-cv="f_st">Streak</span>
+                          <span class="fstk">
+                            <svg viewBox="0 0 48 48" aria-hidden="true">
+                              <circle cx="24" cy="24" r="20" fill="none" stroke="#7A2B22" stroke-opacity="0.15" stroke-width="6"></circle>
+                              <circle cx="24" cy="24" r="20" fill="none" stroke="#7A2B22" stroke-width="6" stroke-linecap="round" stroke-dasharray="108 126" transform="rotate(-90 24 24)"></circle>
+                            </svg>
+                            <b>21</b>
+                          </span>
+                          <span class="fdots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i class="on"></i></span>
+                        </div>
+                        <div class="ftile">
+                          <span class="t-lbl" data-i18n-cv="f_rg">Rings</span>
+                          <svg class="frings" viewBox="0 0 128 128" aria-hidden="true">
+                            <g transform="rotate(-90 64 64)">
+                              <circle cx="64" cy="64" r="56" fill="none" stroke="#7A2B22" stroke-opacity="0.15" stroke-width="12"></circle>
+                              <circle cx="64" cy="64" r="56" fill="none" stroke="#7A2B22" stroke-width="12" stroke-linecap="round" stroke-dasharray="295 352"></circle>
+                              <circle cx="64" cy="64" r="39" fill="none" stroke="#C2683C" stroke-opacity="0.15" stroke-width="12"></circle>
+                              <circle cx="64" cy="64" r="39" fill="none" stroke="#C2683C" stroke-width="12" stroke-linecap="round" stroke-dasharray="167 245"></circle>
+                              <circle cx="64" cy="64" r="22" fill="none" stroke="#6F8B4F" stroke-opacity="0.15" stroke-width="12"></circle>
+                              <circle cx="64" cy="64" r="22" fill="none" stroke="#6F8B4F" stroke-width="12" stroke-linecap="round" stroke-dasharray="129 138"></circle>
+                            </g>
+                          </svg>
+                        </div>
+                      </div>
+                      <ul class="ffeat">
+                        <li data-i18n-cv="ff1">An agent with memory</li>
+                        <li data-i18n-cv="ff2">Live widgets inside the chat</li>
+                        <li data-i18n-cv="ff4">Real health data only</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="fmcp">
+                    <div class="fm-row">
+                      <span class="fm-mcp">MCP</span>
+                      <span class="fm-mark">Ф</span>
+                      <span class="fm-plus">+</span>
+                      <span class="fm-agent">Claude</span>
+                      <span class="fm-agent">ChatGPT</span>
+                      <span class="fm-agent" data-i18n-cv="f_any">any agent</span>
+                    </div>
+                    <div class="fm-cap" data-i18n-cv="f_mcp">Your health is not locked in one app — any agent reads the metrics, you decide what is shared.</div>
+                  </div>
+                </div>
+              </div>
+            </a>
           </div>
-          <div class="p-desc" data-i18n-cv="p1d"><em class="ai">AI</em>A sports statistics app with AI. I built the backend and the AI features — recommendations, goals, forecasting, and the assistant.</div>
-          <div class="p-meta">iOS · App Store</div>
-        </a>
-        <a class="proj" href="https://github.com/ananasDDA" target="_blank" rel="noopener">
-          <div class="p-top">
-            <span class="p-name">PRO Local AI Lab</span>
-            <span class="p-arrow">↗</span>
+          <div class="pslot">
+            <a class="pcard" data-brand="pro" data-glow="212,45,120" href="https://apps.apple.com/us/app/p-r-o/id6749865568?l=ru" target="_blank" rel="noopener" aria-label="P.R.O.">
+              <div class="p-art">
+                <div class="p-mark"><span data-i18n-cv="pr_kind">iOS · SwiftUI · Shipped</span><span class="p-arrow">↗</span></div>
+                <img class="prologo" src="assets/pro_logo.png" alt="P.R.O.">
+                <div class="p-tag" data-i18n-cv="pr_tag">Progress. Records. Optimization.</div>
+                <span class="p-role" data-i18n-cv="pr_role">Co-founder</span>
+                <div class="p-deco">
+                  <div class="pstage">
+                    <div class="pphone">
+                      <div class="pscr">
+                        <div class="s-h"><span data-i18n-cv="pr_s1">Today's Activity</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#007AFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg></div>
+                        <div class="pmg">
+                          <div class="pmc"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#34C759" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"/><path d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"/><path d="M16 17h4"/><path d="M4 13h4"/></svg><span class="m-v"><b>12,431</b></span><div class="m-t" data-i18n-cv="pmS">Steps</div><div class="m-s" data-i18n-cv="pr_td">Today</div></div>
+                          <div class="pmc"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FF9500" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg><span class="m-v"><b>642</b><u>kcal</u></span><div class="m-t" data-i18n-cv="pm1">Active Energy</div><div class="m-s" data-i18n-cv="pr_td">Today</div></div>
+                          <div class="pmc"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#007AFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 9l-3 3 3 3"/><path d="M9 5l3-3 3 3"/><path d="M15 19l-3 3-3-3"/><path d="M19 9l3 3-3 3"/><path d="M2 12h20"/><path d="M12 2v20"/></svg><span class="m-v"><b>8.6</b><u>km</u></span><div class="m-t" data-i18n-cv="pmD">Distance</div><div class="m-s" data-i18n-cv="pr_td">Today</div></div>
+                          <div class="pmc"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#AF52DE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg><span class="m-v"><b>11</b></span><div class="m-t" data-i18n-cv="pmF">Flights Up</div><div class="m-s" data-i18n-cv="pr_td">Today</div></div>
+                        </div>
+                        <div class="pstreak">
+                          <div class="k-r">
+                            <span class="k-f"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FF9500" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span>
+                            <span>
+                              <span class="k-t" data-i18n-cv="pr_k1">14-day streak 🔥</span>
+                              <span class="k-s" data-i18n-cv="pr_k2">16 days to your 30-day milestone</span>
+                            </span>
+                          </div>
+                          <div class="k-b"><i></i></div>
+                        </div>
+                        <div class="ptabs">
+                          <span class="on"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#D42D78" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><em data-i18n-cv="pr_t1">Home</em></span>
+                          <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(235,235,245,0.45)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"/><path d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"/><path d="M16 17h4"/><path d="M4 13h4"/></svg><em data-i18n-cv="pr_t2">Workouts</em></span>
+                          <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(235,235,245,0.45)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/></svg><em data-i18n-cv="pr_t3">Plan</em></span>
+                          <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(235,235,245,0.45)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg><em data-i18n-cv="pr_t4">Stats</em></span>
+                          <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(235,235,245,0.45)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><em data-i18n-cv="pr_t5">Profile</em></span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="pside">
+                      <div class="pcardlet phr">
+                        <div class="phr-h">
+                          <span class="h-t" data-i18n-cv="pr_hr">Resting Heart Rate</span>
+                          <span class="h-v"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#D42D78" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>64 <u data-i18n-cv="pr_bpm">bpm avg</u></span>
+                        </div>
+                        <div class="phr-s" data-i18n-cv="pr_hrs">BPM · last 7 days</div>
+                        <svg viewBox="0 0 300 96" aria-hidden="true"><defs><linearGradient id="rhrLine" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#FF6FA5"/><stop offset="100%" stop-color="#D42D78"/></linearGradient><linearGradient id="rhrArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#D42D78" stop-opacity="0.32"/><stop offset="100%" stop-color="#D42D78" stop-opacity="0.02"/></linearGradient></defs><line x1="22" y1="80.0" x2="294" y2="80.0" stroke="rgba(235,235,245,0.14)" stroke-width="0.7"/><text x="18" y="83.0" text-anchor="end" font-size="8.5" fill="rgba(235,235,245,0.6)">50</text><line x1="22" y1="55.3" x2="294" y2="55.3" stroke="rgba(235,235,245,0.14)" stroke-width="0.7"/><text x="18" y="58.3" text-anchor="end" font-size="8.5" fill="rgba(235,235,245,0.6)">60</text><line x1="22" y1="30.7" x2="294" y2="30.7" stroke="rgba(235,235,245,0.14)" stroke-width="0.7"/><text x="18" y="33.7" text-anchor="end" font-size="8.5" fill="rgba(235,235,245,0.6)">70</text><line x1="22" y1="6.0" x2="294" y2="6.0" stroke="rgba(235,235,245,0.14)" stroke-width="0.7"/><text x="18" y="9.0" text-anchor="end" font-size="8.5" fill="rgba(235,235,245,0.6)">80</text><path d="M22.0 50.4 L67.3 43.0 L112.7 52.9 L158.0 30.7 L203.3 40.5 L248.7 25.7 L294.0 45.5 L294.0 80.0 L22 80.0 Z" fill="url(#rhrArea)"/><path d="M22.0 50.4 L67.3 43.0 L112.7 52.9 L158.0 30.7 L203.3 40.5 L248.7 25.7 L294.0 45.5" fill="none" stroke="url(#rhrLine)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="22.0" cy="50.4" r="2.6" fill="#D42D78" stroke="#1C1C1E" stroke-width="1.4"/><circle cx="67.3" cy="43.0" r="2.6" fill="#D42D78" stroke="#1C1C1E" stroke-width="1.4"/><circle cx="112.7" cy="52.9" r="2.6" fill="#D42D78" stroke="#1C1C1E" stroke-width="1.4"/><circle cx="158.0" cy="30.7" r="2.6" fill="#D42D78" stroke="#1C1C1E" stroke-width="1.4"/><circle cx="203.3" cy="40.5" r="2.6" fill="#D42D78" stroke="#1C1C1E" stroke-width="1.4"/><circle cx="248.7" cy="25.7" r="2.6" fill="#D42D78" stroke="#1C1C1E" stroke-width="1.4"/><circle cx="294.0" cy="45.5" r="2.6" fill="#D42D78" stroke="#1C1C1E" stroke-width="1.4"/><text x="22.0" y="92" text-anchor="middle" font-size="8.5" fill="rgba(235,235,245,0.6)">Mon</text><text x="67.3" y="92" text-anchor="middle" font-size="8.5" fill="rgba(235,235,245,0.6)">Tue</text><text x="112.7" y="92" text-anchor="middle" font-size="8.5" fill="rgba(235,235,245,0.6)">Wed</text><text x="158.0" y="92" text-anchor="middle" font-size="8.5" fill="rgba(235,235,245,0.6)">Thu</text><text x="203.3" y="92" text-anchor="middle" font-size="8.5" fill="rgba(235,235,245,0.6)">Fri</text><text x="248.7" y="92" text-anchor="middle" font-size="8.5" fill="rgba(235,235,245,0.6)">Sat</text><text x="294.0" y="92" text-anchor="middle" font-size="8.5" fill="rgba(235,235,245,0.6)">Sun</text></svg>
+                      </div>
+                      <div class="pcardlet pgw">
+                        <div class="g-t" data-i18n-cv="pr_g0">Monthly Goals</div>
+                        <div class="g-g">
+                          <div class="g-r"><span data-i18n-cv="pr_g1">Run 50 km</span><em style="color:#34C759">72%</em></div>
+                          <div class="g-b"><i style="width:72%;background:#34C759"></i></div>
+                        </div>
+                        <div class="g-g">
+                          <div class="g-r"><span data-i18n-cv="pr_g2">Cycle 120 km</span><em style="color:#007AFF">45%</em></div>
+                          <div class="g-b"><i style="width:45%;background:#007AFF"></i></div>
+                        </div>
+                        <div class="g-g">
+                          <div class="g-r"><span data-i18n-cv="pr_g3">Swim 8 km</span><em style="color:#30B0C7">28%</em></div>
+                          <div class="g-b"><i style="width:28%;background:#30B0C7"></i></div>
+                        </div>
+                      </div>
+                      <div class="pbadges">
+                        <span class="pb-k" data-i18n-cv="pb_k">Records</span>
+                        <img src="assets/badges/first_5k.png" alt="First 5K badge">
+                        <img src="assets/badges/consistency.png" alt="Consistency badge">
+                        <img src="assets/badges/goal_completed.png" alt="Goal completed badge">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="pai">
+                    <span class="ai-pill">PRO✨</span>
+                    <span class="ai-t" data-i18n-cv="pr_ai">The AI assistant turns workouts into recommendations, goals and forecasts.</span>
+                  </div>
+                </div>
+              </div>
+            </a>
           </div>
-          <div class="p-desc" data-i18n-cv="p2d">Running LLMs and VLMs locally on iPhone — MLX, llama.cpp, Core ML, Whisper, Hugging Face.</div>
-          <div class="p-meta">On-device · Research</div>
-        </a>
+          <div class="pslot">
+            <a class="pcard" data-brand="lab" data-glow="127,224,212" href="https://github.com/ananasDDA" target="_blank" rel="noopener" aria-label="Local AI Lab">
+              <div class="p-art">
+                <div class="p-mark"><span data-i18n-cv="la_kind">iPhone · On-device inference</span><span class="p-arrow">↗</span></div>
+                <div class="p-name">Local AI Lab</div>
+                <div class="p-tag" data-i18n-cv="la_tag">The model runs on your iPhone. No cloud.</div>
+                <div class="p-deco">
+                  <div class="lterm">
+                    <span class="lp">$</span> pull hf://Qwen/Qwen2.5-3B-Instruct · Q4<br>
+                    <b>1.9 GB</b> → iPhone · no server in between<br>
+                    <span class="lp">$</span> load qwen2.5-3b · Q4 · mlx<br>
+                    <b>ready</b> · 1.9 GB resident · first token 0.4 s<br>
+                    <span class="lp">$</span> vlm describe photo.heic<br>
+                    <b>caption</b> in 1.2 s · fully offline<br>
+                    <span class="lp">$</span> whisper base → tts · round trip 0.9 s
+                  </div>
+                  <div class="ltab">
+                    <div class="l-hd"><span data-i18n-cv="la_c1">Model</span><span data-i18n-cv="la_c2">Quant</span><span data-i18n-cv="la_c3">Speed</span><span data-i18n-cv="la_c4">Memory</span></div>
+                    <div class="l-r"><b>qwen2.5-3b</b><span>Q4</span><em>42 tok/s</em><span>1.9 GB</span></div>
+                    <div class="l-r"><b>llama-3.2-1b</b><span>Q8</span><em>78 tok/s</em><span>1.3 GB</span></div>
+                    <div class="l-r"><b>whisper-base</b><span>fp16</span><em>0.8× RT</em><span>0.6 GB</span></div>
+                    <div class="l-r"><b>smolvlm-256m</b><span>Q4</span><em>1.2 s / img</em><span>0.4 GB</span></div>
+                  </div>
+                  <div class="lhf">
+                    <img class="hf-m" src="assets/huggingface.svg" alt="Hugging Face">
+                    <span class="hf-b">
+                      <span class="hf-n">Hugging Face</span>
+                      <span class="hf-t" data-i18n-cv="la_hf">Models pull straight to the iPhone — pick it on the Hub, download, run. No server in between.</span>
+                    </span>
+                    <span class="hf-p" data-i18n-cv="la_hfp">Direct</span>
+                  </div>
+                  <div class="lchips"><span>MLX</span><span>llama.cpp</span><span>Core ML</span><span>Whisper</span><span>ANE</span></div>
+                  <div class="lfoot" data-i18n-cv="la_foot">100% on iPhone · no cloud · no subscription</div>
+                </div>
+              </div>
+            </a>
+          </div>
+          <div class="pslot">
+            <a class="pcard" data-brand="tt" data-glow="255,221,45" href="https://ananasDDA.github.io/t-travel-copilot-prototype/" target="_blank" rel="noopener" aria-label="AI Travel Copilot">
+              <div class="p-art">
+                <div class="p-mark"><span data-i18n-cv="tt_kind">Case championship · Prototype</span><span class="p-arrow">↗</span></div>
+                <div class="p-name" data-i18n-cv="tt_nm">AI Travel Copilot</div>
+                <div class="p-tag" data-i18n-cv="tt_tag">An assistant that plans the trip for you</div>
+                <div class="ttprize">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                  <span data-i18n-cv="tt_pz">Prize place · case championship, largest bank</span>
+                </div>
+                <div class="ttsc">
+                  <div>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#126DF7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>
+                    <span><b data-i18n-cv="tt_x1">Inspiration</b> — <em data-i18n-cv="tt_x1d">describe the trip, get a personal shortlist</em></span>
+                  </div>
+                  <div>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#126DF7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="m14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                    <span><b data-i18n-cv="tt_x2">Video link</b> — <em data-i18n-cv="tt_x2d">paste a Reels or TikTok, get a plan</em></span>
+                  </div>
+                  <div>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#126DF7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+                    <span><b data-i18n-cv="tt_x3">Comparison</b> — <em data-i18n-cv="tt_x3d">top flights with a detailed breakdown</em></span>
+                  </div>
+                  <div>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#126DF7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 12H3"/><path d="M16 6H3"/><path d="M16 18H3"/><path d="m17 12 2 2 4-4"/></svg>
+                    <span><b data-i18n-cv="tt_x4">Checklist</b> — <em data-i18n-cv="tt_x4d">insurance, currency, eSIM, taxi</em></span>
+                  </div>
+                </div>
+                <div class="p-deco">
+                  <div class="ttchat">
+                    <div class="c-hd">
+                      <b data-i18n-cv="tt_ch">Travel Copilot</b>
+                      <i>AI</i>
+                    </div>
+                    <div class="c-body">
+                      <div class="ttmsg me">
+                        <span class="av"><svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+                        <p data-i18n-cv="tt_m1">Warm sea in October, up to 60k, direct flight</p>
+                      </div>
+                      <div class="ttmsg">
+                        <span class="av"><svg viewBox="0 0 24 24" fill="none" stroke="#126DF7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg></span>
+                        <p data-i18n-cv="tt_m2">Three options. Best on price and weather — Antalya, +26°C.</p>
+                      </div>
+                      <div class="ttres">
+                        <div class="r-h"><span>Moscow → Antalya</span><span>52 400 ₽</span></div>
+                        <div class="r-d" data-i18n-cv="tt_rd">12 Oct · direct · 3 h 40 m · 7% cashback</div>
+                        <div class="r-a"><b data-i18n-cv="tt_b1">Choose</b><i data-i18n-cv="tt_b2">Compare top-3</i></div>
+                      </div>
+                    </div>
+                    <div class="ttchips">
+                      <span data-i18n-cv="tt_c1">Plan from a Reels link</span>
+                      <span data-i18n-cv="tt_c2">Pre-trip checklist</span>
+                    </div>
+                  </div>
+                  <div class="ttsurf">
+                    <div><b data-i18n-cv="tt_s1">Home</b><em data-i18n-cv="tt_s1d">Inline chat, 4 scenarios</em></div>
+                    <div><b data-i18n-cv="tt_s2">Search</b><em data-i18n-cv="tt_s2d">Copilot on flight cards</em></div>
+                    <div><b data-i18n-cv="tt_s3">Trip Hub</b><em data-i18n-cv="tt_s3d">Timeline, push, savings</em></div>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+          <div class="pcar-pad"></div>
+        </div>
+      </div>
+      <div class="pinfo rv" id="pinfo">
+        <div class="on">
+          <div class="pi-k" data-i18n-cv="f_kind">iOS + Android · Kotlin Multiplatform</div>
+          <p class="pi-t" data-i18n-cv="f_desc">A fitness app built around an agent that remembers you and assembles your home screen for you — one codebase for iOS and Android. Chat is the product, not a help desk: widgets live inside the conversation and the agent can do anything the user can. Real health data only, own backend, and an MCP server that opens the metrics to any agent.</p>
+          <div class="pi-s" data-i18n-cv="f_st">Kotlin Multiplatform · Compose · SQLDelight · HealthKit · Health Connect · MapKit</div>
+          <a class="pi-l" href="https://appfita.ru" target="_blank" rel="noopener" data-i18n-cv="pi_site">appfita.ru →</a>
+        </div>
+        <div>
+          <div class="pi-k" data-i18n-cv="pr_kind">iOS · SwiftUI · Shipped</div>
+          <p class="pi-t" data-i18n-cv="pr_desc"><b>Co-founder.</b> A sports statistics app that turns Apple Health workouts into analytics, goals, records and streaks. I own the backend and the AI features — recommendations, goals matched to fitness level, progress forecasting, the assistant — and took it from idea to the App Store, Apple review included.</p>
+          <div class="pi-s" data-i18n-cv="pr_st">SwiftUI · HealthKit · CoreData · Firebase · Widgets</div>
+          <a class="pi-l" href="https://apps.apple.com/us/app/p-r-o/id6749865568?l=ru" target="_blank" rel="noopener" data-i18n-cv="pi_store">App Store →</a>
+        </div>
+        <div>
+          <div class="pi-k" data-i18n-cv="la_kind">iOS · On-device inference</div>
+          <p class="pi-t" data-i18n-cv="la_desc">Language and multimodal models running directly on iPhone — no cloud, no subscription. Text, images, speech recognition and synthesis, with models pulled from Hugging Face and chosen automatically for the device. Every run reports tokens/sec, latency and memory, so the trade-off between quality, speed and RAM stays explicit.</p>
+          <div class="pi-s" data-i18n-cv="la_st">MLX · llama.cpp · Core ML · Whisper · Hugging Face</div>
+          <a class="pi-l" href="https://github.com/ananasDDA" target="_blank" rel="noopener" data-i18n-cv="pi_gh">GitHub →</a>
+        </div>
+        <div>
+          <div class="pi-k" data-i18n-cv="tt_kind">Case championship · Prototype</div>
+          <p class="pi-t" data-i18n-cv="tt_desc"><b>Prize place at a case championship run by the country's largest bank.</b> An AI copilot built into a travel booking product, prototyped across all three surfaces where it earns its place: inline chat on the home page, contextual help on flight cards, and a post-purchase Trip Hub. It plans from a plain-language wish or even a Reels link, compares the top three options, and follows the trip through to insurance, eSIM and currency.</p>
+          <div class="pi-s" data-i18n-cv="tt_st">HTML · CSS · vanilla JS · no framework, no build step</div>
+          <a class="pi-l" href="https://ananasDDA.github.io/t-travel-copilot-prototype/" target="_blank" rel="noopener" data-i18n-cv="pi_demo">Live demo →</a>
+        </div>
       </div>
     </section>
 
@@ -1175,10 +2025,10 @@
     j1w: "Один из двух вендоров, заменивших Microsoft 365 в госсекторе и крупном бизнесе. Корпоративный сервер — <b>аналог Google Workspace · Microsoft 365</b>, развёрнутый на железе заказчика.",
     j2w: "Входит в Fplus — один из крупнейших ИТ-холдингов России. Продукт — <b>аналог Windows Subsystem for Android</b>: Android-приложения в изолированных контейнерах внутри мобильного Linux.",
     j3w: "Лидер рынка офисного ПО и <b>аналог Microsoft Office</b> — пакет по умолчанию в федеральных министерствах и крупнейших компаниях — веб, десктоп, мобайл.",
-    tb: "Смотреть как", tb1: "Lead AQA", tb2: "Продакт-менеджер · AI", tb3: "AI / LLM инженер",
+    tb: "Смотреть как", tb1: "Senior / Lead AQA", tb2: "Продакт-менеджер · AI", tb3: "AI / LLM инженер",
     j2d: "RAG-система по документации ОС Аврора и агент для отдела поддержки: ответ с опорой на документацию и автоматическое воспроизведение сценария на эмуляторе мобильного Linux.",
-    t1: "QA-инженер", t2: "Первый QA в компании", t3: "Lead AQA · своя команда",
-    s1: "Кто я", s2: "Опыт", s3: "Инструменты", s4: "Образование", s5: "Пет-проекты",
+    t1: "QA-инженер", t2: "Senior AQA", t3: "Lead AQA · своя команда",
+    s1: "Кто я", s2: "Опыт", s3: "Инструменты", s4: "Образование", s5: "Актуальные проекты",
     lead: "Строю автоматизацию тестирования как инженерный продукт — с нуля до production-платформы.",
     ab1: "В Р7 за полтора года собрал полный конвейер тестирования корпоративного сервера: подготовка стендов сократилась с <b>3 дней до 30 минут</b>, ~400 автотестов покрывают 9 модулей продукта, LLM встроена в пайплайн с формальной валидацией результата.",
     ab2: "Веду команду автоматизации — инженер автоматизации, стажёр, выращенный с нуля, и двое ручных тестировщиков. Найм, менторство, обучение отдела. Тест-кейсы живут в git и проходят код-ревью — как любой другой код.",
@@ -1206,6 +2056,8 @@
     j3b: "Ввёл в отделе API-тестирование (Postman, Newman в CLI, документация) — стало стандартом отдела.",
     j3c2: "Полгода закрывал задачи отсутствовавшего DevOps — Docker Compose, мок-серверы на Python, сборки в Jenkins — и передал систему.",
     k1: "Языки", k2: "Автоматизация", k3: "Тестирование", k4: "CI/CD и инфраструктура",
+    k1v: "Python <span style=\"opacity:.5\">(основной)</span>, Java, Bash, Groovy, SQL",
+    k2v: "Playwright, pytest, Selenium, Appium, requests, schemathesis, Postman / Newman",
     k5: "AI в тестировании", k6: "Платформы", k7: "Управление",
     k3v: "UI, API (REST, контракты из OpenAPI), интеграционное, регрессионное, безопасность",
     k4v: "Jenkins (Job DSL), Infrastructure as Code, Ansible, GitHub Actions, Docker, Git",
@@ -1228,11 +2080,11 @@
   });
 
   const CV_PM_EN = {
-    tb: "Read me as", tb1: "Lead AQA", tb2: "Product Manager \u00b7 AI", tb3: "AI / LLM Engineer",
+    tb: "Read me as", tb1: "Senior / Lead AQA", tb2: "Product Manager \u00b7 AI", tb3: "AI / LLM Engineer",
     st1: CV_AQA_EN.st1, st2: CV_AQA_EN.st2, st3: CV_AQA_EN.st3,
     j2d: "A second product for the same team: a RAG system over the Aurora OS documentation plus an agent \u2014 support got an answer grounded in the docs and the scenario reproduced on a mobile-Linux emulator.",
     cue: "Scroll \u2014 this page is the r\u00e9sum\u00e9",
-    s1: "Who I am", s2: "Experience", s3: "Toolkit", s4: "Education", s5: "Own products",
+    s1: "Who I am", s2: "Experience", s3: "Toolkit", s4: "Education", s5: "Current projects",
     lead: "An engineer moving into AI/ML product management. I take AI out of the demo and into production.",
     ab1: "At R7 I found the product's real bottleneck myself, then built and now own an internal platform where an LLM does actual work \u2014 generating tests, triaging failures, reading logs and screenshots \u2014 with validated output, cost control, and graceful degradation that never breaks the pipeline.",
     ab2: "In parallel, as a co-founder, I shipped an AI-powered app to the App Store and launched an iOS app for local LLM inference. Four years of engineering underneath, business informatics at Plekhanov, CS courses at HSE. I look for roles where someone has to decide <b>where AI creates value \u2014 and where it only makes the product more expensive</b>.",
@@ -1240,7 +2092,7 @@
     mv2: "\u22123<small>days</small>", m2: "Off the release<br>cycle",
     mv3: "~10<small>min</small>", m3: "Feedback<br>per commit",
     mv4: "1<small>app</small>", m4: "Shipped to App Store<br>as co-founder",
-    t1: "Release acceptance \u00b7 stakeholders", t2: "First QA \u00b7 built the process", t3: "Platform owner \u00b7 own team",
+    t1: "Release acceptance \u00b7 stakeholders", t2: "Senior AQA \u00b7 built the process", t3: "Platform owner \u00b7 own team",
     j1r: "Lead AQA \u00b7 initiator and owner of the internal testing platform",
     j1w: CV_AQA_EN.j1w, j2w: CV_AQA_EN.j2w, j3w: CV_AQA_EN.j3w,
     j1c: "I joined as the first engineer on the product. Formally Lead AQA \u2014 but I initiated, designed and now grow the automation platform as an internal product: finding the bottlenecks, shaping the plan, and defending it to leadership.",
@@ -1276,11 +2128,11 @@
   };
 
   const CV_PM_RU = {
-    tb: "\u0421\u043c\u043e\u0442\u0440\u0435\u0442\u044c \u043a\u0430\u043a", tb1: "Lead AQA", tb2: "\u041f\u0440\u043e\u0434\u0430\u043a\u0442-\u043c\u0435\u043d\u0435\u0434\u0436\u0435\u0440 \u00b7 AI", tb3: "AI / LLM \u0438\u043d\u0436\u0435\u043d\u0435\u0440",
+    tb: "\u0421\u043c\u043e\u0442\u0440\u0435\u0442\u044c \u043a\u0430\u043a", tb1: "Senior / Lead AQA", tb2: "\u041f\u0440\u043e\u0434\u0430\u043a\u0442-\u043c\u0435\u043d\u0435\u0434\u0436\u0435\u0440 \u00b7 AI", tb3: "AI / LLM \u0438\u043d\u0436\u0435\u043d\u0435\u0440",
     st1: CV_AQA_EN.st1, st2: CV_AQA_EN.st2, st3: CV_AQA_EN.st3,
     j2d: "\u0412\u0442\u043e\u0440\u043e\u0439 \u043f\u0440\u043e\u0434\u0443\u043a\u0442 \u0434\u043b\u044f \u0442\u043e\u0439 \u0436\u0435 \u043a\u043e\u043c\u0430\u043d\u0434\u044b: RAG \u043f\u043e \u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442\u0430\u0446\u0438\u0438 \u041e\u0421 \u0410\u0432\u0440\u043e\u0440\u0430 \u043f\u043b\u044e\u0441 \u0430\u0433\u0435\u043d\u0442 \u2014 \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u043a\u0430 \u043f\u043e\u043b\u0443\u0447\u0430\u043b\u0430 \u043e\u0442\u0432\u0435\u0442 \u0441 \u043e\u043f\u043e\u0440\u043e\u0439 \u043d\u0430 \u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442\u0430\u0446\u0438\u044e \u0438 \u0432\u043e\u0441\u043f\u0440\u043e\u0438\u0437\u0432\u0435\u0434\u0435\u043d\u0438\u0435 \u0441\u0446\u0435\u043d\u0430\u0440\u0438\u044f \u043d\u0430 \u044d\u043c\u0443\u043b\u044f\u0442\u043e\u0440\u0435 \u043c\u043e\u0431\u0438\u043b\u044c\u043d\u043e\u0433\u043e Linux.",
     cue: "\u041b\u0438\u0441\u0442\u0430\u0439 \u2014 \u044d\u0442\u0430 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0430 \u0438 \u0435\u0441\u0442\u044c \u0440\u0435\u0437\u044e\u043c\u0435",
-    s1: "\u041a\u0442\u043e \u044f", s2: "\u041e\u043f\u044b\u0442", s3: "\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442\u044b", s4: "\u041e\u0431\u0440\u0430\u0437\u043e\u0432\u0430\u043d\u0438\u0435", s5: "\u0421\u043e\u0431\u0441\u0442\u0432\u0435\u043d\u043d\u044b\u0435 \u043f\u0440\u043e\u0434\u0443\u043a\u0442\u044b",
+    s1: "\u041a\u0442\u043e \u044f", s2: "\u041e\u043f\u044b\u0442", s3: "\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442\u044b", s4: "\u041e\u0431\u0440\u0430\u0437\u043e\u0432\u0430\u043d\u0438\u0435", s5: "\u041f\u0440\u043e\u0435\u043a\u0442\u044b",
     lead: "\u0418\u043d\u0436\u0435\u043d\u0435\u0440, \u043f\u0435\u0440\u0435\u0445\u043e\u0434\u044f\u0449\u0438\u0439 \u0432 AI/ML product management. \u0412\u044b\u0432\u043e\u0436\u0443 AI \u0438\u0437 \u0434\u0435\u043c\u043e \u0432 \u043f\u0440\u043e\u0434\u0430\u043a\u0448\u043d.",
     ab1: "\u0412 \u04207 \u0441\u0430\u043c \u043d\u0430\u0448\u0451\u043b \u0443\u0437\u043a\u043e\u0435 \u043c\u0435\u0441\u0442\u043e \u043f\u0440\u043e\u0434\u0443\u043a\u0442\u0430, \u043f\u043e\u0441\u0442\u0440\u043e\u0438\u043b \u0438 \u0440\u0430\u0437\u0432\u0438\u0432\u0430\u044e \u0432\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u044e\u044e \u043f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u0443, \u0433\u0434\u0435 LLM \u0432\u044b\u043f\u043e\u043b\u043d\u044f\u0435\u0442 \u0440\u0435\u0430\u043b\u044c\u043d\u0443\u044e \u0440\u0430\u0431\u043e\u0442\u0443 \u2014 \u0433\u0435\u043d\u0435\u0440\u0438\u0440\u0443\u0435\u0442 \u0442\u0435\u0441\u0442\u044b, \u0440\u0430\u0437\u0431\u0438\u0440\u0430\u0435\u0442 \u043f\u0430\u0434\u0435\u043d\u0438\u044f, \u0430\u043d\u0430\u043b\u0438\u0437\u0438\u0440\u0443\u0435\u0442 \u043b\u043e\u0433\u0438 \u0438 \u0441\u043a\u0440\u0438\u043d\u0448\u043e\u0442\u044b \u2014 \u0441 \u0432\u0430\u043b\u0438\u0434\u0430\u0446\u0438\u0435\u0439 \u0440\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442\u0430, \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u0435\u043c \u0440\u0430\u0441\u0445\u043e\u0434\u043e\u0432 \u0438 \u0434\u0435\u0433\u0440\u0430\u0434\u0430\u0446\u0438\u0435\u0439 \u0431\u0435\u0437 \u043f\u0430\u0434\u0435\u043d\u0438\u044f \u043f\u0430\u0439\u043f\u043b\u0430\u0439\u043d\u0430.",
     ab2: "\u041f\u0430\u0440\u0430\u043b\u043b\u0435\u043b\u044c\u043d\u043e \u043a\u0430\u043a \u0441\u043e\u043e\u0441\u043d\u043e\u0432\u0430\u0442\u0435\u043b\u044c \u0434\u043e\u0432\u0451\u043b \u0434\u043e App Store \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u0441 AI-\u0444\u0443\u043d\u043a\u0446\u0438\u044f\u043c\u0438 \u0438 \u0437\u0430\u043f\u0443\u0441\u0442\u0438\u043b iOS-\u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u0434\u043b\u044f \u043b\u043e\u043a\u0430\u043b\u044c\u043d\u043e\u0433\u043e \u0438\u043d\u0444\u0435\u0440\u0435\u043d\u0441\u0430 LLM. \u041f\u043e\u0434 \u044d\u0442\u0438\u043c \u2014 4 \u0433\u043e\u0434\u0430 \u0438\u043d\u0436\u0435\u043d\u0435\u0440\u043d\u043e\u0439 \u0440\u0430\u0431\u043e\u0442\u044b, \u0431\u0438\u0437\u043d\u0435\u0441-\u0438\u043d\u0444\u043e\u0440\u043c\u0430\u0442\u0438\u043a\u0430 \u0420\u042d\u0423 \u0438 \u043a\u0443\u0440\u0441\u044b \u0424\u041a\u041d \u0412\u0428\u042d. \u0418\u0449\u0443 \u0440\u043e\u043b\u044c, \u0433\u0434\u0435 \u043d\u0443\u0436\u043d\u043e \u0440\u0435\u0448\u0430\u0442\u044c, <b>\u0433\u0434\u0435 AI \u0441\u043e\u0437\u0434\u0430\u0451\u0442 \u0446\u0435\u043d\u043d\u043e\u0441\u0442\u044c, \u0430 \u0433\u0434\u0435 \u0442\u043e\u043b\u044c\u043a\u043e \u0443\u0434\u043e\u0440\u043e\u0436\u0430\u0435\u0442 \u043f\u0440\u043e\u0434\u0443\u043a\u0442</b>.",
@@ -1288,7 +2140,7 @@
     mv2: "\u22123<small>\u0434\u043d\u044f</small>", m2: "\u0421\u0440\u0435\u0437\u0430\u043b \u0441 \u0446\u0438\u043a\u043b\u0430<br>\u0440\u0435\u043b\u0438\u0437\u0430",
     mv3: "~10<small>\u043c\u0438\u043d</small>", m3: "\u041e\u0431\u0440\u0430\u0442\u043d\u0430\u044f \u0441\u0432\u044f\u0437\u044c<br>\u043d\u0430 \u043a\u043e\u043c\u043c\u0438\u0442",
     mv4: "1<small>\u0430\u043f\u043f</small>", m4: "\u0412 App Store<br>\u043a\u0430\u043a \u0441\u043e\u043e\u0441\u043d\u043e\u0432\u0430\u0442\u0435\u043b\u044c",
-    t1: "\u041f\u0440\u0438\u0451\u043c\u043a\u0430 \u0440\u0435\u043b\u0438\u0437\u043e\u0432 \u00b7 \u0441\u0442\u0435\u0439\u043a\u0445\u043e\u043b\u0434\u0435\u0440\u044b", t2: "\u041f\u0435\u0440\u0432\u044b\u0439 QA \u00b7 \u0432\u044b\u0441\u0442\u0440\u043e\u0438\u043b \u043f\u0440\u043e\u0446\u0435\u0441\u0441", t3: "\u0412\u043b\u0430\u0434\u0435\u043b\u0435\u0446 \u043f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u044b \u00b7 \u0441\u0432\u043e\u044f \u043a\u043e\u043c\u0430\u043d\u0434\u0430",
+    t1: "\u041f\u0440\u0438\u0451\u043c\u043a\u0430 \u0440\u0435\u043b\u0438\u0437\u043e\u0432 \u00b7 \u0441\u0442\u0435\u0439\u043a\u0445\u043e\u043b\u0434\u0435\u0440\u044b", t2: "Senior AQA \u00b7 \u0432\u044b\u0441\u0442\u0440\u043e\u0438\u043b \u043f\u0440\u043e\u0446\u0435\u0441\u0441", t3: "\u0412\u043b\u0430\u0434\u0435\u043b\u0435\u0446 \u043f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u044b \u00b7 \u0441\u0432\u043e\u044f \u043a\u043e\u043c\u0430\u043d\u0434\u0430",
     j1r: "Lead AQA \u00b7 \u0438\u043d\u0438\u0446\u0438\u0430\u0442\u043e\u0440 \u0438 \u0432\u043b\u0430\u0434\u0435\u043b\u0435\u0446 \u0432\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0435\u0439 \u043f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u044b \u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f",
     j1w: CV_AQA_RU.j1w, j2w: CV_AQA_RU.j2w, j3w: CV_AQA_RU.j3w,
     j1c: "\u041f\u0440\u0438\u0448\u0451\u043b \u043f\u0435\u0440\u0432\u044b\u043c \u0438\u043d\u0436\u0435\u043d\u0435\u0440\u043e\u043c \u043d\u0430 \u043f\u0440\u043e\u0434\u0443\u043a\u0442. \u0424\u043e\u0440\u043c\u0430\u043b\u044c\u043d\u0430\u044f \u0440\u043e\u043b\u044c \u2014 Lead AQA; \u043f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u0443 \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0437\u0430\u0446\u0438\u0438 \u0438\u043d\u0438\u0446\u0438\u0438\u0440\u043e\u0432\u0430\u043b, \u0441\u043f\u0440\u043e\u0435\u043a\u0442\u0438\u0440\u043e\u0432\u0430\u043b \u0438 \u0440\u0430\u0437\u0432\u0438\u0432\u0430\u044e \u043a\u0430\u043a \u0432\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043f\u0440\u043e\u0434\u0443\u043a\u0442: \u0441\u0430\u043c \u043d\u0430\u0445\u043e\u0434\u0438\u043b \u0443\u0437\u043a\u0438\u0435 \u043c\u0435\u0441\u0442\u0430, \u0444\u043e\u0440\u043c\u0438\u0440\u043e\u0432\u0430\u043b \u043f\u043b\u0430\u043d \u0438 \u0437\u0430\u0449\u0438\u0449\u0430\u043b \u0435\u0433\u043e \u043f\u0435\u0440\u0435\u0434 \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u043e\u043c.",
@@ -1324,9 +2176,9 @@
   };
 
   const CV_ML_EN = {
-    tb: "Read me as", tb1: "Lead AQA", tb2: "Product Manager \u00b7 AI", tb3: "AI / LLM Engineer",
+    tb: "Read me as", tb1: "Senior / Lead AQA", tb2: "Product Manager \u00b7 AI", tb3: "AI / LLM Engineer",
     cue: "Scroll \u2014 this page is the r\u00e9sum\u00e9",
-    s1: "Who I am", s2: "Experience", s3: "Toolkit", s4: "Education", s5: "AI projects",
+    s1: "Who I am", s2: "Experience", s3: "Toolkit", s4: "Education", s5: "Current projects",
     lead: "An engineer specialising in putting LLMs and VLMs into production.",
     ab1: "At R7 I embedded language models into the testing pipeline: <b>code generation with formal validation</b>, Vision analysis of screenshots, automatic triage of every failure \u2014 with call-cost control and degradation that never takes the service down.",
     ab2: "Outside work: the AI features of an app published on the App Store, and an iOS app for local LLM inference. I'm building the classical-ML foundation through HSE CS courses \u2014 machine learning and recommender systems in progress.",
@@ -1334,7 +2186,7 @@
     mv2: "1000s", m2: "Screenshots per run<br>checked by VLM",
     mv3: "100<small>%</small>", m3: "Generated tests pass<br>AST validation",
     mv4: "2", m4: "AI products shipped<br>cloud and on-device",
-    t1: "Release acceptance \u00b7 QA Engineer", t2: "First QA \u00b7 RAG and agents", t3: "LLM in the pipeline \u00b7 Lead AQA",
+    t1: "Release acceptance \u00b7 QA Engineer", t2: "Senior AQA \u00b7 RAG and agents", t3: "LLM in the pipeline \u00b7 Lead AQA",
     j1r: "Lead AQA \u00b7 AI engineering in the testing pipeline",
     j1w: CV_AQA_EN.j1w, j2w: CV_AQA_EN.j2w, j3w: CV_AQA_EN.j3w,
     st1: "<span>Python</span><span>LLM APIs</span><span>DeepSeek</span><span>Grok</span><span>Kimi</span><span>Jupyter</span><span>Papermill</span><span>Playwright</span><span>pytest</span><span>Jenkins</span><span>GitHub Actions</span><span>Docker</span><span>Linux</span>",
@@ -1359,7 +2211,7 @@
     j3a: "UI and API automation: Selenium, Appium, requests.",
     j3b: "Six months covering an absent DevOps engineer: Docker Compose, Python mock servers, Jenkins builds.",
     j3c2: "",
-    k1: "Languages", k1v: "Python <span style=\"opacity:.5\">(primary)</span>, Swift, Bash, SQL",
+    k1: "Languages", k1v: "Python <span style=\"opacity:.5\">(primary)</span>, Java, Swift, Bash, SQL",
     k2: "LLM &amp; VLM", k2v: "<em class=\"ai\">AI</em>API integration (DeepSeek, Grok, Kimi, OpenAI-compatible), RAG, agent scenarios, prompt engineering with guardrails, validation of model output (AST, cross-checks against the codebase), Vision analysis, call-cost control, graceful degradation",
     k3: "Local inference", k3v: "MLX, llama.cpp, Core ML, Hugging Face, Whisper, TTS \u2014 and the quality / speed / memory trade-offs between them",
     k4: "Data &amp; experiments", k4v: "pandas, numpy, Jupyter, Papermill",
@@ -1373,9 +2225,9 @@
   };
 
   const CV_ML_RU = {
-    tb: "\u0421\u043c\u043e\u0442\u0440\u0435\u0442\u044c \u043a\u0430\u043a", tb1: "Lead AQA", tb2: "\u041f\u0440\u043e\u0434\u0430\u043a\u0442-\u043c\u0435\u043d\u0435\u0434\u0436\u0435\u0440 \u00b7 AI", tb3: "AI / LLM \u0438\u043d\u0436\u0435\u043d\u0435\u0440",
+    tb: "\u0421\u043c\u043e\u0442\u0440\u0435\u0442\u044c \u043a\u0430\u043a", tb1: "Senior / Lead AQA", tb2: "\u041f\u0440\u043e\u0434\u0430\u043a\u0442-\u043c\u0435\u043d\u0435\u0434\u0436\u0435\u0440 \u00b7 AI", tb3: "AI / LLM \u0438\u043d\u0436\u0435\u043d\u0435\u0440",
     cue: "\u041b\u0438\u0441\u0442\u0430\u0439 \u2014 \u044d\u0442\u0430 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0430 \u0438 \u0435\u0441\u0442\u044c \u0440\u0435\u0437\u044e\u043c\u0435",
-    s1: "\u041a\u0442\u043e \u044f", s2: "\u041e\u043f\u044b\u0442", s3: "\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442\u044b", s4: "\u041e\u0431\u0440\u0430\u0437\u043e\u0432\u0430\u043d\u0438\u0435", s5: "AI-\u043f\u0440\u043e\u0435\u043a\u0442\u044b",
+    s1: "\u041a\u0442\u043e \u044f", s2: "\u041e\u043f\u044b\u0442", s3: "\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442\u044b", s4: "\u041e\u0431\u0440\u0430\u0437\u043e\u0432\u0430\u043d\u0438\u0435", s5: "\u041f\u0440\u043e\u0435\u043a\u0442\u044b",
     lead: "\u0418\u043d\u0436\u0435\u043d\u0435\u0440 \u0441\u043e \u0441\u043f\u0435\u0446\u0438\u0430\u043b\u0438\u0437\u0430\u0446\u0438\u0435\u0439 \u043d\u0430 \u043f\u0440\u0438\u043c\u0435\u043d\u0435\u043d\u0438\u0438 LLM \u0438 VLM \u0432 production.",
     ab1: "\u0412 \u04207 \u0432\u0441\u0442\u0440\u043e\u0438\u043b \u044f\u0437\u044b\u043a\u043e\u0432\u044b\u0435 \u043c\u043e\u0434\u0435\u043b\u0438 \u0432 \u043a\u043e\u043d\u0432\u0435\u0439\u0435\u0440 \u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f: <b>\u0433\u0435\u043d\u0435\u0440\u0430\u0446\u0438\u044f \u043a\u043e\u0434\u0430 \u0441 \u0444\u043e\u0440\u043c\u0430\u043b\u044c\u043d\u043e\u0439 \u0432\u0430\u043b\u0438\u0434\u0430\u0446\u0438\u0435\u0439</b>, Vision-\u0430\u043d\u0430\u043b\u0438\u0437 \u0441\u043a\u0440\u0438\u043d\u0448\u043e\u0442\u043e\u0432, \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u0439 \u0440\u0430\u0437\u0431\u043e\u0440 \u043a\u0430\u0436\u0434\u043e\u0433\u043e \u043f\u0430\u0434\u0435\u043d\u0438\u044f \u2014 \u0441 \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u0435\u043c \u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u0438 \u0432\u044b\u0437\u043e\u0432\u043e\u0432 \u0438 \u0434\u0435\u0433\u0440\u0430\u0434\u0430\u0446\u0438\u0435\u0439 \u0431\u0435\u0437 \u043e\u0442\u043a\u0430\u0437\u0430 \u0441\u0435\u0440\u0432\u0438\u0441\u0430.",
     ab2: "\u0412\u043d\u0435 \u0440\u0430\u0431\u043e\u0442\u044b: AI-\u0444\u0443\u043d\u043a\u0446\u0438\u0438 \u0432 \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0438, \u043e\u043f\u0443\u0431\u043b\u0438\u043a\u043e\u0432\u0430\u043d\u043d\u043e\u043c \u0432 App Store, \u0438 iOS-\u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u0434\u043b\u044f \u043b\u043e\u043a\u0430\u043b\u044c\u043d\u043e\u0433\u043e \u0438\u043d\u0444\u0435\u0440\u0435\u043d\u0441\u0430 LLM. \u0421\u0442\u0440\u043e\u044e \u0444\u0443\u043d\u0434\u0430\u043c\u0435\u043d\u0442 \u043f\u043e\u0434 \u043a\u043b\u0430\u0441\u0441\u0438\u0447\u0435\u0441\u043a\u0438\u0439 ML: \u043a\u0443\u0440\u0441\u044b \u0424\u041a\u041d \u0412\u0428\u042d, \u0432 \u043f\u0440\u043e\u0446\u0435\u0441\u0441\u0435 \u043c\u0430\u0448\u0438\u043d\u043d\u043e\u0435 \u043e\u0431\u0443\u0447\u0435\u043d\u0438\u0435 \u0438 \u0440\u0435\u043a\u043e\u043c\u0435\u043d\u0434\u0430\u0442\u0435\u043b\u044c\u043d\u044b\u0435 \u0441\u0438\u0441\u0442\u0435\u043c\u044b.",
@@ -1383,7 +2235,7 @@
     mv2: "1000\u0441", m2: "\u0421\u043a\u0440\u0438\u043d\u0448\u043e\u0442\u043e\u0432 \u0437\u0430 \u043f\u0440\u043e\u0433\u043e\u043d<br>\u043f\u0440\u043e\u0432\u0435\u0440\u044f\u0435\u0442 VLM",
     mv3: "100<small>%</small>", m3: "\u0421\u0433\u0435\u043d\u0435\u0440\u0438\u0440\u043e\u0432\u0430\u043d\u043d\u044b\u0445 \u0442\u0435\u0441\u0442\u043e\u0432<br>\u043f\u0440\u043e\u0445\u043e\u0434\u044f\u0442 AST-\u0432\u0430\u043b\u0438\u0434\u0430\u0446\u0438\u044e",
     mv4: "2", m4: "AI-\u043f\u0440\u043e\u0434\u0443\u043a\u0442\u0430 \u0432\u044b\u043f\u0443\u0449\u0435\u043d\u043e<br>\u043e\u0431\u043b\u0430\u043a\u043e \u0438 on-device",
-    t1: "\u041f\u0440\u0438\u0451\u043c\u043a\u0430 \u0440\u0435\u043b\u0438\u0437\u043e\u0432 \u00b7 QA-\u0438\u043d\u0436\u0435\u043d\u0435\u0440", t2: "\u041f\u0435\u0440\u0432\u044b\u0439 QA \u00b7 RAG \u0438 \u0430\u0433\u0435\u043d\u0442\u044b", t3: "LLM \u0432 \u043a\u043e\u043d\u0432\u0435\u0439\u0435\u0440\u0435 \u00b7 Lead AQA",
+    t1: "\u041f\u0440\u0438\u0451\u043c\u043a\u0430 \u0440\u0435\u043b\u0438\u0437\u043e\u0432 \u00b7 QA-\u0438\u043d\u0436\u0435\u043d\u0435\u0440", t2: "Senior AQA \u00b7 RAG \u0438 \u0430\u0433\u0435\u043d\u0442\u044b", t3: "LLM \u0432 \u043a\u043e\u043d\u0432\u0435\u0439\u0435\u0440\u0435 \u00b7 Lead AQA",
     j1r: "Lead AQA \u00b7 AI-\u0438\u043d\u0436\u0435\u043d\u0435\u0440\u0438\u044f \u0432 \u043a\u043e\u043d\u0432\u0435\u0439\u0435\u0440\u0435 \u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f",
     j1w: CV_AQA_RU.j1w, j2w: CV_AQA_RU.j2w, j3w: CV_AQA_RU.j3w,
     st1: CV_ML_EN.st1, st2: CV_ML_EN.st2, st3: CV_ML_EN.st3,
@@ -1406,7 +2258,7 @@
     j3a: "\u0410\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0437\u0430\u0446\u0438\u044f UI \u0438 API: Selenium, Appium, requests.",
     j3b: "\u041f\u043e\u043b\u0433\u043e\u0434\u0430 \u0437\u0430\u043a\u0440\u044b\u0432\u0430\u043b \u0437\u0430\u0434\u0430\u0447\u0438 DevOps: Docker Compose, \u043c\u043e\u043a-\u0441\u0435\u0440\u0432\u0435\u0440\u044b \u043d\u0430 Python, \u0441\u0431\u043e\u0440\u043a\u0438 \u0432 Jenkins.",
     j3c2: "",
-    k1: "\u042f\u0437\u044b\u043a\u0438", k1v: "Python <span style=\"opacity:.5\">(\u043e\u0441\u043d\u043e\u0432\u043d\u043e\u0439)</span>, Swift, Bash, SQL",
+    k1: "\u042f\u0437\u044b\u043a\u0438", k1v: "Python <span style=\"opacity:.5\">(\u043e\u0441\u043d\u043e\u0432\u043d\u043e\u0439)</span>, Java, Swift, Bash, SQL",
     k2: "LLM \u0438 VLM", k2v: "<em class=\"ai\">AI</em>\u0418\u043d\u0442\u0435\u0433\u0440\u0430\u0446\u0438\u044f \u043f\u043e API (DeepSeek, Grok, Kimi, OpenAI-\u0441\u043e\u0432\u043c\u0435\u0441\u0442\u0438\u043c\u044b\u0435), RAG, \u0430\u0433\u0435\u043d\u0442\u043d\u044b\u0435 \u0441\u0446\u0435\u043d\u0430\u0440\u0438\u0438, prompt engineering \u0441 guardrails, \u0432\u0430\u043b\u0438\u0434\u0430\u0446\u0438\u044f \u043e\u0442\u0432\u0435\u0442\u043e\u0432 \u043c\u043e\u0434\u0435\u043b\u0438 (AST, \u0441\u0432\u0435\u0440\u043a\u0430 \u0441 \u043a\u043e\u0434\u043e\u0432\u043e\u0439 \u0431\u0430\u0437\u043e\u0439), Vision-\u0430\u043d\u0430\u043b\u0438\u0437, \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u044c \u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u0438 \u0432\u044b\u0437\u043e\u0432\u043e\u0432, graceful degradation",
     k3: "\u041b\u043e\u043a\u0430\u043b\u044c\u043d\u044b\u0439 \u0438\u043d\u0444\u0435\u0440\u0435\u043d\u0441", k3v: "MLX, llama.cpp, Core ML, Hugging Face, Whisper, TTS \u2014 \u0438 trade-off \u043a\u0430\u0447\u0435\u0441\u0442\u0432\u043e / \u0441\u043a\u043e\u0440\u043e\u0441\u0442\u044c / \u043f\u0430\u043c\u044f\u0442\u044c \u043c\u0435\u0436\u0434\u0443 \u043d\u0438\u043c\u0438",
     k4: "\u0414\u0430\u043d\u043d\u044b\u0435 \u0438 \u044d\u043a\u0441\u043f\u0435\u0440\u0438\u043c\u0435\u043d\u0442\u044b", k4v: "pandas, numpy, Jupyter, Papermill",
@@ -1420,12 +2272,152 @@
   };
 
   const FORK_EN = {
+    pv: "View \u2192",
+    ps: "Case study soon",
+    f_kind: "iOS + Android \u00b7 Kotlin Multiplatform",
+    f_tag: "She knows your body better than you do",
+    f_st: "Kotlin Multiplatform \u00b7 Compose \u00b7 SQLDelight \u00b7 HealthKit \u00b7 Health Connect \u00b7 MapKit",
+    pr_st: "SwiftUI \u00b7 HealthKit \u00b7 CoreData \u00b7 Firebase \u00b7 Widgets",
+    la_st: "MLX \u00b7 llama.cpp \u00b7 Core ML \u00b7 Whisper \u00b7 Hugging Face",
+    pi_site: "appfita.ru \u2192", pi_store: "App Store \u2192", pi_gh: "GitHub \u2192",
+    pr_desc: "<b>Co-founder.</b> A sports statistics app that turns Apple Health workouts into analytics, goals, records and streaks. I own the backend and the AI features \u2014 recommendations, goals matched to fitness level, progress forecasting, the assistant \u2014 and took it from idea to the App Store, Apple review included.",
+    la_desc: "Language and multimodal models running directly on iPhone \u2014 no cloud, no subscription. Text, images, speech recognition and synthesis, with models pulled from Hugging Face and chosen automatically for the device. Every run reports tokens/sec, latency and memory, so the trade-off between quality, speed and RAM stays explicit.",
+    f_tl: "Steps", f_tc: "of 10 000", f_tl2: "Sleep",
+    f_ch1: "You slept 6 h 40 m \u2014 skip the intervals today.",
+    f_ch2: "what then?", f_ch3: "Easy run",
+    f_mcp: "Your health is not locked in one app \u2014 any agent reads the metrics, you decide what is shared.",
+    pr_tag: "Progress. Records. Optimization.",
+    pm1: "Active Energy", pmS: "Steps", pmD: "Distance", pmF: "Flights Up", pb_k: "Records",
+    pr_s1: "Today's Activity", pr_td: "Today",
+    pr_k1: "14-day streak \u{1F525}", pr_k2: "16 days to your 30-day milestone",
+    pr_t1: "Home", pr_t2: "Workouts", pr_t3: "Plan", pr_t4: "Stats", pr_t5: "Profile",
+    pr_hr: "Resting Heart Rate", pr_bpm: "bpm avg", pr_hrs: "BPM \u00b7 last 7 days",
+    pr_g0: "Monthly Goals", pr_g1: "Run 50 km", pr_g2: "Cycle 120 km", pr_g3: "Swim 8 km",
+    f_ch0: "Fita", f_any: "any agent",
+    f_wk: "Sleep \u00b7 tonight", f_wd: "Deep", f_wc: "Light",
+    f_yes: "Go on", f_no: "Not now",
+    f_rd: "Readiness", f_rdc: "HRV \u00b7 sleep \u00b7 resting HR",
+    f_st: "Streak", f_rg: "Rings", f_wa: "Awake",
+    f_ch1: "You slept 6 h 40 m, and deep sleep was short.",
+    f_ch3: "Then an easy 5 km instead of intervals. Shall I move it?",
+    ff1: "An agent with memory", ff2: "Widgets inside the chat",
+    ff3: "Live GPS run recording", ff4: "Real health data only",
+    pr_ai: "The AI assistant turns workouts into recommendations, goals and forecasts.",
+    la_foot: "100% on iPhone \u00b7 no cloud \u00b7 no subscription",
+    la_c1: "Model", la_c2: "Quant", la_c3: "Speed", la_c4: "Memory",
+    la_b0: "Three backends, one API", la_b0b: "every format covered",
+    la_b1: "Apple silicon natively \u00b7 safetensors, 4/8-bit \u00b7 the fastest path for text",
+    la_b2: "GGUF, any quantisation \u00b7 whatever MLX has not converted still runs",
+    la_b3: "Neural Engine \u00b7 speech and vision at a fraction of the power draw",
+    la_hf: "Models pull straight to the iPhone \u2014 pick it on the Hub, download, run. No server in between.",
+    la_hfp: "Direct",
+    pr_h4: "I own the backend and the AI \u2014 recommendations, goals by fitness level, forecasting, the assistant.",
+    la_tag: "The model runs on your iPhone. No cloud.",
+    p4k: "Next",
+    f_desc: "A fitness app built around an agent that remembers you and assembles your home screen for you \u2014 one codebase for iOS and Android.",
+    f_h1: "<b>Chat is the product</b>, not a help desk \u2014 widgets live inside the conversation, and the agent can do anything the user can.",
+    f_h2: "Memory on the device: an SQLite profile, dialogues and health summaries.",
+    f_h3: "<b>Real health data only</b> \u2014 HealthKit and Health Connect, with honest empty states where data is missing.",
+    f_h4: "Own backend: an LLM proxy, email sign-in, a versioned prompt \u2014 <b>no model keys in the client</b>.",
+    f_h5: "An MCP server opens the metrics to any agent \u2014 Claude, ChatGPT \u2014 with the user deciding what is shared.",
+    pr_kind: "iOS \u00b7 SwiftUI \u00b7 Shipped", pr_role: "Co-founder",
+    pr_h1: "Turns Apple Health workouts into analytics, goals, records and streaks.",
+    pr_h2: "<b>From idea to the App Store</b>, Apple review included.",
+    pr_h3: "I decide which AI features users actually need \u2014 and which only add cost.",
+    la_kind: "iPhone \u00b7 On-device inference",
+    la_h1: "Text, images, speech recognition and synthesis \u2014 <b>no cloud, no subscription</b>.",
+    la_h2: "Automatic model choice for the device, with tokens/sec, latency and memory metrics.",
+    la_h3: "Forces explicit trade-offs between model quality, speed and device memory.",
+    p3n: "Project Three", p3m: "Web \u00b7 Placeholder",
+    p3d: "Placeholder card \u2014 replace with a real project. This one has a site, so it shows the link state.",
+    p4n: "Next project", p4m: "Internal \u00b7 Placeholder",
+    p4d: "Placeholder card \u2014 no site yet, so it shows the quiet state instead of a link.",
     fk: "Four years building test automation that became an internal product with AI inside. The directions I am interested in:",
     fd1: "Test automation as an engineering product",
     fd2: "Deciding where AI earns its cost",
     fd3: "LLMs and VLMs running in production, not in demos"
   };
   const FORK_RU = {
+    pv: "\u041e\u0442\u043a\u0440\u044b\u0442\u044c \u2192",
+    ps: "\u041a\u0435\u0439\u0441 \u0441\u043a\u043e\u0440\u043e",
+    f_kind: "iOS + Android \u00b7 Kotlin Multiplatform",
+    f_tag: "\u041e\u043d\u0430 \u0437\u043d\u0430\u0435\u0442 \u0442\u0432\u043e\u0451 \u0442\u0435\u043b\u043e \u043b\u0443\u0447\u0448\u0435 \u0442\u0435\u0431\u044f",
+    f_st: "Kotlin Multiplatform \u00b7 Compose \u00b7 SQLDelight \u00b7 HealthKit \u00b7 Health Connect \u00b7 MapKit",
+    pr_st: "SwiftUI \u00b7 HealthKit \u00b7 CoreData \u00b7 Firebase \u00b7 \u0412\u0438\u0434\u0436\u0435\u0442\u044b",
+    la_st: "MLX \u00b7 llama.cpp \u00b7 Core ML \u00b7 Whisper \u00b7 Hugging Face",
+    pi_site: "appfita.ru \u2192", pi_store: "App Store \u2192", pi_gh: "GitHub \u2192",
+    pr_desc: "<b>\u0421\u043e\u043e\u0441\u043d\u043e\u0432\u0430\u0442\u0435\u043b\u044c.</b> \u0421\u043f\u043e\u0440\u0442\u0438\u0432\u043d\u043e\u0435 \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435, \u043a\u043e\u0442\u043e\u0440\u043e\u0435 \u043f\u0440\u0435\u0432\u0440\u0430\u0449\u0430\u0435\u0442 \u0442\u0440\u0435\u043d\u0438\u0440\u043e\u0432\u043a\u0438 \u0438\u0437 Apple Health \u0432 \u0430\u043d\u0430\u043b\u0438\u0442\u0438\u043a\u0443, \u0446\u0435\u043b\u0438, \u0440\u0435\u043a\u043e\u0440\u0434\u044b \u0438 \u0441\u0435\u0440\u0438\u0438. \u041e\u0442\u0432\u0435\u0447\u0430\u044e \u0437\u0430 \u0431\u044d\u043a\u0435\u043d\u0434 \u0438 AI-\u0444\u0443\u043d\u043a\u0446\u0438\u0438 \u2014 \u0440\u0435\u043a\u043e\u043c\u0435\u043d\u0434\u0430\u0446\u0438\u0438, \u0446\u0435\u043b\u0438 \u043f\u043e\u0434 \u0443\u0440\u043e\u0432\u0435\u043d\u044c \u043f\u043e\u0434\u0433\u043e\u0442\u043e\u0432\u043a\u0438, \u043f\u0440\u043e\u0433\u043d\u043e\u0437 \u043f\u0440\u043e\u0433\u0440\u0435\u0441\u0441\u0430, \u0430\u0441\u0441\u0438\u0441\u0442\u0435\u043d\u0442 \u2014 \u0438 \u0434\u043e\u0432\u0451\u043b \u0435\u0433\u043e \u043e\u0442 \u0438\u0434\u0435\u0438 \u0434\u043e App Store, \u0432\u043a\u043b\u044e\u0447\u0430\u044f \u0440\u0435\u0432\u044c\u044e Apple.",
+    la_desc: "\u042f\u0437\u044b\u043a\u043e\u0432\u044b\u0435 \u0438 \u043c\u0443\u043b\u044c\u0442\u0438\u043c\u043e\u0434\u0430\u043b\u044c\u043d\u044b\u0435 \u043c\u043e\u0434\u0435\u043b\u0438 \u0440\u0430\u0431\u043e\u0442\u0430\u044e\u0442 \u043f\u0440\u044f\u043c\u043e \u043d\u0430 iPhone \u2014 \u0431\u0435\u0437 \u043e\u0431\u043b\u0430\u043a\u0430 \u0438 \u043f\u043e\u0434\u043f\u0438\u0441\u043e\u043a. \u0422\u0435\u043a\u0441\u0442, \u0438\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u044f, \u0440\u0430\u0441\u043f\u043e\u0437\u043d\u0430\u0432\u0430\u043d\u0438\u0435 \u0438 \u0441\u0438\u043d\u0442\u0435\u0437 \u0440\u0435\u0447\u0438; \u043c\u043e\u0434\u0435\u043b\u0438 \u0442\u044f\u043d\u0443\u0442\u0441\u044f \u0441 Hugging Face \u0438 \u043f\u043e\u0434\u0431\u0438\u0440\u0430\u044e\u0442\u0441\u044f \u043f\u043e\u0434 \u0443\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432\u043e. \u041a\u0430\u0436\u0434\u044b\u0439 \u0437\u0430\u043f\u0443\u0441\u043a \u043e\u0442\u0434\u0430\u0451\u0442 \u0442\u043e\u043a\u0435\u043d\u044b \u0432 \u0441\u0435\u043a\u0443\u043d\u0434\u0443, \u0437\u0430\u0434\u0435\u0440\u0436\u043a\u0443 \u0438 \u043f\u0430\u043c\u044f\u0442\u044c \u2014 trade-off \u043c\u0435\u0436\u0434\u0443 \u043a\u0430\u0447\u0435\u0441\u0442\u0432\u043e\u043c, \u0441\u043a\u043e\u0440\u043e\u0441\u0442\u044c\u044e \u0438 \u043f\u0430\u043c\u044f\u0442\u044c\u044e \u043e\u0441\u0442\u0430\u0451\u0442\u0441\u044f \u044f\u0432\u043d\u044b\u043c.",
+    f_tl: "\u0428\u0430\u0433\u0438", f_tc: "\u0438\u0437 10 000", f_tl2: "\u0421\u043e\u043d",
+    f_ch1: "\u0422\u044b \u0441\u043f\u0430\u043b 6 \u0447 40 \u043c \u2014 \u0441\u0435\u0433\u043e\u0434\u043d\u044f \u0431\u0435\u0437 \u0438\u043d\u0442\u0435\u0440\u0432\u0430\u043b\u043e\u0432.",
+    f_ch2: "\u0430 \u0447\u0442\u043e \u0442\u043e\u0433\u0434\u0430?", f_ch3: "\u041b\u0435\u0433\u043a\u0438\u0439 \u0431\u0435\u0433",
+    f_mcp: "\u0417\u0434\u043e\u0440\u043e\u0432\u044c\u0435 \u043d\u0435 \u0437\u0430\u043f\u0435\u0440\u0442\u043e \u0432 \u043e\u0434\u043d\u043e\u043c \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0438 \u2014 \u043b\u044e\u0431\u043e\u0439 \u0430\u0433\u0435\u043d\u0442 \u0447\u0438\u0442\u0430\u0435\u0442 \u043c\u0435\u0442\u0440\u0438\u043a\u0438, \u0430 \u0447\u0442\u043e \u043e\u0442\u0434\u0430\u0432\u0430\u0442\u044c \u2014 \u0440\u0435\u0448\u0430\u0435\u0448\u044c \u0442\u044b.",
+    pr_tag: "\u041f\u0440\u043e\u0433\u0440\u0435\u0441\u0441. \u0420\u0435\u043a\u043e\u0440\u0434\u044b. \u041e\u043f\u0442\u0438\u043c\u0438\u0437\u0430\u0446\u0438\u044f.",
+    pm1: "\u0410\u043a\u0442\u0438\u0432\u043d\u0430\u044f \u044d\u043d\u0435\u0440\u0433\u0438\u044f", pmS: "\u0428\u0430\u0433\u0438", pmD: "\u0414\u0438\u0441\u0442\u0430\u043d\u0446\u0438\u044f", pmF: "\u042d\u0442\u0430\u0436\u0438", pb_k: "\u0420\u0435\u043a\u043e\u0440\u0434\u044b",
+    pr_s1: "\u0410\u043a\u0442\u0438\u0432\u043d\u043e\u0441\u0442\u044c \u0441\u0435\u0433\u043e\u0434\u043d\u044f", pr_td: "\u0421\u0435\u0433\u043e\u0434\u043d\u044f",
+    pr_k1: "\u0421\u0435\u0440\u0438\u044f 14 \u0434\u043d\u0435\u0439 \u{1F525}", pr_k2: "\u0435\u0449\u0451 16 \u0434\u043d\u0435\u0439 \u0434\u043e \u0440\u0443\u0431\u0435\u0436\u0430 \u0432 30",
+    pr_t1: "\u0413\u043b\u0430\u0432\u043d\u0430\u044f", pr_t2: "\u0422\u0440\u0435\u043d\u0438\u0440\u043e\u0432\u043a\u0438", pr_t3: "\u041f\u043b\u0430\u043d", pr_t4: "\u0421\u0442\u0430\u0442\u0438\u0441\u0442\u0438\u043a\u0430", pr_t5: "\u041f\u0440\u043e\u0444\u0438\u043b\u044c",
+    pr_hr: "\u041f\u0443\u043b\u044c\u0441 \u043f\u043e\u043a\u043e\u044f", pr_bpm: "\u0441\u0440. \u0443\u0434/\u043c\u0438\u043d", pr_hrs: "\u0423\u0414/\u041c\u0418\u041d \u00b7 \u043f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 7 \u0434\u043d\u0435\u0439",
+    pr_g0: "\u0426\u0435\u043b\u0438 \u043c\u0435\u0441\u044f\u0446\u0430", pr_g1: "\u041f\u0440\u043e\u0431\u0435\u0436\u0430\u0442\u044c 50 \u043a\u043c", pr_g2: "\u041f\u0440\u043e\u0435\u0445\u0430\u0442\u044c 120 \u043a\u043c", pr_g3: "\u041f\u0440\u043e\u043f\u043b\u044b\u0442\u044c 8 \u043a\u043c",
+    f_ch0: "\u0424\u0438\u0442\u0430", f_any: "\u043b\u044e\u0431\u043e\u0439 \u0430\u0433\u0435\u043d\u0442",
+    f_wk: "\u0421\u043e\u043d \u00b7 \u043d\u043e\u0447\u044c\u044e", f_wd: "\u0413\u043b\u0443\u0431\u043e\u043a\u0438\u0439", f_wc: "\u041b\u0451\u0433\u043a\u0438\u0439",
+    f_yes: "\u0414\u0430\u0432\u0430\u0439", f_no: "\u041d\u0435 \u0441\u0435\u0439\u0447\u0430\u0441",
+    f_rd: "\u0413\u043e\u0442\u043e\u0432\u043d\u043e\u0441\u0442\u044c", f_rdc: "HRV \u00b7 \u0441\u043e\u043d \u00b7 \u043f\u0443\u043b\u044c\u0441 \u043f\u043e\u043a\u043e\u044f",
+    f_st: "\u0421\u0435\u0440\u0438\u044f", f_rg: "\u041a\u043e\u043b\u044c\u0446\u0430", f_wa: "\u0411\u043e\u0434\u0440\u0441\u0442\u0432\u043e\u0432\u0430\u043d\u0438\u0435",
+    f_ch1: "\u0422\u044b \u0441\u043f\u0430\u043b 6 \u0447 40 \u043c, \u0438 \u0433\u043b\u0443\u0431\u043e\u043a\u043e\u0433\u043e \u0441\u043d\u0430 \u0431\u044b\u043b\u043e \u043c\u0430\u043b\u043e.",
+    f_ch3: "\u0422\u043e\u0433\u0434\u0430 \u043b\u0451\u0433\u043a\u0438\u0435 5 \u043a\u043c \u0432\u043c\u0435\u0441\u0442\u043e \u0438\u043d\u0442\u0435\u0440\u0432\u0430\u043b\u043e\u0432. \u041f\u0435\u0440\u0435\u043d\u0435\u0441\u0442\u0438?",
+    ff1: "\u0410\u0433\u0435\u043d\u0442 \u0441 \u043f\u0430\u043c\u044f\u0442\u044c\u044e", ff2: "\u0412\u0438\u0434\u0436\u0435\u0442\u044b \u043f\u0440\u044f\u043c\u043e \u0432 \u0447\u0430\u0442\u0435",
+    ff3: "\u0416\u0438\u0432\u0430\u044f \u0437\u0430\u043f\u0438\u0441\u044c \u0431\u0435\u0433\u0430 \u043f\u043e GPS", ff4: "\u0422\u043e\u043b\u044c\u043a\u043e \u0440\u0435\u0430\u043b\u044c\u043d\u044b\u0435 \u0434\u0430\u043d\u043d\u044b\u0435",
+    pr_ai: "AI-\u0430\u0441\u0441\u0438\u0441\u0442\u0435\u043d\u0442 \u043f\u0440\u0435\u0432\u0440\u0430\u0449\u0430\u0435\u0442 \u0442\u0440\u0435\u043d\u0438\u0440\u043e\u0432\u043a\u0438 \u0432 \u0440\u0435\u043a\u043e\u043c\u0435\u043d\u0434\u0430\u0446\u0438\u0438, \u0446\u0435\u043b\u0438 \u0438 \u043f\u0440\u043e\u0433\u043d\u043e\u0437\u044b.",
+    la_foot: "100% \u043d\u0430 \u0443\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432\u0435 \u00b7 \u0431\u0435\u0437 \u043e\u0431\u043b\u0430\u043a\u0430 \u00b7 \u0431\u0435\u0437 \u043f\u043e\u0434\u043f\u0438\u0441\u043a\u0438",
+    la_c1: "\u041c\u043e\u0434\u0435\u043b\u044c", la_c2: "\u041a\u0432\u0430\u043d\u0442", la_c3: "\u0421\u043a\u043e\u0440\u043e\u0441\u0442\u044c", la_c4: "\u041f\u0430\u043c\u044f\u0442\u044c",
+    tt_kind: "\u041a\u0435\u0439\u0441-\u0447\u0435\u043c\u043f\u0438\u043e\u043d\u0430\u0442 \u00b7 \u041f\u0440\u043e\u0442\u043e\u0442\u0438\u043f",
+    tt_nm: "AI Travel Copilot",
+    tt_tag: "\u0410\u0441\u0441\u0438\u0441\u0442\u0435\u043d\u0442, \u043a\u043e\u0442\u043e\u0440\u044b\u0439 \u0441\u043f\u043b\u0430\u043d\u0438\u0440\u0443\u0435\u0442 \u043f\u043e\u0435\u0437\u0434\u043a\u0443 \u0437\u0430 \u0432\u0430\u0441",
+    tt_pz: "\u041f\u0440\u0438\u0437\u043e\u0432\u043e\u0435 \u043c\u0435\u0441\u0442\u043e \u00b7 \u043a\u0435\u0439\u0441-\u0447\u0435\u043c\u043f\u0438\u043e\u043d\u0430\u0442 \u043a\u0440\u0443\u043f\u043d\u0435\u0439\u0448\u0435\u0433\u043e \u0431\u0430\u043d\u043a\u0430",
+    tt_ch: "Travel Copilot",
+    tt_m1: "\u0422\u0451\u043f\u043b\u043e\u0435 \u043c\u043e\u0440\u0435 \u0432 \u043e\u043a\u0442\u044f\u0431\u0440\u0435, \u0434\u043e 60\u043a, \u043f\u0440\u044f\u043c\u043e\u0439 \u0440\u0435\u0439\u0441",
+    tt_m2: "\u0422\u0440\u0438 \u0432\u0430\u0440\u0438\u0430\u043d\u0442\u0430. \u041b\u0443\u0447\u0448\u0438\u0439 \u043f\u043e \u0446\u0435\u043d\u0435 \u0438 \u043f\u043e\u0433\u043e\u0434\u0435 \u2014 \u0410\u043d\u0442\u0430\u043b\u044c\u044f, +26\u00b0C.",
+    tt_rd: "12 \u043e\u043a\u0442 \u00b7 \u043f\u0440\u044f\u043c\u043e\u0439 \u00b7 3 \u0447 40 \u043c \u00b7 \u043a\u0435\u0448\u0431\u0435\u043a 7%",
+    tt_b1: "\u0412\u044b\u0431\u0440\u0430\u0442\u044c", tt_b2: "\u0421\u0440\u0430\u0432\u043d\u0438\u0442\u044c \u0442\u043e\u043f-3",
+    tt_c1: "\u041f\u043b\u0430\u043d \u043f\u043e \u0441\u0441\u044b\u043b\u043a\u0435 \u043d\u0430 Reels", tt_c2: "\u0427\u0435\u043a-\u043b\u0438\u0441\u0442 \u043f\u0435\u0440\u0435\u0434 \u043f\u043e\u0435\u0437\u0434\u043a\u043e\u0439",
+    tt_x1: "\u0412\u0434\u043e\u0445\u043d\u043e\u0432\u0435\u043d\u0438\u0435", tt_x1d: "\u043e\u043f\u0438\u0448\u0438\u0442\u0435 \u043f\u043e\u0435\u0437\u0434\u043a\u0443 \u2014 \u043f\u043e\u043b\u0443\u0447\u0438\u0442\u0435 \u043f\u043e\u0434\u0431\u043e\u0440\u043a\u0443",
+    tt_x2: "\u0421\u0441\u044b\u043b\u043a\u0430 \u043d\u0430 \u0432\u0438\u0434\u0435\u043e", tt_x2d: "\u0432\u0441\u0442\u0430\u0432\u044c\u0442\u0435 Reels \u0438\u043b\u0438 TikTok \u2014 \u0431\u0443\u0434\u0435\u0442 \u043f\u043b\u0430\u043d",
+    tt_x3: "\u0421\u0440\u0430\u0432\u043d\u0435\u043d\u0438\u0435", tt_x3d: "\u0442\u043e\u043f-\u0440\u0435\u0439\u0441\u044b \u0441 \u0434\u0435\u0442\u0430\u043b\u044c\u043d\u044b\u043c \u0440\u0430\u0437\u0431\u043e\u0440\u043e\u043c",
+    tt_x4: "\u0427\u0435\u043a-\u043b\u0438\u0441\u0442", tt_x4d: "\u0441\u0442\u0440\u0430\u0445\u043e\u0432\u043a\u0430, \u0432\u0430\u043b\u044e\u0442\u0430, eSIM, \u0442\u0430\u043a\u0441\u0438",
+    tt_s1: "\u0413\u043b\u0430\u0432\u043d\u0430\u044f", tt_s1d: "\u0418\u043d\u043b\u0430\u0439\u043d-\u0447\u0430\u0442, 4 \u0441\u0446\u0435\u043d\u0430\u0440\u0438\u044f",
+    tt_s2: "\u041f\u043e\u0438\u0441\u043a", tt_s2d: "\u041a\u043e\u043f\u0438\u043b\u043e\u0442 \u043d\u0430 \u043a\u0430\u0440\u0442\u043e\u0447\u043a\u0430\u0445 \u0440\u0435\u0439\u0441\u043e\u0432",
+    tt_s3: "Trip Hub", tt_s3d: "\u0422\u0430\u0439\u043c\u043b\u0430\u0439\u043d, \u043f\u0443\u0448\u0438, \u043a\u043e\u043f\u0438\u043b\u043a\u0430",
+    tt_desc: "<b>\u041f\u0440\u0438\u0437\u043e\u0432\u043e\u0435 \u043c\u0435\u0441\u0442\u043e \u043d\u0430 \u043a\u0435\u0439\u0441-\u0447\u0435\u043c\u043f\u0438\u043e\u043d\u0430\u0442\u0435 \u043a\u0440\u0443\u043f\u043d\u0435\u0439\u0448\u0435\u0433\u043e \u0431\u0430\u043d\u043a\u0430 \u0441\u0442\u0440\u0430\u043d\u044b.</b> AI-\u043a\u043e\u043f\u0438\u043b\u043e\u0442, \u0432\u0441\u0442\u0440\u043e\u0435\u043d\u043d\u044b\u0439 \u0432 \u0441\u0435\u0440\u0432\u0438\u0441 \u0431\u0440\u043e\u043d\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f \u043f\u0443\u0442\u0435\u0448\u0435\u0441\u0442\u0432\u0438\u0439. \u041f\u0440\u043e\u0442\u043e\u0442\u0438\u043f \u043f\u043e\u043a\u0440\u044b\u0432\u0430\u0435\u0442 \u0432\u0441\u0435 \u0442\u0440\u0438 \u043f\u043e\u0432\u0435\u0440\u0445\u043d\u043e\u0441\u0442\u0438, \u0433\u0434\u0435 \u043e\u043d \u043e\u043f\u0440\u0430\u0432\u0434\u0430\u043d: \u0438\u043d\u043b\u0430\u0439\u043d-\u0447\u0430\u0442 \u043d\u0430 \u0433\u043b\u0430\u0432\u043d\u043e\u0439, \u043a\u043e\u043d\u0442\u0435\u043a\u0441\u0442\u043d\u0430\u044f \u043f\u043e\u043c\u043e\u0449\u044c \u043d\u0430 \u043a\u0430\u0440\u0442\u043e\u0447\u043a\u0430\u0445 \u0440\u0435\u0439\u0441\u043e\u0432 \u0438 Trip Hub \u043f\u043e\u0441\u043b\u0435 \u043f\u043e\u043a\u0443\u043f\u043a\u0438. \u041f\u043b\u0430\u043d\u0438\u0440\u0443\u0435\u0442 \u043f\u043e \u043e\u0431\u044b\u0447\u043d\u043e\u0439 \u0444\u0440\u0430\u0437\u0435 \u0438\u043b\u0438 \u0434\u0430\u0436\u0435 \u0441\u0441\u044b\u043b\u043a\u0435 \u043d\u0430 Reels, \u0441\u0440\u0430\u0432\u043d\u0438\u0432\u0430\u0435\u0442 \u0442\u043e\u043f-3 \u0432\u0430\u0440\u0438\u0430\u043d\u0442\u0430 \u0438 \u0432\u0435\u0434\u0451\u0442 \u043f\u043e\u0435\u0437\u0434\u043a\u0443 \u0434\u043e \u0441\u0442\u0440\u0430\u0445\u043e\u0432\u043a\u0438, eSIM \u0438 \u0432\u0430\u043b\u044e\u0442\u044b.",
+    tt_st: "HTML \u00b7 CSS \u00b7 vanilla JS \u00b7 \u0431\u0435\u0437 \u0444\u0440\u0435\u0439\u043c\u0432\u043e\u0440\u043a\u043e\u0432 \u0438 \u0441\u0431\u043e\u0440\u043a\u0438",
+    pi_demo: "\u0416\u0438\u0432\u043e\u0435 \u0434\u0435\u043c\u043e \u2192",
+    la_b0: "\u0422\u0440\u0438 \u0431\u044d\u043a\u0435\u043d\u0434\u0430, \u043e\u0434\u0438\u043d API", la_b0b: "\u043b\u044e\u0431\u043e\u0439 \u0444\u043e\u0440\u043c\u0430\u0442",
+    la_b1: "\u041d\u0430\u0442\u0438\u0432\u043d\u043e \u043d\u0430 Apple silicon \u00b7 safetensors, 4/8 \u0431\u0438\u0442 \u00b7 \u0441\u0430\u043c\u044b\u0439 \u0431\u044b\u0441\u0442\u0440\u044b\u0439 \u043f\u0443\u0442\u044c \u0434\u043b\u044f \u0442\u0435\u043a\u0441\u0442\u0430",
+    la_b2: "GGUF, \u043b\u044e\u0431\u0430\u044f \u043a\u0432\u0430\u043d\u0442\u0438\u0437\u0430\u0446\u0438\u044f \u00b7 \u0437\u0430\u043f\u0443\u0441\u0442\u0438\u0442 \u0442\u043e, \u0447\u0442\u043e \u043d\u0435 \u043a\u043e\u043d\u0432\u0435\u0440\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u043f\u043e\u0434 MLX",
+    la_b3: "Neural Engine \u00b7 \u0440\u0435\u0447\u044c \u0438 \u0437\u0440\u0435\u043d\u0438\u0435 \u043f\u0440\u0438 \u043c\u0438\u043d\u0438\u043c\u0443\u043c\u0435 \u044d\u043d\u0435\u0440\u0433\u043e\u043f\u043e\u0442\u0440\u0435\u0431\u043b\u0435\u043d\u0438\u044f",
+    la_hf: "\u041c\u043e\u0434\u0435\u043b\u0438 \u0441\u043a\u0430\u0447\u0438\u0432\u0430\u044e\u0442\u0441\u044f \u043f\u0440\u044f\u043c\u043e \u043d\u0430 iPhone \u2014 \u0432\u044b\u0431\u0440\u0430\u043b \u043d\u0430 Hub, \u0437\u0430\u0433\u0440\u0443\u0437\u0438\u043b, \u0437\u0430\u043f\u0443\u0441\u0442\u0438\u043b. \u0411\u0435\u0437 \u0441\u0435\u0440\u0432\u0435\u0440\u0430 \u043f\u043e\u0441\u0435\u0440\u0435\u0434\u0438\u043d\u0435.",
+    la_hfp: "\u041d\u0430\u043f\u0440\u044f\u043c\u0443\u044e",
+    pr_h4: "\u041e\u0442\u0432\u0435\u0447\u0430\u044e \u0437\u0430 \u0431\u044d\u043a\u0435\u043d\u0434 \u0438 AI \u2014 \u0440\u0435\u043a\u043e\u043c\u0435\u043d\u0434\u0430\u0446\u0438\u0438, \u0446\u0435\u043b\u0438 \u043f\u043e\u0434 \u0443\u0440\u043e\u0432\u0435\u043d\u044c, \u043f\u0440\u043e\u0433\u043d\u043e\u0437, \u0430\u0441\u0441\u0438\u0441\u0442\u0435\u043d\u0442.",
+    la_tag: "\u041c\u043e\u0434\u0435\u043b\u044c \u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442 \u043d\u0430 \u0442\u0432\u043e\u0451\u043c iPhone. \u0411\u0435\u0437 \u043e\u0431\u043b\u0430\u043a\u0430.",
+    p4k: "\u0414\u0430\u043b\u044c\u0448\u0435",
+    f_desc: "\u0424\u0438\u0442\u043d\u0435\u0441-\u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u0432\u043e\u043a\u0440\u0443\u0433 \u0430\u0433\u0435\u043d\u0442\u0430, \u043a\u043e\u0442\u043e\u0440\u044b\u0439 \u043f\u043e\u043c\u043d\u0438\u0442 \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044f \u0438 \u0441\u043e\u0431\u0438\u0440\u0430\u0435\u0442 \u0433\u043b\u0430\u0432\u043d\u044b\u0439 \u044d\u043a\u0440\u0430\u043d \u043f\u043e\u0434 \u043d\u0435\u0433\u043e \u2014 \u043e\u0434\u0438\u043d \u043a\u043e\u0434 \u043d\u0430 iOS \u0438 Android.",
+    f_h1: "<b>\u0427\u0430\u0442 \u2014 \u044d\u0442\u043e \u0438 \u0435\u0441\u0442\u044c \u043f\u0440\u043e\u0434\u0443\u043a\u0442</b>, \u0430 \u043d\u0435 \u0441\u043f\u0440\u0430\u0432\u043e\u0447\u043d\u0430\u044f: \u0432\u0438\u0434\u0436\u0435\u0442\u044b \u0436\u0438\u0432\u0443\u0442 \u0432\u043d\u0443\u0442\u0440\u0438 \u0434\u0438\u0430\u043b\u043e\u0433\u0430, \u0430 \u0430\u0433\u0435\u043d\u0442 \u0443\u043c\u0435\u0435\u0442 \u0432\u0441\u0451, \u0447\u0442\u043e \u0443\u043c\u0435\u0435\u0442 \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c.",
+    f_h2: "\u041f\u0430\u043c\u044f\u0442\u044c \u043d\u0430 \u0443\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432\u0435: SQLite \u0441 \u043f\u0440\u043e\u0444\u0438\u043b\u0435\u043c, \u0434\u0438\u0430\u043b\u043e\u0433\u0430\u043c\u0438 \u0438 \u0441\u0432\u043e\u0434\u043a\u0430\u043c\u0438 \u0437\u0434\u043e\u0440\u043e\u0432\u044c\u044f.",
+    f_h3: "<b>\u0422\u043e\u043b\u044c\u043a\u043e \u0440\u0435\u0430\u043b\u044c\u043d\u044b\u0435 \u0434\u0430\u043d\u043d\u044b\u0435</b> \u2014 HealthKit \u0438 Health Connect, \u0447\u0435\u0441\u0442\u043d\u044b\u0439 \u043f\u0443\u0441\u0442\u043e\u0439 \u0441\u0442\u0435\u0439\u0442 \u0442\u0430\u043c, \u0433\u0434\u0435 \u0434\u0430\u043d\u043d\u044b\u0445 \u043d\u0435\u0442.",
+    f_h4: "\u0421\u0432\u043e\u0439 \u0431\u044d\u043a\u0435\u043d\u0434: LLM-\u043f\u0440\u043e\u043a\u0441\u0438, \u0432\u0445\u043e\u0434 \u043f\u043e \u043f\u043e\u0447\u0442\u0435, \u0432\u0435\u0440\u0441\u0438\u043e\u043d\u0438\u0440\u043e\u0432\u0430\u043d\u043d\u044b\u0439 \u043f\u0440\u043e\u043c\u043f\u0442 \u2014 <b>\u043a\u043b\u044e\u0447\u0435\u0439 \u043c\u043e\u0434\u0435\u043b\u0438 \u0432 \u043a\u043b\u0438\u0435\u043d\u0442\u0435 \u043d\u0435\u0442</b>.",
+    f_h5: "MCP-\u0441\u0435\u0440\u0432\u0435\u0440 \u043e\u0442\u043a\u0440\u044b\u0432\u0430\u0435\u0442 \u043c\u0435\u0442\u0440\u0438\u043a\u0438 \u043b\u044e\u0431\u043e\u043c\u0443 \u0430\u0433\u0435\u043d\u0442\u0443 \u2014 Claude, ChatGPT \u2014 \u043f\u0440\u0438\u0447\u0451\u043c \u0447\u0442\u043e \u043e\u0442\u0434\u0430\u0432\u0430\u0442\u044c, \u0440\u0435\u0448\u0430\u0435\u0442 \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c.",
+    pr_kind: "iOS \u00b7 SwiftUI \u00b7 \u0412\u044b\u043f\u0443\u0449\u0435\u043d\u043e", pr_role: "\u0421\u043e\u043e\u0441\u043d\u043e\u0432\u0430\u0442\u0435\u043b\u044c",
+    pr_h1: "\u041f\u0440\u0435\u0432\u0440\u0430\u0449\u0430\u0435\u0442 \u0442\u0440\u0435\u043d\u0438\u0440\u043e\u0432\u043a\u0438 \u0438\u0437 Apple Health \u0432 \u0430\u043d\u0430\u043b\u0438\u0442\u0438\u043a\u0443, \u0446\u0435\u043b\u0438, \u0440\u0435\u043a\u043e\u0440\u0434\u044b \u0438 \u0441\u0435\u0440\u0438\u0438.",
+    pr_h2: "<b>\u041e\u0442 \u0438\u0434\u0435\u0438 \u0434\u043e App Store</b>, \u0432\u043a\u043b\u044e\u0447\u0430\u044f \u0440\u0435\u0432\u044c\u044e Apple.",
+    pr_h3: "\u0420\u0435\u0448\u0430\u044e, \u043a\u0430\u043a\u0438\u0435 AI-\u0444\u0438\u0447\u0438 \u043d\u0443\u0436\u043d\u044b \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044e, \u0430 \u043a\u0430\u043a\u0438\u0435 \u0442\u043e\u043b\u044c\u043a\u043e \u0443\u0434\u043e\u0440\u043e\u0436\u0430\u044e\u0442 \u043f\u0440\u043e\u0434\u0443\u043a\u0442.",
+    la_kind: "iOS \u00b7 \u041b\u043e\u043a\u0430\u043b\u044c\u043d\u044b\u0439 \u0438\u043d\u0444\u0435\u0440\u0435\u043d\u0441",
+    la_h1: "\u0422\u0435\u043a\u0441\u0442, \u0438\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u044f, \u0440\u0430\u0441\u043f\u043e\u0437\u043d\u0430\u0432\u0430\u043d\u0438\u0435 \u0438 \u0441\u0438\u043d\u0442\u0435\u0437 \u0440\u0435\u0447\u0438 \u2014 <b>\u0431\u0435\u0437 \u043e\u0431\u043b\u0430\u043a\u0430 \u0438 \u043f\u043e\u0434\u043f\u0438\u0441\u043e\u043a</b>.",
+    la_h2: "\u0410\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u0439 \u043f\u043e\u0434\u0431\u043e\u0440 \u043c\u043e\u0434\u0435\u043b\u0438 \u043f\u043e\u0434 \u0443\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432\u043e; \u043c\u0435\u0442\u0440\u0438\u043a\u0438: \u0442\u043e\u043a\u0435\u043d\u044b \u0432 \u0441\u0435\u043a\u0443\u043d\u0434\u0443, \u0437\u0430\u0434\u0435\u0440\u0436\u043a\u0430, \u043f\u0430\u043c\u044f\u0442\u044c.",
+    la_h3: "\u0422\u0440\u0435\u0431\u0443\u0435\u0442 \u044f\u0432\u043d\u044b\u0445 trade-off \u043c\u0435\u0436\u0434\u0443 \u043a\u0430\u0447\u0435\u0441\u0442\u0432\u043e\u043c \u043c\u043e\u0434\u0435\u043b\u0438, \u0441\u043a\u043e\u0440\u043e\u0441\u0442\u044c\u044e \u0438 \u043f\u0430\u043c\u044f\u0442\u044c\u044e.",
+    p3n: "\u041f\u0440\u043e\u0435\u043a\u0442 \u0442\u0440\u0438", p3m: "\u0412\u0435\u0431 \u00b7 \u0417\u0430\u0433\u043b\u0443\u0448\u043a\u0430",
+    p3d: "\u041a\u0430\u0440\u0442\u043e\u0447\u043a\u0430-\u0437\u0430\u0433\u043b\u0443\u0448\u043a\u0430 \u2014 \u0437\u0430\u043c\u0435\u043d\u0438\u0442\u044c \u043d\u0430 \u0440\u0435\u0430\u043b\u044c\u043d\u044b\u0439 \u043f\u0440\u043e\u0435\u043a\u0442. \u0423 \u044d\u0442\u043e\u0433\u043e \u0435\u0441\u0442\u044c \u0441\u0430\u0439\u0442 \u2014 \u043f\u043e\u043a\u0430\u0437\u0430\u043d\u043e \u0441\u043e \u0441\u0441\u044b\u043b\u043a\u043e\u0439.",
+    p4n: "\u0421\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0439 \u043f\u0440\u043e\u0435\u043a\u0442", p4m: "\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u00b7 \u0417\u0430\u0433\u043b\u0443\u0448\u043a\u0430",
+    p4d: "\u041a\u0430\u0440\u0442\u043e\u0447\u043a\u0430-\u0437\u0430\u0433\u043b\u0443\u0448\u043a\u0430 \u2014 \u0441\u0430\u0439\u0442\u0430 \u043f\u043e\u043a\u0430 \u043d\u0435\u0442, \u043f\u043e\u044d\u0442\u043e\u043c\u0443 \u0432\u043c\u0435\u0441\u0442\u043e \u0441\u0441\u044b\u043b\u043a\u0438 \u0442\u0438\u0445\u043e\u0435 \u0441\u043e\u0441\u0442\u043e\u044f\u043d\u0438\u0435.",
     fk: "\u0427\u0435\u0442\u044b\u0440\u0435 \u0433\u043e\u0434\u0430 \u0441\u0442\u0440\u043e\u0438\u043b \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0437\u0430\u0446\u0438\u044e \u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f, \u043a\u043e\u0442\u043e\u0440\u0430\u044f \u0441\u0442\u0430\u043b\u0430 \u0432\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u043c \u043f\u0440\u043e\u0434\u0443\u043a\u0442\u043e\u043c \u0441 AI \u0432\u043d\u0443\u0442\u0440\u0438. \u041c\u043d\u0435 \u0438\u043d\u0442\u0435\u0440\u0435\u0441\u043d\u044b \u043d\u0430\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u044f:",
     fd1: "\u0410\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0437\u0430\u0446\u0438\u044f \u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f \u043a\u0430\u043a \u0438\u043d\u0436\u0435\u043d\u0435\u0440\u043d\u044b\u0439 \u043f\u0440\u043e\u0434\u0443\u043a\u0442",
     fd2: "\u0420\u0435\u0448\u0430\u044e, \u0433\u0434\u0435 AI \u043e\u043a\u0443\u043f\u0430\u0435\u0442 \u0441\u0432\u043e\u044e \u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c",
@@ -1448,6 +2440,7 @@
       const k = el.getAttribute('data-i18n-cv');
       if (dict[k] != null) el.innerHTML = dict[k];
     });
+    if (window.__pcarRelayout) requestAnimationFrame(window.__pcarRelayout);
   }
   function applyTrack(t) {
     if (!CV[t]) return;
@@ -1624,6 +2617,179 @@
   const win = document.querySelector('.os-window');
   if (win) makeDraggable(win, win.querySelector('.os-titlebar'));
   document.querySelectorAll('.os-icon').forEach(ic => makeDraggable(ic));
+
+  /* ---------------- projects coverflow (FITA picker math, looped) ----------
+     Three copies of the deck live in the track; the visitor is kept in the
+     middle copy and silently rewound at idle, so the reel never ends.
+     Geometry is cached on layout so a scroll frame only reads scrollLeft.  */
+  (function () {
+    const car = document.getElementById('pcar');
+    const track = document.getElementById('pcarTrack');
+    if (!car || !track) return;
+    const pads = [].slice.call(track.querySelectorAll('.pcar-pad'));
+    const sec = document.getElementById('projects');
+    const info = [].slice.call(document.querySelectorAll('#pinfo > div'));
+    const flat = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (flat) track.classList.add('no3d');
+
+    // clone the deck twice so there is always a card either side
+    const origin = [].slice.call(track.querySelectorAll('.pslot'));
+    const N = origin.length;
+    const tail = pads[pads.length - 1];
+    if (N > 1) {
+      for (let copy = 0; copy < 2; copy++) {
+        origin.forEach(s => {
+          const c = s.cloneNode(true);
+          c.setAttribute('aria-hidden', 'true');
+          c.querySelectorAll('a').forEach(x => x.setAttribute('tabindex', '-1'));
+          track.insertBefore(c, tail);
+        });
+      }
+    }
+    const slots = [].slice.call(track.querySelectorAll('.pslot'));
+    const cards = slots.map(s => s.firstElementChild);
+    const looped = slots.length > N;
+
+    let slotW = 0, base = 0, viewW = 0, lit = -1;
+    const was = [];   // last written style per card -- skip no-op DOM writes
+    const geo = [];   // cached {mid} per slot -- scroll frames never touch layout
+
+    function measure() {
+      viewW = track.clientWidth;
+      slotW = slots[0] ? slots[0].getBoundingClientRect().width : 0;
+      base = slotW * N;
+      const p = Math.max(0, (viewW - slotW) / 2);
+      pads.forEach(el => { el.style.width = p + 'px'; });
+      // the 1.13x focus scale overflows by 6.5% of card height per side --
+      // reserve that from the tallest card so nothing is ever clipped
+      car.style.removeProperty('--pcardH');
+      car.style.removeProperty('--pfit');
+      // the design is authored at --pdesign wide; scale it to the real card width
+      const design = parseFloat(getComputedStyle(car).getPropertyValue('--pdesign')) || 500;
+      const cardW = cards[0] ? cards[0].clientWidth : design;   // layout px, transform-free
+      const fit = cardW / design;
+      let tall = 0;
+      for (let i = 0; i < N; i++) {              // clones are identical, skip them
+        const art = cards[i] && cards[i].firstElementChild;
+        if (art) tall = Math.max(tall, art.offsetHeight);   // unscaled layout height
+      }
+      tall = Math.round(tall * fit);
+      car.style.setProperty('--pfit', fit.toFixed(4));
+      car.style.setProperty('--pcardH', tall + 'px');
+      car.style.setProperty('--pcarPad', Math.ceil(tall * 0.065) + 14 + 'px');
+      geo.length = 0;
+      slots.forEach(s => geo.push(s.offsetLeft + s.offsetWidth / 2));
+    }
+
+    function paint() {
+      const vc = track.scrollLeft + viewW / 2;
+      let near = 0, nd = Infinity;
+      for (let i = 0; i < cards.length; i++) {
+        const card = cards[i];
+        if (!card) continue;
+        const t = (geo[i] - vc) / slotW;
+        const at = t < 0 ? -t : t;
+        if (at < nd) { nd = at; near = i; }
+        const ct = t < -1.5 ? -1.5 : (t > 1.5 ? 1.5 : t);
+        const act = ct < 0 ? -ct : ct;
+        // quantise: a hair of movement should not cost three style writes
+        const scale = Math.round((1.13 - (act > 1.4 ? 1.4 : act) * 0.19) * 500) / 500;
+        const op = Math.round((1 - (at > 1.9 ? 1.9 : at) * 0.42) * 100) / 100;
+        const rot = flat ? 0 : Math.round(-18 * ct * 4) / 4;
+        const z = 200 - Math.round(at * 20);
+        const w = was[i] || (was[i] = {});
+        if (w.s !== scale || w.r !== rot) {
+          w.s = scale; w.r = rot;
+          // each card carries its own perspective -- no 3D-context chain to break
+          card.style.transform = flat
+            ? 'scale(' + scale + ')'
+            : 'perspective(1150px) scale(' + scale + ') rotateY(' + rot + 'deg)';
+        }
+        if (w.o !== op) { w.o = op; card.style.opacity = op; }
+        if (w.z !== z) { w.z = z; card.style.zIndex = z; }
+      }
+      // the centred poster owns the section glow and the copy below the deck
+      const c = near % N;
+      if (c !== lit) {
+        lit = c;
+        if (sec) {
+          const rgb = cards[c] && cards[c].dataset.glow;
+          if (rgb) sec.style.setProperty('--glowC', 'rgba(' + rgb + ',0.20)');
+        }
+        info.forEach((el, i) => el.classList.toggle('on', i === c));
+      }
+    }
+
+    // keep the visitor inside the middle copy; the jump is invisible
+    // because copy n and copy n+1 are pixel-identical
+    function rewind() {
+      if (!looped || !base) return;
+      const x = track.scrollLeft;
+      if (x >= base * 2) track.scrollLeft = x - base;
+      else if (x < base) track.scrollLeft = x + base;
+    }
+
+    let queued = false, idle = null, hot = false;
+    function onScroll() {
+      if (!hot) {
+        hot = true;
+        cards.forEach(c => { if (c) c.style.willChange = 'transform, opacity'; });
+      }
+      if (!queued) {
+        queued = true;
+        requestAnimationFrame(() => { queued = false; paint(); });
+      }
+      clearTimeout(idle);
+      idle = setTimeout(() => {
+        rewind(); paint();
+        hot = false;
+        cards.forEach(c => { if (c) c.style.willChange = ''; });
+      }, 180);
+    }
+    track.addEventListener('scroll', onScroll, { passive: true });
+
+    function reset() {
+      measure();
+      if (looped) track.scrollLeft = base;
+      paint();
+    }
+    window.addEventListener('resize', reset);
+    // applyLang() rewrites every [data-i18n-cv] node, which changes card heights --
+    // it calls this so --pcardH is re-measured for the active language
+    window.__pcarRelayout = reset;
+    reset();
+    // the serif loads async and changes card height -- re-measure once it lands
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(reset);
+    else setTimeout(reset, 300);
+
+    /* drift through the deck on its own until the visitor takes the wheel */
+    let timer = null, taken = false, seen = false;
+    function focused() {
+      const vc = track.scrollLeft + viewW / 2;
+      let best = 0, bd = Infinity;
+      for (let i = 0; i < geo.length; i++) {
+        const d = Math.abs(geo[i] - vc);
+        if (d < bd) { bd = d; best = i; }
+      }
+      return best;
+    }
+    function step() {
+      if (taken || !seen) return;
+      const nx = focused() + 1;
+      if (nx >= slots.length) { track.scrollLeft = base; paint(); return; }
+      track.scrollTo({ left: geo[nx] - viewW / 2, behavior: 'smooth' });
+    }
+    function play() { if (!taken && !timer && !flat) timer = setInterval(step, 3600); }
+    function stop() { if (timer) { clearInterval(timer); timer = null; } }
+    function surrender() { taken = true; stop(); }
+    ['pointerdown', 'wheel', 'touchstart', 'keydown'].forEach(ev =>
+      track.addEventListener(ev, surrender, { passive: true }));
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(es => {
+        es.forEach(e => { seen = e.isIntersecting; e.isIntersecting ? play() : stop(); });
+      }, { threshold: 0.35 }).observe(car);
+    } else { seen = true; play(); }
+  })();
 
   /* ---------------- reveal résumé blocks on scroll ---------------- */
   const rvs = document.querySelectorAll('.rv');
