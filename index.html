@@ -29,13 +29,16 @@
     --accent-soft: #FF8F73;
   }
 
-  html, body { height: auto; min-height: 100%; }
+  /* the page is width-locked to the viewport: nothing pans sideways on a phone.
+     iOS Safari only honours this when it is set on html as well as body. */
+  html, body { height: auto; min-height: 100%; max-width: 100%; overflow-x: hidden; overscroll-behavior-x: none; }
   body {
     background: #000;
     color: var(--ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;          /* the page scrolls: hero → résumé → projects */
+    overflow-x: clip;            /* the page scrolls: hero → résumé → projects */
+    width: 100%;
   }
   body.locked { overflow: hidden; }
 
@@ -734,8 +737,10 @@
   }
   .pcard[data-brand="fita"] .p-tag { font-style: italic; }
   /* the FITA stage: the phone face-on, a widget and the product's
-     signature features beside it, then the MCP lockup from the site */
-  .fstage { flex: 1; display: flex; align-items: stretch; gap: 16px; }
+     signature features beside it, then the MCP lockup from the site.
+     The phone keeps a real handset aspect ratio instead of stretching to
+     whatever height the tallest poster in the deck happens to need. */
+  .fstage { flex: none; display: flex; align-items: flex-start; gap: 16px; }
   .fphone {
     flex: 0 0 auto; width: 40%;
     border-radius: 30px; padding: 6px;
@@ -743,7 +748,7 @@
     box-shadow: 0 20px 38px rgba(45,32,20,0.32), inset 0 1px 0 rgba(255,255,255,0.2);
   }
   .fscr {
-    position: relative; height: 100%; border-radius: 25px; overflow: hidden;
+    position: relative; aspect-ratio: 9 / 19.5; border-radius: 25px; overflow: hidden;
     background: #F3ECDB;
     display: flex; flex-direction: column; gap: 5px;
     padding: 21px 8px 8px;
