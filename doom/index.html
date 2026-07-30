@@ -1,0 +1,19 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Yet Another Doom Clone</title>
+<style>html,body{margin:0;background:#000;overflow:hidden;height:100%}#cQ{height:100%;width:100%;display:block}
+#qQ{position:absolute;left:0;right:0;top:2em;text-align:center;font-family:"Silkscreen",monospace;font-size:13px;line-height:2;color:#aaa;animation:z 9s}
+#hQ{margin:8px auto 0;width:40%;height:8px;border:2px solid #008;border-radius:3px;display:none}#hW{height:8px;background:#00a}
+@keyframes q{50%{opacity:0}}.b{animation:q 1s linear infinite}@keyframes z{from{opacity:0}to{opacity:1}}#fps{display:none}#fps ~ div{display:none}</style>
+</head><body>
+<canvas id="cQ"></canvas>
+<div id="qQ"><div id="hE">YET ANOTHER DOOM CLONE<br><br><div class="b">Loading... <span id="jQ"></span></div><br><br>Move: WASD<br>Aim / Shoot: Mouse<br><br>by Nicholas Carlini · GPLv3</div><div id="hQ"><div id="hW"></div></div></div>
+<div id="fps" style="position:absolute;left:50px;top:500px;color:#fff"></div>
+<script src="src/shaders/program1.js"></script>
+<script src="src/jsfxr.js"></script>
+<script src="src/audio.js"></script>
+<script src="src/utils.js"></script>
+<script src="src/objects.js"></script>
+<script src="src/graphics.js"></script>
+<script src="src/game.js"></script>
+<script src="src/map.js"></script>
+<script src="src/webgl.js"></script>
+</body></html>

@@ -33,6 +33,8 @@
   /* the page is width-locked to the viewport: nothing pans sideways on a phone.
      iOS Safari only honours this when it is set on html as well as body. */
   html, body { height: auto; min-height: 100%; max-width: 100%; overflow-x: hidden; overscroll-behavior-x: none; }
+  a { color: var(--accent); }
+  a:hover { color: var(--accent-soft); }
   body {
     background: #000;
     color: var(--ink);
@@ -307,10 +309,109 @@
   }
   .os-icon.hd { top: 40px; right: 22px; }
   .os-icon.folder { top: 134px; right: 30px; }
+  .os-icon.doomicon { top: 226px; right: 26px; }
   .os-icon.trash { bottom: 24px; right: 24px; }
+  /* the three résumé disks -- always English, like the rest of the Mac */
+  /* the disks live in one flow column so they can never collide with the
+     bottom-anchored Trash on short viewports (laptop windows, landscape phones) */
+  .os-disks {
+    position: absolute; top: 320px; right: 26px; bottom: 104px;
+    display: flex; flex-direction: column; justify-content: flex-start;
+    gap: clamp(6px, 2.2vh, 26px); align-items: center;
+    pointer-events: none; overflow: hidden;
+  }
+  .os-disks > * { flex: 0 1 auto; min-height: 0; }
+  /* these desktop icons are anchors: state the colour so no UA link colour leaks in */
+  .os-icon.floppy, .os-icon.floppy:visited, .os-icon.floppy:hover, .os-icon.floppy .lbl {
+    color: #000;
+  }
+  .os-icon.floppy {
+    position: relative; top: auto; right: auto; bottom: auto; left: auto;
+    text-decoration: none; pointer-events: auto;
+  }
+  .os-icon.floppy .lbl { max-width: 104px; }
+  .os-icon.floppy svg { width: clamp(22px, 3.4vh, 30px); height: clamp(22px, 3.4vh, 30px); }
+  /* not enough height for a column: run the disks along the bottom-LEFT,
+     where the bottom-right Trash can never be in the way */
+  @media (max-height: 700px) {
+    .os-disks {
+      top: auto; right: auto; bottom: 20px; left: 22px;
+      flex-direction: row; align-items: flex-end; gap: 16px;
+      max-width: calc(100% - 150px);
+    }
+    .os-icon.floppy .lbl { max-width: 84px; }
+    .os-icon.doomicon { top: 200px; }
+  }
+
+  /* social icons live down the LEFT edge -- the disks own the right column
+     (and the bottom-left row on short viewports), so these start at the top */
+  .os-links { position: absolute; top: 44px; left: 24px; display: flex; flex-direction: column; gap: 22px; }
+  .os-icon.link {
+    position: relative; top: auto; right: auto; bottom: auto; left: auto;
+    text-decoration: none;
+  }
+  .os-icon.link, .os-icon.link:visited, .os-icon.link:hover, .os-icon.link .lbl { color: #000; }
+
+  /* Projects: a System-7 file list */
+  .os-window.finder { top: 96px; left: 96px; width: min(560px, 74vw); }
+  .os-window.finder .os-winbody { padding: 0; }
+  .fnd-bar {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 7px 12px; border-bottom: 2px solid #000;
+    font-size: 10px; color: #3a4450;
+  }
+  .fnd-hd, .fnd-row {
+    display: grid; grid-template-columns: 1fr 96px 62px 84px; gap: 10px;
+    padding: 7px 12px; align-items: baseline;
+  }
+  .fnd-hd {
+    font-size: 9.5px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: #6b7480; border-bottom: 1px solid #c4ccd6;
+    background: repeating-linear-gradient(#eef1f5 0 1px, #fff 1px 3px);
+  }
+  .fnd-row {
+    border-bottom: 1px solid #e4e9ef; text-decoration: none; color: #000;
+    font-family: "VT323", monospace; font-size: 17px; line-height: 1.2;
+  }
+  .fnd-row:hover, .fnd-row:focus-visible { background: #000; color: #fff; outline: none; }
+  .fnd-row:hover .f-n, .fnd-row:hover span { color: #fff; }
+  .fnd-row .f-n { display: flex; align-items: center; gap: 8px; }
+  .fnd-row .f-n svg { width: 15px; height: 15px; flex: 0 0 auto; }
+  .fnd-row span { color: #4a5563; }
+  .fnd-foot {
+    padding: 8px 12px; border-top: 2px solid #000; font-size: 10px; color: #3a4450;
+    display: flex; justify-content: space-between; gap: 10px;
+  }
+  @media (max-width: 720px) {
+    .fnd-hd, .fnd-row { grid-template-columns: 1fr 74px; }
+    .fnd-hd span:nth-child(3), .fnd-hd span:nth-child(4),
+    .fnd-row span:nth-child(3), .fnd-row span:nth-child(4) { display: none; }
+  }
+
+  /* DOOM.app -- carlini/js13k2019-yet-another-doom-clone, GPLv3, in an iframe */
+  .os-window.doom { top: 74px; left: 116px; width: min(620px, 76vw); z-index: 24; }
+  .os-window.doom .os-winbody { padding: 0; background: #000; }
+  .os-window.doom iframe { display: block; width: 100%; height: min(400px, 52vh); border: 0; }
+  .os-window.doom:fullscreen { width: 100%; height: 100%; top: 0; left: 0; border-radius: 0; }
+  .os-window.doom:fullscreen .os-winbody { height: calc(100% - 22px); display: flex; flex-direction: column; }
+  .os-window.doom:fullscreen iframe { flex: 1; height: auto; }
+  .os-window.doom:fullscreen .doom-foot { display: none; }
+  /* embedded pages are denied the Fullscreen API, so "maximise" is also plain CSS */
+  .os-window.doom.max {
+    top: 24px; left: 2%; width: 96%; height: calc(100% - 48px);
+    display: flex; flex-direction: column;
+  }
+  .os-window.doom.max .os-winbody { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .os-window.doom.max iframe { flex: 1; height: auto; min-height: 0; }
+
+  .doom-foot {
+    padding: 7px 12px; border-top: 2px solid #000; background: #dfe4ea;
+    display: flex; justify-content: space-between; gap: 10px; font-size: 9.5px; color: #3a4450;
+  }
+  .doom-foot a { color: #1f5fae; }
 
   .os-window {
-    position: absolute; top: 84px; left: 60px;
+    position: absolute; top: 92px; left: 150px; z-index: 20;
     width: min(440px, 60vw);
     background: linear-gradient(#fdfdfd, #e9ebee);
     border: 2px solid #000; border-radius: 7px;
@@ -1249,6 +1350,35 @@
     transition: color .25s ease, border-color .25s ease;
   }
   .links a:hover { color: var(--accent); border-color: var(--accent); }
+  /* résumé downloads -- one PDF per track, in the page's language */
+  .cv-dl { margin-top: clamp(34px, 4.5vw, 58px); }
+  .cv-dl-h {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: rgba(245,245,247,0.42); margin-bottom: 16px;
+  }
+  .cv-dl-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .cv-dl-row a {
+    display: flex; align-items: center; gap: 10px;
+    border: 1px solid rgba(245,245,247,0.18); border-radius: 4px;
+    padding: 13px 16px; text-decoration: none;
+    transition: border-color .25s ease, background .25s ease, transform .25s ease;
+  }
+  .cv-dl-row a:hover {
+    border-color: var(--accent); background: color-mix(in srgb, var(--accent) 7%, transparent);
+    transform: translateY(-2px);
+  }
+  .cv-dl-row a.on { border-color: color-mix(in srgb, var(--accent) 55%, transparent); background: color-mix(in srgb, var(--accent) 5%, transparent); }
+  .cv-dl-row svg { width: 15px; height: 15px; flex: 0 0 auto; color: var(--accent); }
+  .cv-dl-row b {
+    font-family: var(--font-sans); font-weight: 500; font-size: 14px;
+    color: rgba(245,245,247,0.9); letter-spacing: -0.01em;
+  }
+  .cv-dl-row em {
+    font-style: normal; font-family: var(--font-mono); font-size: 9.5px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: rgba(245,245,247,0.38);
+  }
+  @media (max-width: 620px) { .cv-dl-row { flex-direction: column; } .cv-dl-row a { width: 100%; } }
+
   .foot {
     max-width: 1180px; margin: 0 auto;
     padding: 26px clamp(28px, 9vw, 150px) 44px;
@@ -1310,7 +1440,36 @@
     .contact .big { font-size: clamp(34px, 11vw, 52px); }
     .links { gap: 12px 22px; margin-top: 26px; }
     .links a { font-size: 11px; }
-    .foot { padding: 22px 22px 36px; font-size: 9px; }
+    /* résumé downloads -- one PDF per track, in the page's language */
+  .cv-dl { margin-top: clamp(34px, 4.5vw, 58px); }
+  .cv-dl-h {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: rgba(245,245,247,0.42); margin-bottom: 16px;
+  }
+  .cv-dl-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .cv-dl-row a {
+    display: flex; align-items: center; gap: 10px;
+    border: 1px solid rgba(245,245,247,0.18); border-radius: 4px;
+    padding: 13px 16px; text-decoration: none;
+    transition: border-color .25s ease, background .25s ease, transform .25s ease;
+  }
+  .cv-dl-row a:hover {
+    border-color: var(--accent); background: color-mix(in srgb, var(--accent) 7%, transparent);
+    transform: translateY(-2px);
+  }
+  .cv-dl-row a.on { border-color: color-mix(in srgb, var(--accent) 55%, transparent); background: color-mix(in srgb, var(--accent) 5%, transparent); }
+  .cv-dl-row svg { width: 15px; height: 15px; flex: 0 0 auto; color: var(--accent); }
+  .cv-dl-row b {
+    font-family: var(--font-sans); font-weight: 500; font-size: 14px;
+    color: rgba(245,245,247,0.9); letter-spacing: -0.01em;
+  }
+  .cv-dl-row em {
+    font-style: normal; font-family: var(--font-mono); font-size: 9.5px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: rgba(245,245,247,0.38);
+  }
+  @media (max-width: 620px) { .cv-dl-row { flex-direction: column; } .cv-dl-row a { width: 100%; } }
+
+  .foot { padding: 22px 22px 36px; font-size: 9px; }
 
     .fork-in { padding: 40px 22px 34px; }
     .fork-note { font-size: 14px; margin-bottom: 24px; }
@@ -1867,7 +2026,7 @@
         <div class="on">
           <div class="pi-k" data-i18n-cv="f_kind">iOS + Android · Kotlin Multiplatform</div>
           <p class="pi-t" data-i18n-cv="f_desc">A fitness app built around an agent that remembers you and assembles your home screen for you — one codebase for iOS and Android. Chat is the product, not a help desk: widgets live inside the conversation and the agent can do anything the user can. Real health data only, own backend, and an MCP server that opens the metrics to any agent.</p>
-          <div class="pi-s" data-i18n-cv="f_st">Kotlin Multiplatform · Compose · SQLDelight · HealthKit · Health Connect · MapKit</div>
+          <div class="pi-s" data-i18n-cv="f_stk">Kotlin Multiplatform · Compose · SQLDelight · HealthKit · Health Connect · MapKit</div>
           <a class="pi-l" href="https://appfita.ru" target="_blank" rel="noopener" data-i18n-cv="pi_site">appfita.ru →</a>
         </div>
         <div>
@@ -1899,6 +2058,14 @@
           <a href="mailto:dorokhov.daniil69@gmail.com">dorokhov.daniil69@gmail.com</a>
           <a href="https://t.me/ananasDDA" target="_blank" rel="noopener">TELEGRAM — @ananasDDA</a>
           <a href="https://github.com/ananasDDA" target="_blank" rel="noopener">GITHUB — ananasDDA</a>
+        </div>
+        <div class="cv-dl">
+          <div class="cv-dl-h" data-i18n-cv="dl_h">Download the résumé · PDF</div>
+          <div class="cv-dl-row" id="cvDl">
+            <a data-dl="aqa" href="uploads/Dorokhov_AQA_EN.pdf" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><b data-i18n-cv="tb1">Senior / Lead AQA</b><em class="dl-lang">EN</em></a>
+            <a data-dl="pm" href="uploads/Dorokhov_PM_EN.pdf" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><b data-i18n-cv="tb2">Product Manager · AI</b><em class="dl-lang">EN</em></a>
+            <a data-dl="ml" href="uploads/Dorokhov_ML_EN.pdf" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><b data-i18n-cv="tb3">AI / LLM Engineer</b><em class="dl-lang">EN</em></a>
+          </div>
         </div>
       </div>
     </section>
@@ -1963,6 +2130,130 @@
         <rect x="2" y="8" width="36" height="17" fill="#9cc6f3" stroke="#000" stroke-width="2"/>
       </svg>
       <span class="lbl">Projects</span>
+    </div>
+    <div class="os-disks">
+    <a class="os-icon floppy f1" href="uploads/Dorokhov_AQA_EN.pdf" download>
+      <svg width="30" height="30" viewBox="0 0 30 30" shape-rendering="crispEdges" aria-hidden="true">
+        <rect x="2" y="2" width="26" height="26" fill="#3a3f47" stroke="#000" stroke-width="2"/>
+        <rect x="9" y="4" width="12" height="9" fill="#c9d0da" stroke="#000" stroke-width="2"/>
+        <rect x="15" y="6" width="4" height="6" fill="#3a3f47"/>
+        <rect x="6" y="17" width="18" height="9" fill="#eef1f5" stroke="#000" stroke-width="2"/>
+        <rect x="9" y="20" width="12" height="2" fill="#FF6A3D"/>
+        <rect x="9" y="23" width="8" height="2" fill="#7b8794"/>
+      </svg>
+      <span class="lbl">Resume — AQA</span>
+    </a>
+    <a class="os-icon floppy f2" href="uploads/Dorokhov_PM_EN.pdf" download>
+      <svg width="30" height="30" viewBox="0 0 30 30" shape-rendering="crispEdges" aria-hidden="true">
+        <rect x="2" y="2" width="26" height="26" fill="#3a3f47" stroke="#000" stroke-width="2"/>
+        <rect x="9" y="4" width="12" height="9" fill="#c9d0da" stroke="#000" stroke-width="2"/>
+        <rect x="15" y="6" width="4" height="6" fill="#3a3f47"/>
+        <rect x="6" y="17" width="18" height="9" fill="#eef1f5" stroke="#000" stroke-width="2"/>
+        <rect x="9" y="20" width="12" height="2" fill="#7bb0e8"/>
+        <rect x="9" y="23" width="8" height="2" fill="#7b8794"/>
+      </svg>
+      <span class="lbl">Resume — PM</span>
+    </a>
+    <a class="os-icon floppy f3" href="uploads/Dorokhov_ML_EN.pdf" download>
+      <svg width="30" height="30" viewBox="0 0 30 30" shape-rendering="crispEdges" aria-hidden="true">
+        <rect x="2" y="2" width="26" height="26" fill="#3a3f47" stroke="#000" stroke-width="2"/>
+        <rect x="9" y="4" width="12" height="9" fill="#c9d0da" stroke="#000" stroke-width="2"/>
+        <rect x="15" y="6" width="4" height="6" fill="#3a3f47"/>
+        <rect x="6" y="17" width="18" height="9" fill="#eef1f5" stroke="#000" stroke-width="2"/>
+        <rect x="9" y="20" width="12" height="2" fill="#36b34a"/>
+        <rect x="9" y="23" width="8" height="2" fill="#7b8794"/>
+      </svg>
+      <span class="lbl">Resume — AI / LLM</span>
+    </a>
+    </div>
+    <div class="os-links">
+      <a class="os-icon link" href="https://github.com/ananasDDA" target="_blank" rel="noopener">
+        <svg width="30" height="30" viewBox="0 0 30 30" shape-rendering="crispEdges" aria-hidden="true">
+          <rect x="2" y="2" width="26" height="26" fill="#1b1f24" stroke="#000" stroke-width="2"/>
+          <rect x="11" y="7" width="8" height="2" fill="#fff"/><rect x="9" y="9" width="12" height="2" fill="#fff"/>
+          <rect x="7" y="11" width="16" height="8" fill="#fff"/><rect x="9" y="19" width="12" height="2" fill="#fff"/>
+          <rect x="9" y="21" width="4" height="3" fill="#fff"/><rect x="17" y="21" width="4" height="3" fill="#fff"/>
+          <rect x="10" y="13" width="3" height="3" fill="#1b1f24"/><rect x="17" y="13" width="3" height="3" fill="#1b1f24"/>
+        </svg>
+        <span class="lbl">GitHub</span>
+      </a>
+      <a class="os-icon link" href="https://t.me/ananasDDA" target="_blank" rel="noopener">
+        <svg width="30" height="30" viewBox="0 0 30 30" shape-rendering="crispEdges" aria-hidden="true">
+          <rect x="2" y="2" width="26" height="26" fill="#2aa4e0" stroke="#000" stroke-width="2"/>
+          <rect x="7" y="13" width="16" height="2" fill="#fff"/>
+          <rect x="19" y="9" width="4" height="2" fill="#fff"/><rect x="16" y="11" width="5" height="2" fill="#fff"/>
+          <rect x="11" y="15" width="9" height="2" fill="#fff"/><rect x="11" y="17" width="6" height="2" fill="#fff"/>
+          <rect x="11" y="19" width="3" height="2" fill="#fff"/>
+        </svg>
+        <span class="lbl">Telegram</span>
+      </a>
+      <a class="os-icon link" href="mailto:dorokhov.daniil69@gmail.com">
+        <svg width="30" height="30" viewBox="0 0 30 30" shape-rendering="crispEdges" aria-hidden="true">
+          <rect x="2" y="6" width="26" height="18" fill="#eef1f5" stroke="#000" stroke-width="2"/>
+          <rect x="4" y="8" width="4" height="2" fill="#7b8794"/><rect x="8" y="10" width="4" height="2" fill="#7b8794"/>
+          <rect x="12" y="12" width="6" height="2" fill="#7b8794"/><rect x="18" y="10" width="4" height="2" fill="#7b8794"/>
+          <rect x="22" y="8" width="4" height="2" fill="#7b8794"/>
+        </svg>
+        <span class="lbl">Email</span>
+      </a>
+    </div>
+
+    <div class="os-window doom" id="doomWin" hidden>
+      <div class="os-titlebar">
+        <div class="os-lights">
+          <span class="lite r" id="doomClose" title="Close"></span>
+          <span class="lite y"></span>
+          <span class="lite g" id="doomFull" title="Full screen"></span>
+        </div>
+        <span class="ttl">DOOM</span>
+      </div>
+      <div class="os-winbody">
+        <iframe id="doomFrame" title="Yet Another Doom Clone" data-src="doom/index.html" allow="autoplay; pointer-lock; fullscreen" allowfullscreen></iframe>
+        <div class="doom-foot">
+          <span>WASD to move · mouse to aim</span>
+          <span>Yet Another Doom Clone — Nicholas Carlini · GPLv3</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="os-window finder" id="fndWin" hidden>
+      <div class="os-titlebar" id="fndBar">
+        <div class="os-lights">
+          <span class="lite r" id="fndClose" title="Close"></span>
+          <span class="lite y"></span>
+          <span class="lite g"></span>
+        </div>
+        <span class="ttl">Projects</span>
+      </div>
+      <div class="os-winbody">
+        <div class="fnd-bar"><span>4 items</span><span>1.4 MB in disk</span></div>
+        <div class="fnd-hd"><span>Name</span><span>Kind</span><span>Size</span><span>Modified</span></div>
+        <a class="fnd-row" href="https://appfita.ru" target="_blank" rel="noopener">
+          <span class="f-n"><svg viewBox="0 0 24 24" fill="none" stroke="#1f5fae" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/></svg>FITA</span><span>application</span><span>412K</span><span>Jul 2026</span>
+        </a>
+        <a class="fnd-row" href="https://apps.apple.com/us/app/p-r-o/id6749865568?l=ru" target="_blank" rel="noopener">
+          <span class="f-n"><svg viewBox="0 0 24 24" fill="none" stroke="#1f5fae" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/></svg>P.R.O.</span><span>application</span><span>386K</span><span>Mar 2026</span>
+        </a>
+        <a class="fnd-row" href="https://github.com/ananasDDA" target="_blank" rel="noopener">
+          <span class="f-n"><svg viewBox="0 0 24 24" fill="none" stroke="#1f5fae" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/></svg>Local AI Lab</span><span>research</span><span>298K</span><span>Jun 2026</span>
+        </a>
+        <a class="fnd-row" href="https://ananasDDA.github.io/t-travel-copilot-prototype/" target="_blank" rel="noopener">
+          <span class="f-n"><svg viewBox="0 0 24 24" fill="none" stroke="#1f5fae" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/></svg>AI Travel Copilot</span><span>prototype</span><span>274K</span><span>Feb 2026</span>
+        </a>
+        <div class="fnd-foot"><span>Click opens the project</span><span>⌘ W to close</span></div>
+      </div>
+    </div>
+
+    <div class="os-icon doomicon" role="button" tabindex="0">
+      <svg width="34" height="34" viewBox="0 0 34 34" shape-rendering="crispEdges" aria-hidden="true">
+        <rect x="2" y="2" width="30" height="30" fill="#2b1310" stroke="#000" stroke-width="2"/>
+        <rect x="8" y="8" width="6" height="7" fill="#c8402c"/><rect x="20" y="8" width="6" height="7" fill="#c8402c"/>
+        <rect x="10" y="10" width="2" height="3" fill="#ffd21e"/><rect x="22" y="10" width="2" height="3" fill="#ffd21e"/>
+        <rect x="8" y="19" width="18" height="2" fill="#e8e2d8"/>
+        <rect x="10" y="21" width="2" height="4" fill="#e8e2d8"/><rect x="14" y="21" width="2" height="4" fill="#e8e2d8"/>
+        <rect x="18" y="21" width="2" height="4" fill="#e8e2d8"/><rect x="22" y="21" width="2" height="4" fill="#e8e2d8"/>
+      </svg>
+      <span class="lbl">DOOM</span>
     </div>
     <div class="os-icon trash">
       <svg width="26" height="30" viewBox="0 0 26 30" shape-rendering="crispEdges" aria-hidden="true">
@@ -2285,7 +2576,7 @@
     ps: "Case study soon",
     f_kind: "iOS + Android \u00b7 Kotlin Multiplatform",
     f_tag: "She knows your body better than you do",
-    f_st: "Kotlin Multiplatform \u00b7 Compose \u00b7 SQLDelight \u00b7 HealthKit \u00b7 Health Connect \u00b7 MapKit",
+    f_stk: "Kotlin Multiplatform \u00b7 Compose \u00b7 SQLDelight \u00b7 HealthKit \u00b7 Health Connect \u00b7 MapKit",
     pr_st: "SwiftUI \u00b7 HealthKit \u00b7 CoreData \u00b7 Firebase \u00b7 Widgets",
     la_st: "MLX \u00b7 llama.cpp \u00b7 Core ML \u00b7 Whisper \u00b7 Hugging Face",
     pi_site: "appfita.ru \u2192", pi_store: "App Store \u2192", pi_gh: "GitHub \u2192",
@@ -2344,14 +2635,15 @@
     fk: "Four years building test automation that became an internal product with AI inside. The directions I am interested in:",
     fd1: "Test automation as an engineering product",
     fd2: "Deciding where AI earns its cost",
-    fd3: "LLMs and VLMs running in production, not in demos"
+    fd3: "LLMs and VLMs running in production, not in demos",
+    dl_h: "Download the résumé · PDF"
   };
   const FORK_RU = {
     pv: "\u041e\u0442\u043a\u0440\u044b\u0442\u044c \u2192",
     ps: "\u041a\u0435\u0439\u0441 \u0441\u043a\u043e\u0440\u043e",
     f_kind: "iOS + Android \u00b7 Kotlin Multiplatform",
     f_tag: "\u041e\u043d\u0430 \u0437\u043d\u0430\u0435\u0442 \u0442\u0432\u043e\u0451 \u0442\u0435\u043b\u043e \u043b\u0443\u0447\u0448\u0435 \u0442\u0435\u0431\u044f",
-    f_st: "Kotlin Multiplatform \u00b7 Compose \u00b7 SQLDelight \u00b7 HealthKit \u00b7 Health Connect \u00b7 MapKit",
+    f_stk: "Kotlin Multiplatform \u00b7 Compose \u00b7 SQLDelight \u00b7 HealthKit \u00b7 Health Connect \u00b7 MapKit",
     pr_st: "SwiftUI \u00b7 HealthKit \u00b7 CoreData \u00b7 Firebase \u00b7 \u0412\u0438\u0434\u0436\u0435\u0442\u044b",
     la_st: "MLX \u00b7 llama.cpp \u00b7 Core ML \u00b7 Whisper \u00b7 Hugging Face",
     pi_site: "appfita.ru \u2192", pi_store: "App Store \u2192", pi_gh: "GitHub \u2192",
@@ -2430,7 +2722,8 @@
     fk: "\u0427\u0435\u0442\u044b\u0440\u0435 \u0433\u043e\u0434\u0430 \u0441\u0442\u0440\u043e\u0438\u043b \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0437\u0430\u0446\u0438\u044e \u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f, \u043a\u043e\u0442\u043e\u0440\u0430\u044f \u0441\u0442\u0430\u043b\u0430 \u0432\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u043c \u043f\u0440\u043e\u0434\u0443\u043a\u0442\u043e\u043c \u0441 AI \u0432\u043d\u0443\u0442\u0440\u0438. \u041c\u043d\u0435 \u0438\u043d\u0442\u0435\u0440\u0435\u0441\u043d\u044b \u043d\u0430\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u044f:",
     fd1: "\u0410\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0437\u0430\u0446\u0438\u044f \u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f \u043a\u0430\u043a \u0438\u043d\u0436\u0435\u043d\u0435\u0440\u043d\u044b\u0439 \u043f\u0440\u043e\u0434\u0443\u043a\u0442",
     fd2: "\u0420\u0435\u0448\u0430\u044e, \u0433\u0434\u0435 AI \u043e\u043a\u0443\u043f\u0430\u0435\u0442 \u0441\u0432\u043e\u044e \u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c",
-    fd3: "LLM \u0438 VLM, \u0440\u0430\u0431\u043e\u0442\u0430\u044e\u0449\u0438\u0435 \u0432 production, \u0430 \u043d\u0435 \u0432 \u0434\u0435\u043c\u043e"
+    fd3: "LLM \u0438 VLM, \u0440\u0430\u0431\u043e\u0442\u0430\u044e\u0449\u0438\u0435 \u0432 production, \u0430 \u043d\u0435 \u0432 \u0434\u0435\u043c\u043e",
+    dl_h: "\u0421\u043a\u0430\u0447\u0430\u0442\u044c \u0440\u0435\u0437\u044e\u043c\u0435 \u00b7 PDF"
   };
   [CV_AQA_EN, CV_PM_EN, CV_ML_EN].forEach(d => Object.assign(d, FORK_EN));
   [CV_AQA_RU, CV_PM_RU, CV_ML_RU].forEach(d => Object.assign(d, FORK_RU));
@@ -2449,8 +2742,24 @@
       const k = el.getAttribute('data-i18n-cv');
       if (dict[k] != null) el.innerHTML = dict[k];
     });
+    if (window.__syncDl) window.__syncDl();
     if (window.__pcarRelayout) requestAnimationFrame(window.__pcarRelayout);
   }
+  function syncDl() {
+    const row = document.getElementById('cvDl');
+    if (!row) return;
+    const L = lang === 'ru' ? 'RU' : 'EN';
+    const map = { aqa: 'AQA', pm: 'PM', ml: 'ML' };
+    row.querySelectorAll('[data-dl]').forEach(a => {
+      const k = a.getAttribute('data-dl');
+      a.href = 'uploads/Dorokhov_' + map[k] + '_' + L + '.pdf';
+      const em = a.querySelector('.dl-lang');
+      if (em) em.textContent = L;
+      a.classList.toggle('on', k === track);
+    });
+  }
+  window.__syncDl = syncDl;
+
   function applyTrack(t) {
     if (!CV[t]) return;
     track = t;
@@ -2458,6 +2767,7 @@
     document.querySelectorAll('[data-track-btn]').forEach(b => {
       b.classList.toggle('on', b.getAttribute('data-track-btn') === t);
     });
+    syncDl();
     const fork = document.getElementById('fork');
     if (fork) fork.setAttribute('data-active', t);
     paintCV();
@@ -2623,9 +2933,75 @@
     handle.addEventListener('pointerup', end);
     handle.addEventListener('pointercancel', end);
   }
-  const win = document.querySelector('.os-window');
-  if (win) makeDraggable(win, win.querySelector('.os-titlebar'));
-  document.querySelectorAll('.os-icon').forEach(ic => makeDraggable(ic));
+  document.querySelectorAll('.os-window').forEach(w => {
+    const bar = w.querySelector('.os-titlebar');
+    if (bar) makeDraggable(w, bar);
+  });
+
+  /* DOOM.app -- the iframe stays unloaded until the icon is clicked.
+     Pointer Lock (mouse aim) is a permission the embedding page must grant; when it
+     is missing the footer tells the visitor to open the game in its own tab. */
+  const doomWin = document.getElementById('doomWin');
+  const doomIcon = document.querySelector('.os-icon.doomicon');
+  if (doomWin && doomIcon) {
+    const frame = document.getElementById('doomFrame');
+    const openDoom = () => {
+      if (!frame.src) frame.src = frame.dataset.src;
+      doomWin.hidden = false;
+      doomWin.style.zIndex = 40;
+    };
+    doomIcon.addEventListener('click', openDoom);
+    doomIcon.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDoom(); }
+    });
+    document.getElementById('doomFull').addEventListener('click', e => {
+      e.stopPropagation();
+      if (document.fullscreenElement) { document.exitFullscreen(); return; }
+      if (document.fullscreenEnabled && doomWin.requestFullscreen) {
+        doomWin.requestFullscreen().catch(() => doomWin.classList.toggle('max'));
+      } else {
+        doomWin.classList.toggle('max');   // embedded: no Fullscreen API
+      }
+    });
+    document.getElementById('doomClose').addEventListener('click', e => {
+      e.stopPropagation();
+      doomWin.hidden = true;
+      frame.src = '';                 // stop the game loop and its audio
+      frame.removeAttribute('src');
+    });
+  }
+
+  /* ⌘W / Ctrl+W closes the frontmost open Mac window (the footer promises it) */
+  window.addEventListener('keydown', e => {
+    if (!(e.metaKey || e.ctrlKey) || e.key.toLowerCase() !== 'w') return;
+    const open = [document.getElementById('doomWin'), document.getElementById('fndWin')]
+      .filter(w => w && !w.hidden)
+      .sort((a, b) => (+b.style.zIndex || 0) - (+a.style.zIndex || 0));
+    if (!open.length) return;
+    e.preventDefault();
+    const w = open[0];
+    w.hidden = true;
+    const fr = w.querySelector('iframe');
+    if (fr) fr.removeAttribute('src');   // stop the game loop and its audio
+  });
+
+  /* Projects folder -> the file list */
+  const fnd = document.getElementById('fndWin');
+  const folder = document.querySelector('.os-icon.folder');
+  if (fnd && folder) {
+    let z = 30;
+    const open = () => { fnd.hidden = false; fnd.style.zIndex = ++z; };
+    folder.addEventListener('click', open);
+    folder.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+    folder.setAttribute('role', 'button');
+    folder.setAttribute('tabindex', '0');
+    document.getElementById('fndClose').addEventListener('click', e => {
+      e.stopPropagation(); fnd.hidden = true;
+    });
+  }
+  // the résumé disks are download links in a flow column -- dragging them would
+  // fight the click and break the column, so they stay put
+  document.querySelectorAll('.os-icon:not(.floppy)').forEach(ic => makeDraggable(ic));
 
   /* ---------------- projects coverflow (FITA picker math, looped) ----------
      Three copies of the deck live in the track; the visitor is kept in the
