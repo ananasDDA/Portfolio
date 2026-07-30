@@ -494,6 +494,25 @@
     max-width: 1180px; margin: 0 auto;
     padding: clamp(40px, 5vw, 66px) clamp(28px, 9vw, 150px) clamp(34px, 4vw, 52px);
   }
+  /* /aqa, /pm, /ml pin the site to one track: the fork draws a single line to a
+     single label and the switcher is gone -- everything else is unchanged */
+  body.pinned .fork-btn:not(.on) { display: none; }
+  body.pinned [data-dl]:not(.on) { display: none; }
+  body.pinned .cv-dl-h.multi { display: none; }
+  .cv-dl-h.single { display: none; }
+  body.pinned .cv-dl-h.single { display: block; }
+  body.pinned .fork-stage .fb { display: none; }
+  body.pinned .fork-stage .fp { transition: none; }
+  body.pinned .fork-stage { height: 150px; }
+  body.pinned .fork-btn.on,
+  body.pinned .fork-btn.on.fk1,
+  body.pinned .fork-btn.on.fk3 { top: 50%; }
+  /* the label is centred now, so draw the straight branch whatever the track is:
+     .p-pm is already M 8 160 H 390 -- reuse it and hide the two curved paths */
+  /* pinned draws the straight centre path -- applied inline by paintFork() */
+  body.pinned .fork-btn.on { cursor: default; pointer-events: none; }
+  body.pinned .fork-note.multi, .fork-note.single { display: none; }
+  body.pinned .fork-note.single { display: block; }
   .fork-note {
     font-size: 14.5px; line-height: 1.62; color: rgba(245,245,247,0.55);
     max-width: 60ch; margin-bottom: clamp(26px, 3.4vw, 42px); text-wrap: pretty;
@@ -509,9 +528,7 @@
     opacity: 0; transition: stroke-dashoffset .75s cubic-bezier(.3,.85,.2,1), opacity .25s ease;
     filter: drop-shadow(0 0 6px rgba(228,68,42,0.6));
   }
-  #fork[data-active="aqa"] .p-aqa,
-  #fork[data-active="pm"]  .p-pm,
-  #fork[data-active="ml"]  .p-ml { opacity: 1; stroke-dashoffset: 0; }
+  /* lit/dark is set inline by applyTrack() -- see paintFork() */
 
   /* past roles sitting on the trunk */
   .past { position: absolute; inset: 0; pointer-events: none; }
@@ -1551,7 +1568,8 @@
 
     <section class="fork" id="fork" data-active="aqa" data-screen-label="Career fork">
       <div class="fork-in">
-        <p class="fork-note" data-i18n-cv="fk">Four years building test automation that became an internal product with AI inside. The directions I am interested in:</p>
+        <p class="fork-note multi" data-i18n-cv="fk">Four years building test automation that became an internal product with AI inside. The directions I am interested in:</p>
+        <p class="fork-note single" data-i18n-cv="fk1">Four years building test automation that became an internal product with AI inside. This is the track this link is about:</p>
         <div class="fork-stage">
           <svg class="fork-d" viewBox="0 0 1000 320" preserveAspectRatio="none" aria-hidden="true">
             <path class="fb" d="M 8 160 H 380" vector-effect="non-scaling-stroke"></path>
@@ -2060,7 +2078,8 @@
           <a href="https://github.com/ananasDDA" target="_blank" rel="noopener">GITHUB — ananasDDA</a>
         </div>
         <div class="cv-dl">
-          <div class="cv-dl-h" data-i18n-cv="dl_h">Download the résumé · PDF</div>
+          <div class="cv-dl-h multi" data-i18n-cv="dl_h">Download the résumé · PDF</div>
+          <div class="cv-dl-h single" data-i18n-cv="dl_h1">Download this résumé · PDF</div>
           <div class="cv-dl-row" id="cvDl">
             <a data-dl="aqa" href="uploads/Dorokhov_AQA_EN.pdf" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><b data-i18n-cv="tb1">Senior / Lead AQA</b><em class="dl-lang">EN</em></a>
             <a data-dl="pm" href="uploads/Dorokhov_PM_EN.pdf" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><b data-i18n-cv="tb2">Product Manager · AI</b><em class="dl-lang">EN</em></a>
@@ -2633,10 +2652,12 @@
     p4n: "Next project", p4m: "Internal \u00b7 Placeholder",
     p4d: "Placeholder card \u2014 no site yet, so it shows the quiet state instead of a link.",
     fk: "Four years building test automation that became an internal product with AI inside. The directions I am interested in:",
+    fk1: "Four years building test automation that became an internal product with AI inside. This is the track this link is about:",
     fd1: "Test automation as an engineering product",
     fd2: "Deciding where AI earns its cost",
     fd3: "LLMs and VLMs running in production, not in demos",
-    dl_h: "Download the résumé · PDF"
+    dl_h: "Download the résumé · PDF",
+    dl_h1: "Download this résumé · PDF"
   };
   const FORK_RU = {
     pv: "\u041e\u0442\u043a\u0440\u044b\u0442\u044c \u2192",
@@ -2720,10 +2741,12 @@
     p4n: "\u0421\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0439 \u043f\u0440\u043e\u0435\u043a\u0442", p4m: "\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u00b7 \u0417\u0430\u0433\u043b\u0443\u0448\u043a\u0430",
     p4d: "\u041a\u0430\u0440\u0442\u043e\u0447\u043a\u0430-\u0437\u0430\u0433\u043b\u0443\u0448\u043a\u0430 \u2014 \u0441\u0430\u0439\u0442\u0430 \u043f\u043e\u043a\u0430 \u043d\u0435\u0442, \u043f\u043e\u044d\u0442\u043e\u043c\u0443 \u0432\u043c\u0435\u0441\u0442\u043e \u0441\u0441\u044b\u043b\u043a\u0438 \u0442\u0438\u0445\u043e\u0435 \u0441\u043e\u0441\u0442\u043e\u044f\u043d\u0438\u0435.",
     fk: "\u0427\u0435\u0442\u044b\u0440\u0435 \u0433\u043e\u0434\u0430 \u0441\u0442\u0440\u043e\u0438\u043b \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0437\u0430\u0446\u0438\u044e \u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f, \u043a\u043e\u0442\u043e\u0440\u0430\u044f \u0441\u0442\u0430\u043b\u0430 \u0432\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u043c \u043f\u0440\u043e\u0434\u0443\u043a\u0442\u043e\u043c \u0441 AI \u0432\u043d\u0443\u0442\u0440\u0438. \u041c\u043d\u0435 \u0438\u043d\u0442\u0435\u0440\u0435\u0441\u043d\u044b \u043d\u0430\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u044f:",
+    fk1: "\u0427\u0435\u0442\u044b\u0440\u0435 \u0433\u043e\u0434\u0430 \u0441\u0442\u0440\u043e\u0438\u043b \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0437\u0430\u0446\u0438\u044e \u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f, \u043a\u043e\u0442\u043e\u0440\u0430\u044f \u0441\u0442\u0430\u043b\u0430 \u0432\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u043c \u043f\u0440\u043e\u0434\u0443\u043a\u0442\u043e\u043c \u0441 AI \u0432\u043d\u0443\u0442\u0440\u0438. \u042d\u0442\u0430 \u0441\u0441\u044b\u043b\u043a\u0430 \u2014 \u043f\u0440\u043e \u043d\u0430\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435:",
     fd1: "\u0410\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0437\u0430\u0446\u0438\u044f \u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f \u043a\u0430\u043a \u0438\u043d\u0436\u0435\u043d\u0435\u0440\u043d\u044b\u0439 \u043f\u0440\u043e\u0434\u0443\u043a\u0442",
     fd2: "\u0420\u0435\u0448\u0430\u044e, \u0433\u0434\u0435 AI \u043e\u043a\u0443\u043f\u0430\u0435\u0442 \u0441\u0432\u043e\u044e \u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c",
     fd3: "LLM \u0438 VLM, \u0440\u0430\u0431\u043e\u0442\u0430\u044e\u0449\u0438\u0435 \u0432 production, \u0430 \u043d\u0435 \u0432 \u0434\u0435\u043c\u043e",
-    dl_h: "\u0421\u043a\u0430\u0447\u0430\u0442\u044c \u0440\u0435\u0437\u044e\u043c\u0435 \u00b7 PDF"
+    dl_h: "\u0421\u043a\u0430\u0447\u0430\u0442\u044c \u0440\u0435\u0437\u044e\u043c\u0435 \u00b7 PDF",
+    dl_h1: "\u0421\u043a\u0430\u0447\u0430\u0442\u044c \u044d\u0442\u043e \u0440\u0435\u0437\u044e\u043c\u0435 \u00b7 PDF"
   };
   [CV_AQA_EN, CV_PM_EN, CV_ML_EN].forEach(d => Object.assign(d, FORK_EN));
   [CV_AQA_RU, CV_PM_RU, CV_ML_RU].forEach(d => Object.assign(d, FORK_RU));
@@ -2733,8 +2756,19 @@
     pm:  { en: CV_PM_EN,  ru: CV_PM_RU  },
     ml:  { en: CV_ML_EN,  ru: CV_ML_RU  }
   };
-  let track = localStorage.getItem('dd_track') || 'aqa';
+  // /Portfolio/aqa (a folder stub redirects to ?track=aqa) or ?track=/#aqa
+  function trackFromUrl() {
+    const p = new URLSearchParams(location.search).get('track');
+    if (p && CV[p]) return p;
+    const seg = location.pathname.replace(/\/+$/, '').split('/').pop();
+    if (seg && CV[seg]) return seg;
+    const hash = location.hash.replace('#', '');
+    return hash && CV[hash] ? hash : null;
+  }
+  const pinned = trackFromUrl();
+  let track = pinned || localStorage.getItem('dd_track') || 'aqa';
   if (!CV[track]) track = 'aqa';
+  if (pinned) document.body.classList.add('pinned');
 
   function paintCV() {
     const dict = CV[track][lang] || CV[track].en;
@@ -2760,16 +2794,31 @@
   }
   window.__syncDl = syncDl;
 
+  // Both SVGs (desktop + mobile) hold one .fp per track. Setting opacity and
+// stroke-dashoffset inline restarts the draw reliably; the CSS handoff between
+  // two [data-active]-scoped rules did not repaint the desktop paths.
+  function paintFork(t) {
+    const fk = document.getElementById('fork');
+    if (!fk) return;
+    const straight = document.body.classList.contains('pinned');
+    fk.querySelectorAll('.fp').forEach(p => {
+      const lit = p.classList.contains(straight ? 'p-pm' : 'p-' + t);
+      p.style.opacity = lit ? '1' : '0';
+      p.style.strokeDashoffset = lit ? '0' : '1';
+    });
+  }
+
   function applyTrack(t) {
     if (!CV[t]) return;
     track = t;
-    localStorage.setItem('dd_track', t);
+    if (!pinned) localStorage.setItem('dd_track', t);
     document.querySelectorAll('[data-track-btn]').forEach(b => {
       b.classList.toggle('on', b.getAttribute('data-track-btn') === t);
     });
     syncDl();
     const fork = document.getElementById('fork');
     if (fork) fork.setAttribute('data-active', t);
+    paintFork(t);
     paintCV();
   }
   document.getElementById('trackOpts').addEventListener('click', e => {

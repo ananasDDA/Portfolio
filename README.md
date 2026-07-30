@@ -2,10 +2,30 @@
 
 **Lead AQA / Tech Lead QA Automation**
 
-Live site: [ananasdda.github.io/Portfolio](https://ananasdda.github.io/Portfolio/)
-
 Four years building test automation that turned into an internal product with AI
 inside it. Open to Lead AQA, AI product management, and AI / LLM engineering roles.
+
+## Links
+
+**[ananasdda.github.io/Portfolio](https://ananasdda.github.io/Portfolio/)** - the
+full site. Shows all three tracks and lets the visitor pick one.
+
+Track-specific links open the site pinned to a single direction: no switcher, one
+résumé, copy written for that role. Send the one that matches the vacancy.
+
+| Track | Link |
+| --- | --- |
+| Senior / Lead AQA | [ananasdda.github.io/Portfolio/aqa](https://ananasdda.github.io/Portfolio/aqa) |
+| Product Manager · AI | [ananasdda.github.io/Portfolio/pm](https://ananasdda.github.io/Portfolio/pm) |
+| AI / LLM Engineer | [ananasdda.github.io/Portfolio/ml](https://ananasdda.github.io/Portfolio/ml) |
+
+Résumé PDFs, English and Russian:
+
+| Track | EN | RU |
+| --- | --- | --- |
+| AQA | [Dorokhov_AQA_EN.pdf](uploads/Dorokhov_AQA_EN.pdf) | [Dorokhov_AQA_RU.pdf](uploads/Dorokhov_AQA_RU.pdf) |
+| PM | [Dorokhov_PM_EN.pdf](uploads/Dorokhov_PM_EN.pdf) | [Dorokhov_PM_RU.pdf](uploads/Dorokhov_PM_RU.pdf) |
+| ML | [Dorokhov_ML_EN.pdf](uploads/Dorokhov_ML_EN.pdf) | [Dorokhov_ML_RU.pdf](uploads/Dorokhov_ML_RU.pdf) |
 
 ## Who I am
 
@@ -56,14 +76,18 @@ HSE University, Faculty of Computer Science - auditing student: calculus,
 discrete mathematics, algorithms and data structures, computer architecture and
 operating systems; machine learning and recommender systems in progress.
 
-## Side projects
+## Projects
 
-**P.R.O.** - an AI-powered sports app on the
-[App Store](https://apps.apple.com/us/app/p-r-o/id6749865568?l=ru).
-Backend and AI features: recommendations, goals, progress forecasting, assistant.
+| Project | What it is | Link |
+| --- | --- | --- |
+| FITA | Fitness app built around an agent that remembers the user. iOS + Android, Kotlin Multiplatform. | [appfita.ru](https://appfita.ru) |
+| P.R.O. | Sports app with AI. I built the backend and the AI features - recommendations, goals, forecasting, assistant. | [App Store](https://apps.apple.com/us/app/p-r-o/id6749865568?l=ru) |
+| PRO Local AI Lab | On-device inference of language and multimodal models on iPhone: MLX, llama.cpp, Core ML, Whisper, Hugging Face. | - |
+| AI Travel Copilot | Trip-planning assistant. Prize-winning prototype from a case championship. | [prototype](https://ananasDDA.github.io/t-travel-copilot-prototype/) |
 
-**PRO Local AI Lab** - on-device inference of language and multimodal models on
-iPhone: MLX, llama.cpp, Core ML, Whisper, Hugging Face.
+There is a DOOM.app on the Macintosh desktop in the hero section. It runs
+Nicholas Carlini's [js13k2019-yet-another-doom-clone](https://github.com/carlini/js13k2019-yet-another-doom-clone)
+in an iframe, GPLv3, sources under `doom/`.
 
 ## Contact
 
