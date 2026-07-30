@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="format-detection" content="telephone=no">
 <title>Dorokhov Daniil — Portfolio</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
@@ -585,9 +586,12 @@
     margin-top: 9px; font-size: 15.5px; line-height: 1.5; font-weight: 500;
     color: var(--accent);
   }
-  .job-when {
+  /* iOS turns "02/2025 — NOW" into a tel: link; the meta above covers the page,
+     this keeps the dates styled as text even if Safari re-detects them */
+  .job-when, .job-when a {
     margin-top: 12px; font-family: var(--font-mono); font-size: 10.5px;
     letter-spacing: 0.14em; color: rgba(245,245,247,0.4);
+    -webkit-touch-callout: none; pointer-events: none; text-decoration: none;
   }
   /* what the company is, for anyone outside the market */
   .job-what {
@@ -2763,12 +2767,14 @@
       else if (looped) track.scrollLeft = base;
       paint();
     }
+    // measured live, not from the cached geo/viewW: on a width change the browser
+    // has already re-laid-out the track, so cached coordinates would be a slot off
     function focusedIndex() {
-      if (!geo.length || !viewW) return -1;
-      const vc = track.scrollLeft + viewW / 2;
+      if (!slots.length) return -1;
+      const vc = track.scrollLeft + track.clientWidth / 2;
       let best = -1, bd = Infinity;
-      for (let i = 0; i < geo.length; i++) {
-        const d = Math.abs(geo[i] - vc);
+      for (let i = 0; i < slots.length; i++) {
+        const d = Math.abs(slots[i].offsetLeft + slots[i].offsetWidth / 2 - vc);
         if (d < bd) { bd = d; best = i; }
       }
       return best;
