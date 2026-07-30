@@ -2753,47 +2753,42 @@
     }
     track.addEventListener('scroll', onScroll, { passive: true });
 
-    function reset() {
+    // On a phone, scrolling the page hides/shows the URL bar, which fires resize.
+    // Re-measuring must therefore KEEP the poster the visitor is on, not snap
+    // back to the first one -- and a height-only resize needs no work at all.
+    function reset(keep) {
+      const was = keep === false ? -1 : focusedIndex();
       measure();
-      if (looped) track.scrollLeft = base;
+      if (was >= 0 && geo[was] != null) track.scrollLeft = geo[was] - viewW / 2;
+      else if (looped) track.scrollLeft = base;
       paint();
     }
-    window.addEventListener('resize', reset);
-    // applyLang() rewrites every [data-i18n-cv] node, which changes card heights --
-    // it calls this so --pcardH is re-measured for the active language
-    window.__pcarRelayout = reset;
-    reset();
-    // the serif loads async and changes card height -- re-measure once it lands
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(reset);
-    else setTimeout(reset, 300);
-
-    /* drift through the deck on its own until the visitor takes the wheel */
-    let timer = null, taken = false, seen = false;
-    function focused() {
+    function focusedIndex() {
+      if (!geo.length || !viewW) return -1;
       const vc = track.scrollLeft + viewW / 2;
-      let best = 0, bd = Infinity;
+      let best = -1, bd = Infinity;
       for (let i = 0; i < geo.length; i++) {
         const d = Math.abs(geo[i] - vc);
         if (d < bd) { bd = d; best = i; }
       }
       return best;
     }
-    function step() {
-      if (taken || !seen) return;
-      const nx = focused() + 1;
-      if (nx >= slots.length) { track.scrollLeft = base; paint(); return; }
-      track.scrollTo({ left: geo[nx] - viewW / 2, behavior: 'smooth' });
-    }
-    function play() { if (!taken && !timer && !flat) timer = setInterval(step, 3600); }
-    function stop() { if (timer) { clearInterval(timer); timer = null; } }
-    function surrender() { taken = true; stop(); }
-    ['pointerdown', 'wheel', 'touchstart', 'keydown'].forEach(ev =>
-      track.addEventListener(ev, surrender, { passive: true }));
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(es => {
-        es.forEach(e => { seen = e.isIntersecting; e.isIntersecting ? play() : stop(); });
-      }, { threshold: 0.35 }).observe(car);
-    } else { seen = true; play(); }
+    let lastW = window.innerWidth;
+    window.addEventListener('resize', () => {
+      if (window.innerWidth === lastW) return;   // URL-bar show/hide: height only
+      lastW = window.innerWidth;
+      reset();
+    });
+    // applyLang() rewrites every [data-i18n-cv] node, which changes card heights --
+    // it calls this so --pcardH is re-measured for the active language
+    window.__pcarRelayout = reset;
+    // the entry passes must re-home to base: snap can nudge the track while card
+    // heights are still settling, and preserving that would open on the wrong poster
+    reset(false);
+    // the serif loads async and changes card height -- re-measure once it lands
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => reset(false));
+    else setTimeout(() => reset(false), 300);
+
   })();
 
   /* ---------------- reveal résumé blocks on scroll ---------------- */
