@@ -1,71 +1,71 @@
-# Дорохов Даниил
+# Daniil Dorokhov
 
 **Lead AQA / Tech Lead QA Automation**
 
-Сайт: [ananasdda.github.io/Portfolio](https://ananasdda.github.io/Portfolio/)
+Live site: [ananasdda.github.io/Portfolio](https://ananasdda.github.io/Portfolio/)
 
-Четыре года строил автоматизацию тестирования, которая стала внутренним
-продуктом с AI внутри. Направления, которые мне интересны: Lead AQA,
-продакт-менеджер в AI, AI / LLM инженер.
+Four years building test automation that turned into an internal product with AI
+inside it. Open to Lead AQA, AI product management, and AI / LLM engineering roles.
 
-## Кто я
+## Who I am
 
-Строю автоматизацию тестирования как инженерный продукт - с нуля до
-production-платформы. В Р7 за полтора года собрал полный конвейер тестирования
-корпоративного сервера. Веду команду автоматизации: найм, менторство, обучение
-отдела. Тест-кейсы живут в git и проходят код-ревью, как любой другой код.
+I build test automation as an engineering product - from nothing to a production
+platform. At R7 I put together the full testing pipeline for an enterprise
+collaboration server in eighteen months. I lead the automation team: hiring,
+mentoring, training the department. Test cases live in git and go through code
+review, like any other code.
 
 | | |
 | --- | --- |
-| 30 минут | подготовка стендов, было 3 дня |
-| ~400 | автотестов на 9 модулей |
-| 474 | эндпоинта API, 80 доменов |
-| ~10 минут | вердикт CI на каждый коммит |
+| 30 minutes | environment provisioning, down from 3 days |
+| ~400 | automated tests across 9 modules |
+| 474 | API endpoints, 80 domains |
+| ~10 minutes | CI verdict on every commit |
 
-## Опыт
+## Experience
 
-**Р7** - Lead AQA, «Корпоративный сервер», 02/2025 - настоящее время
-Пришёл первым QA на продукт: автоматизация, инфраструктура и процессы
-выстроены с нуля. Стенды с 3 дней до 30 минут через Ansible и Jenkins на
-11 серверов и 5 семейств Linux. Фреймворк на Python, Playwright и pytest.
-Контрактный слой API автогенерацией из OpenAPI. LLM в пайплайне: генерация
-автотестов с валидацией через AST, разбор падений, анализ install-логов.
-Jenkins переведён на Infrastructure as Code.
+**R7** - Lead AQA, Corporate Server, 02/2025 - present
+First QA engineer on the product: automation, infrastructure and process built
+from scratch. Provisioning cut from 3 days to 30 minutes with Ansible and Jenkins
+across 11 servers and 5 Linux families. UI framework in Python, Playwright and
+pytest. API contract layer generated from OpenAPI. LLMs in the pipeline: test
+generation validated through AST parsing, failure triage, install log analysis.
+Jenkins moved to Infrastructure as Code.
 
-**Avroid** - AQA-инженер, 03/2024 - 02/2025
-Первый QA в компании. Тестирование с нуля, Telegram-бот поддержки с
-интеграцией CRM, RAG по документации ОС Аврора с автоматическим
-воспроизведением сценариев на эмуляторе.
+**Avroid** - QA Automation Engineer, 03/2024 - 02/2025
+First QA in the company. Testing from scratch, a Telegram support bot integrated
+with the CRM, and a RAG system over the Aurora OS documentation that reproduces
+scenarios on an emulator automatically.
 
-**МойОфис** - QA-инженер, выходной контроль релизов, 08/2022 - 03/2024
-Приёмка B2B-продуктов на всех платформах. Ввёл в отделе API-тестирование -
-стало стандартом. Полгода закрывал задачи отсутствовавшего DevOps.
+**MyOffice** - QA Engineer, release acceptance, 08/2022 - 03/2024
+Acceptance testing of B2B products across all platforms. Introduced API testing
+to the department, where it became the standard. Covered the vacant DevOps role
+for six months.
 
-## Инструменты
+## Toolkit
 
 Python, Bash, Groovy, SQL · Playwright, pytest, Selenium, Appium, schemathesis,
-Postman / Newman · Jenkins (Job DSL), Infrastructure as Code, Ansible,
-GitHub Actions, Docker, Git · LLM-генерация тестов с AST-валидацией,
-автоматический разбор падений и логов · Linux: RedOS, Astra, Alt, Debian,
-Ubuntu
+Postman / Newman · Jenkins (Job DSL), Infrastructure as Code, Ansible, GitHub
+Actions, Docker, Git · LLM test generation with AST validation, automated failure
+and log triage · Linux: RedOS, Astra, Alt, Debian, Ubuntu
 
-## Образование
+## Education
 
-РЭУ им. Г.В. Плеханова - бакалавриат, бизнес-информатика.
-НИУ ВШЭ, факультет компьютерных наук - вольнослушатель: математический анализ,
-дискретная математика, алгоритмы и структуры данных, архитектура компьютера
-и ОС; в процессе - машинное обучение и рекомендательные системы.
+Plekhanov Russian University of Economics - BSc, Business Informatics.
+HSE University, Faculty of Computer Science - auditing student: calculus,
+discrete mathematics, algorithms and data structures, computer architecture and
+operating systems; machine learning and recommender systems in progress.
 
-## Пет-проекты
+## Side projects
 
-**P.R.O.** - спортивное приложение с AI,
+**P.R.O.** - an AI-powered sports app on the
 [App Store](https://apps.apple.com/us/app/p-r-o/id6749865568?l=ru).
-Бэкенд и AI-функции: рекомендации, цели, прогноз, ассистент.
+Backend and AI features: recommendations, goals, progress forecasting, assistant.
 
-**PRO Local AI Lab** - локальный запуск LLM и VLM на iPhone: MLX, llama.cpp,
-Core ML, Whisper, Hugging Face.
+**PRO Local AI Lab** - on-device inference of language and multimodal models on
+iPhone: MLX, llama.cpp, Core ML, Whisper, Hugging Face.
 
-## Контакты
+## Contact
 
 dorokhov.daniil69@gmail.com · [@ananasDDA](https://t.me/ananasDDA) ·
 [github.com/ananasDDA](https://github.com/ananasDDA)
