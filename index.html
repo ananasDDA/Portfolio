@@ -1294,78 +1294,83 @@
     font-family: var(--font-sans); font-size: 9.5px; line-height: 1.35; color: rgba(0,0,0,0.5);
   }
 
-    /* CV Screener -- a chat with a résumé base; paper card, Claude-orange accent, Kaggle-blue stat */
+    /* CV Screener -- skinned like its own landing (ananasdda.github.io/cv-screener): dark #111419,
+     accent #3b8dff, sans headline; the deck is the landing's coverflow widget, cycled by a tiny timer */
   .pcard[data-brand="cvs"] {
-    --pbg: #F4F1EA; --pink: #1C1B19; --pmuted: #77716A; --pbrand: #C9603F;
-    --pline: rgba(28,27,25,0.13);
-    --pserif: var(--serif); --pmono: var(--font-mono); --pdisp: var(--font-mono);
+    --pbg: #0D1015; --pink: #E6E8EC; --pmuted: rgba(230,232,236,0.5); --pbrand: #3B8DFF;
+    --pline: rgba(230,232,236,0.12);
+    --pserif: var(--font-sans); --pmono: var(--font-mono); --pdisp: var(--font-sans);
   }
   .pcard[data-brand="cvs"] .p-art {
-    background:
-      radial-gradient(95% 65% at 96% 2%, rgba(217,119,87,0.16), transparent 60%),
-      radial-gradient(80% 55% at 0% 100%, rgba(32,190,255,0.08), transparent 60%);
+    background: radial-gradient(120% 55% at 50% 0%, rgba(59,141,255,0.20), transparent 62%), #0D1015;
   }
-  .cchat {
-    background: #FFFFFF; border: 1px solid rgba(28,27,25,0.12); border-radius: 12px;
-    padding: 13px 13px 12px; display: flex; flex-direction: column; gap: 9px;
-    box-shadow: 0 6px 18px rgba(28,27,25,0.06);
-  }
-  .cchat .cq {
-    align-self: flex-end; max-width: 82%;
-    background: #1C1B19; color: #F4F1EA; border-radius: 12px 12px 3px 12px;
-    padding: 7px 11px; font-family: var(--font-sans); font-size: 11px; line-height: 1.35;
-  }
-  .cchat .ctool {
-    font-family: var(--pmono); font-size: 9.5px; line-height: 1.6; color: #77716A;
-    border-left: 2px solid #D97757; padding: 2px 0 2px 9px;
-  }
-  .cchat .ctool .ct-f { color: #C9603F; }
-  .cchat .ctool b { color: #1C1B19; font-weight: 400; }
-  .cchat .cres { display: flex; flex-direction: column; gap: 6px; }
-  .cchat .cr {
+  .pcard[data-brand="cvs"] .p-name {
     display: flex; align-items: center; gap: 9px;
-    border: 1px solid rgba(28,27,25,0.10); border-radius: 9px; padding: 6px 8px;
+    font-size: 15px; font-weight: 600; letter-spacing: -0.01em; text-transform: none; color: #E6E8EC;
   }
-  .cchat .cav {
-    width: 24px; height: 24px; flex: 0 0 auto; border-radius: 50%;
-    display: grid; place-items: center;
-    background: rgba(217,119,87,0.16); color: #C9603F;
-    font-family: var(--pmono); font-size: 8.5px; font-weight: 700; letter-spacing: 0.04em;
+  .pcard[data-brand="cvs"] .cvlogo { width: 22px; height: 22px; flex: 0 0 auto; display: block; }
+  .pcard[data-brand="cvs"] .p-tag { font-weight: 700; font-size: 29px; line-height: 1.08; letter-spacing: -0.025em; }
+  .cvdeck { border: 1px solid rgba(230,232,236,0.10); border-radius: 16px; overflow: hidden; background: #111419; }
+  .cvd-stage {
+    position: relative; height: 248px; overflow: hidden;
+    background: radial-gradient(120% 90% at 50% 0%, var(--glow, rgba(0,129,255,.18)), transparent 60%), #111419;
+    transition: background .6s ease;
   }
-  .cchat .cn { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-  .cchat .cn b { font-family: var(--font-sans); font-size: 10.5px; font-weight: 600; color: #1C1B19; }
-  .cchat .cn em { font-style: normal; font-family: var(--pmono); font-size: 8.5px; color: #77716A; }
-  .cchat .clv {
-    font-family: var(--pmono); font-size: 8px; letter-spacing: 0.08em; color: #1C1B19;
-    border: 1px solid rgba(28,27,25,0.18); border-radius: 999px; padding: 2px 7px; white-space: nowrap;
+  .cvd-p {
+    position: absolute; left: 50%; top: 24px; width: 146px; height: 196px; margin-left: -73px;
+    border-radius: 14px; overflow: hidden; background: var(--accent); color: #fff;
+    border: 1px solid rgba(255,255,255,.12); box-shadow: 0 16px 34px rgba(0,0,0,.4);
+    transition: transform .7s cubic-bezier(.2,.7,.2,1), opacity .7s ease;
+    backface-visibility: hidden;
   }
-  .cchat .ca {
-    align-self: flex-start; max-width: 92%;
-    background: rgba(28,27,25,0.05); color: #1C1B19; border-radius: 12px 12px 12px 3px;
-    padding: 7px 11px; font-family: var(--font-sans); font-size: 10.5px; line-height: 1.4;
+  .cvd-p img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cvd-sh { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,.84) 100%); }
+  .cvd-mk {
+    position: absolute; top: 9px; left: 11px; right: 11px;
+    font-family: var(--font-mono); font-size: 7.5px; letter-spacing: .18em; text-transform: uppercase; color: rgba(255,255,255,.82);
   }
-  .ckag {
-    margin-top: 11px; padding: 10px 12px;
-    background: rgba(32,190,255,0.08); border: 1px solid rgba(32,190,255,0.35); border-radius: 10px;
-    display: flex; align-items: center; gap: 11px;
+  .cvd-cap { position: absolute; left: 11px; right: 11px; bottom: 10px; font-family: var(--font-sans); }
+  .cvd-n { font-size: 14px; font-weight: 600; letter-spacing: -.2px; line-height: 1.1; }
+  .cvd-h { font-size: 9.5px; opacity: .85; margin-top: 2px; line-height: 1.3; }
+  .cvd-p[data-d="0"]  { transform: perspective(900px) scale(1.1); opacity: 1; z-index: 5; }
+  .cvd-p[data-d="1"]  { transform: perspective(900px) translateX(128px) scale(.91) rotateY(-18deg); opacity: .6; z-index: 4; }
+  .cvd-p[data-d="-1"] { transform: perspective(900px) translateX(-128px) scale(.91) rotateY(18deg); opacity: .6; z-index: 4; }
+  .cvd-p[data-d="2"]  { transform: perspective(900px) translateX(222px) scale(.8) rotateY(-26deg); opacity: .2; z-index: 3; }
+  .cvd-p[data-d="-2"] { transform: perspective(900px) translateX(-222px) scale(.8) rotateY(26deg); opacity: .2; z-index: 3; }
+  .cvd-p[data-d="-3"] { transform: perspective(900px) scale(.7); opacity: 0; z-index: 1; }
+  .cvd-nav {
+    position: absolute; top: 50%; margin-top: -13px; width: 26px; height: 26px; border-radius: 50%; z-index: 9;
+    display: grid; place-items: center; font-size: 13px; line-height: 1; color: #E6E8EC;
+    border: 1px solid rgba(230,232,236,.2); background: #111419;
   }
-  .ckag .ck-m {
-    font-family: var(--font-sans); font-size: 15px; font-weight: 800; letter-spacing: -0.02em;
-    color: #20BEFF; flex: 0 0 auto;
+  .cvd-nav.l { left: 9px; } .cvd-nav.r { right: 9px; }
+  .cvd-info { padding: 2px 15px 14px; font-family: var(--font-sans); }
+  .cvd-line { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
+  .cvd-t { font-size: 15px; font-weight: 600; letter-spacing: -.3px; color: #E6E8EC; margin-right: 4px; }
+  .cvd-c {
+    font-size: 9.5px; color: rgba(230,232,236,.72); border-radius: 999px; padding: 2px 8px;
+    background: rgba(230,232,236,.07); border: 1px solid rgba(230,232,236,.12);
   }
-  .ckag .ck-b { display: flex; flex-direction: column; gap: 1px; }
-  .ckag .ck-n { font-family: var(--pmono); font-size: 12px; font-weight: 700; color: #1C1B19; }
-  .ckag .ck-t { font-family: var(--pmono); font-size: 9px; line-height: 1.4; color: #77716A; }
-  .cchips { margin-top: 11px; display: flex; flex-wrap: wrap; gap: 6px; }
-  .cchips span {
-    font-family: var(--pmono); font-size: 8.5px; letter-spacing: 0.1em; color: #4A4640;
-    border: 1px solid rgba(28,27,25,0.18); border-radius: 999px; padding: 3px 9px;
+  .cvd-w { margin-top: 4px; font-size: 10px; color: rgba(230,232,236,.55); }
+  .cvd-stats { margin-top: 11px; display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+  .cvd-st {
+    position: relative; padding: 11px 13px 12px; border-radius: 12px; font-family: var(--font-sans);
+    background: rgba(230,232,236,.04); border: 1px solid rgba(230,232,236,.10);
   }
+  .cvd-st.kg { cursor: pointer; transition: border-color .2s ease, background .2s ease; }
+  .cvd-st.kg:hover, .cvd-st.kg:focus-visible { border-color: rgba(32,190,255,.6); background: rgba(32,190,255,.07); outline: none; }
+  .cvd-big { font-size: 23px; font-weight: 600; letter-spacing: -.5px; color: #E6E8EC; }
+  .cvd-sc { margin-top: 3px; font-size: 9.5px; line-height: 1.4; color: rgba(230,232,236,.6); }
+  .cvd-kg {
+    position: absolute; top: 11px; right: 12px;
+    font-size: 12px; font-weight: 800; letter-spacing: -.02em; color: #20BEFF;
+  }
+  .cvd-meta { margin-top: 11px; display: flex; flex-wrap: wrap; gap: 0; font-family: var(--font-sans); font-size: 9.5px; color: rgba(230,232,236,.5); }
+  .cvd-meta span + span::before { content: "·"; margin: 0 7px; opacity: .7; }
   .cfoot {
-    margin-top: 12px; font-family: var(--pmono); font-size: 8.5px; letter-spacing: 0.16em;
-    text-transform: uppercase; color: #77716A;
+    margin-top: 10px; font-family: var(--pmono); font-size: 8.5px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: rgba(230,232,236,.45);
   }
-
   .pcard[data-brand="soon"] {
     --pbg: #090909; --pink: rgba(245,245,247,0.82); --pmuted: rgba(245,245,247,0.34);
     --pbrand: rgba(245,245,247,0.42);
@@ -2047,26 +2052,24 @@
             </a>
           </div>
           <div class="pslot">
-            <a class="pcard" data-brand="cvs" data-glow="217,119,87" href="https://ananasdda.github.io/cv-screener/" target="_blank" rel="noopener" aria-label="CV Screener">
+            <a class="pcard" data-brand="cvs" data-glow="59,141,255" href="https://ananasdda.github.io/cv-screener/" target="_blank" rel="noopener" aria-label="CV Screener">
               <div class="p-art">
                 <div class="p-mark"><span data-i18n-cv="cv_kind">Pet project · AI agent</span><span class="p-arrow">↗</span></div>
-                <div class="p-name">CV Screener</div>
+                <div class="p-name"><svg class="cvlogo" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#0081ff"/><g fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"><path d="M16 20h20M16 30h12"/><circle cx="36" cy="38" r="9"/><path d="M43 45l6 6"/></g></svg>CV Screener</div>
                 <div class="p-tag" data-i18n-cv="cv_tag">An agent that answers a recruiter’s questions about a résumé base</div>
                 <div class="p-deco">
-                  <div class="cchat">
-                    <div class="cq" data-i18n-cv="cv_q">Who speaks Spanish and writes Python?</div>
-                    <div class="ctool"><span class="ct-f">search_candidates</span>(languages=[es], skills=[python])<br><b data-i18n-cv="cv_tl">2 matches · ranked by language level</b></div>
-                    <div class="cres">
-                      <div class="cr"><span class="cav">RB</span><span class="cn"><b>Rosalinda Barral</b><em data-i18n-cv="cv_r1">Senior ML Engineer</em></span><span class="clv">ES · NATIVE</span></div>
-                      <div class="cr"><span class="cav">MH</span><span class="cn"><b>Marisela Herrera</b><em data-i18n-cv="cv_r2">AppSec Engineer</em></span><span class="clv">ES · NATIVE</span></div>
+                  <div class="cvdeck" data-i="0">
+                    <div class="cvd-stage" style="--glow:rgba(47,93,80,.55)">
+                      <div class="cvd-p" data-d="0" style="--accent:#2f5d50" data-name="Rosalinda Barral" data-tags="senior|ml" data-where="Spain · Spanish Native · English C1 · French B1"><img src="assets/cvs/p02-rosalinda-barral.jpg" alt="" loading="lazy" decoding="async"><div class="cvd-sh"></div><div class="cvd-mk">ml · senior</div><div class="cvd-cap"><div class="cvd-n">Rosalinda Barral</div><div class="cvd-h">Senior Machine Learning Engineer</div></div></div><div class="cvd-p" data-d="1" style="--accent:#5c4b7a" data-name="Juan Cruz Martinez" data-tags="senior|mobile" data-where="Argentina · Spanish Native · English B2"><img src="assets/cvs/p07-juan-cruz-martinez.jpg" alt="" loading="lazy" decoding="async"><div class="cvd-sh"></div><div class="cvd-mk">mobile · senior</div><div class="cvd-cap"><div class="cvd-n">Juan Cruz Martinez</div><div class="cvd-h">Senior iOS Engineer</div></div></div><div class="cvd-p" data-d="2" style="--accent:#6b5b3a" data-name="Katie Brown" data-tags="principal|ml" data-where="United Kingdom · English Native · German B2"><img src="assets/cvs/p10-katie-brown.jpg" alt="" loading="lazy" decoding="async"><div class="cvd-sh"></div><div class="cvd-mk">ml · principal</div><div class="cvd-cap"><div class="cvd-n">Katie Brown</div><div class="cvd-h">Principal NLP Researcher</div></div></div><div class="cvd-p" data-d="-3" style="--accent:#16324f" data-name="Davit Petrosyan" data-tags="junior|backend" data-where="Armenia · Armenian Native · Russian C1 · English B1"><img src="assets/cvs/p09-davit-petrosyan.jpg" alt="" loading="lazy" decoding="async"><div class="cvd-sh"></div><div class="cvd-mk">backend · junior</div><div class="cvd-cap"><div class="cvd-n">Davit Petrosyan</div><div class="cvd-h">Junior Python Developer</div></div></div><div class="cvd-p" data-d="-2" style="--accent:#1f4e5f" data-name="Luna Magalhães" data-tags="middle|qa" data-where="Portugal · Portuguese Native · Spanish B2 · English C1"><img src="assets/cvs/p06-luna-magalhaes.jpg" alt="" loading="lazy" decoding="async"><div class="cvd-sh"></div><div class="cvd-mk">qa · middle</div><div class="cvd-cap"><div class="cvd-n">Luna Magalhães</div><div class="cvd-h">QA Automation Engineer</div></div></div><div class="cvd-p" data-d="-1" style="--accent:#3d4a6b" data-name="Taichi Takahashi" data-tags="senior|backend" data-where="Japan · Japanese Native · English B2"><img src="assets/cvs/p13-taichi-takahashi.jpg" alt="" loading="lazy" decoding="async"><div class="cvd-sh"></div><div class="cvd-mk">backend · senior</div><div class="cvd-cap"><div class="cvd-n">Taichi Takahashi</div><div class="cvd-h">Senior Go Engineer</div></div></div>
+                      <span class="cvd-nav l">‹</span><span class="cvd-nav r">›</span>
                     </div>
-                    <div class="ca" data-i18n-cv="cv_a">Two candidates match. Rosalinda is a senior ML engineer, Marisela works in application security.</div>
+                    <div class="cvd-info"><div class="cvd-line"><b class="cvd-t">Rosalinda Barral</b><span class="cvd-c">senior</span><span class="cvd-c">ml</span></div><div class="cvd-w">Spain · Spanish Native · English C1 · French B1</div></div>
                   </div>
-                  <div class="ckag">
-                    <span class="ck-m">kaggle</span>
-                    <span class="ck-b"><span class="ck-n">2,483</span><span class="ck-t" data-i18n-cv="cv_kag">real résumés from Kaggle · 90% relevant in the top 10</span></span>
+                  <div class="cvd-stats">
+                    <div class="cvd-st kg" role="link" tabindex="0" data-href="https://www.kaggle.com/datasets/snehaanbhawal/resume-dataset" title="Resume Dataset on Kaggle"><div class="cvd-big">2,483</div><div class="cvd-sc" data-i18n-cv="cv_kag">real résumés from Kaggle, 90% relevant in the top 10</div><span class="cvd-kg">kaggle ↗</span></div>
+                    <div class="cvd-st"><div class="cvd-big">3.5×</div><div class="cvd-sc" data-i18n-cv="cv_tok">fewer tokens than every CV pasted into the prompt</div></div>
                   </div>
-                  <div class="cchips"><span>ChromaDB</span><span>MCP</span><span>OpenRouter</span><span>Pydantic</span><span>pytest</span></div>
+                  <div class="cvd-meta"><span>Python 3.12</span><span>ChromaDB</span><span>bge-small</span><span>stdio MCP</span></div>
                   <div class="cfoot" data-i18n-cv="cv_foot">MCP server · plugs into any agent</div>
                 </div>
               </div>
@@ -2770,17 +2773,13 @@
     dl_h1: "Download this résumé · PDF",
     cv_kind: "Pet project · AI agent",
     cv_tag: "An agent that answers a recruiter’s questions about a résumé base",
-    cv_q: "Who speaks Spanish and writes Python?",
-    cv_tl: "2 matches · ranked by language level",
-    cv_r1: "Senior ML Engineer",
-    cv_r2: "AppSec Engineer",
-    cv_a: "Two candidates match. Rosalinda is a senior ML engineer, Marisela works in application security.",
-    cv_kag: "real résumés from Kaggle · 90% relevant in the top 10",
     cv_foot: "MCP server · plugs into any agent",
     cv_desc: "I generate a synthetic résumé base with PDFs, index it into ChromaDB and search it both by meaning and by exact fields such as language, seniority and stack. The search runs as an MCP server, so it plugs into any agent you like. In hosts that support MCP Apps, results come back as interactive widgets right in the chat. An agent with tools answers as accurately as a model with every résumé in the prompt and spends 3.5 times fewer tokens.<br><br>I also checked the search on real data and published it as a public Kaggle notebook. On the Resume Dataset of 2,483 résumés, a model with no fine-tuning gets the category right 71% of the time, and a role query finds 90% relevant résumés in the top 10. The notebook shows how much the popular solutions on this dataset rest on the job title alone.",
     cv_st: "Python 3.12 · ChromaDB · OpenRouter · MCP · Pydantic · pytest &amp; evals",
     pi_land: "Landing →",
-    pi_kg: "Kaggle →"
+    pi_kg: "Kaggle →",
+    cv_kag: "real résumés from Kaggle, 90% relevant in the top 10",
+    cv_tok: "fewer tokens than every CV pasted into the prompt"
   };
   const FORK_RU = {
     pv: "\u041e\u0442\u043a\u0440\u044b\u0442\u044c \u2192",
@@ -2872,17 +2871,13 @@
     dl_h1: "\u0421\u043a\u0430\u0447\u0430\u0442\u044c \u044d\u0442\u043e \u0440\u0435\u0437\u044e\u043c\u0435 \u00b7 PDF",
     cv_kind: "Пет-проект · AI-агент",
     cv_tag: "Агент, который отвечает на вопросы рекрутёра по базе резюме",
-    cv_q: "Кто говорит по-испански и пишет на Python?",
-    cv_tl: "2 совпадения · по уровню языка",
-    cv_r1: "Senior ML-инженер",
-    cv_r2: "AppSec-инженер",
-    cv_a: "Подходят двое. Розалинда - senior ML-инженер, Марисела занимается безопасностью приложений.",
-    cv_kag: "настоящих резюме с Kaggle · 90% релевантных в первой десятке",
     cv_foot: "MCP-сервер · подключается к любому агенту",
     cv_desc: "Генерирую синтетическую базу резюме с PDF, индексирую её в ChromaDB и ищу по смыслу и по точным полям вроде языка, грейда и стека. Поиск работает как MCP-сервер, его можно подключить к любому вашему любимому агенту. В хостах с поддержкой MCP Apps результаты приходят интерактивными виджетами прямо в чате. Агент с инструментами отвечает так же точно, как модель со всеми резюме в промпте, и тратит в 3,5 раза меньше токенов.<br><br>Отдельно проверил поиск на настоящих данных и выложил это публичным ноутбуком на Kaggle. На Resume Dataset из 2 483 резюме модель без дообучения угадывает категорию в 71% случаев, а поиск по роли находит 90% релевантных резюме в первой десятке. В ноутбуке видно, насколько популярные решения на этом датасете держатся на одном только названии должности.",
     cv_st: "Python 3.12 · ChromaDB · OpenRouter · MCP · Pydantic · pytest и evals",
     pi_land: "Лендинг →",
-    pi_kg: "Kaggle →"
+    pi_kg: "Kaggle →",
+    cv_kag: "настоящих резюме с Kaggle, 90% релевантных в первой десятке",
+    cv_tok: "меньше токенов, чем со всеми резюме в промпте"
   };
   [CV_AQA_EN, CV_PM_EN, CV_ML_EN].forEach(d => Object.assign(d, FORK_EN));
   [CV_AQA_RU, CV_PM_RU, CV_ML_RU].forEach(d => Object.assign(d, FORK_RU));
@@ -3370,6 +3365,49 @@
     }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
     rvs.forEach(el => io.observe(el));
   }
+})();
+</script>
+<script>
+/* CV Screener card: the landing's coverflow deck, turned one candidate every 2.8 s.
+   Works on every clone the projects carousel makes; still under prefers-reduced-motion. */
+(function () {
+  /* the Kaggle stat opens the dataset; the card itself is a link, so take the click first */
+  function openKg(e) {
+    var el = e.target.closest && e.target.closest('.cvd-st.kg');
+    if (!el || (e.type === 'keydown' && e.key !== 'Enter')) return;
+    e.preventDefault(); e.stopPropagation();
+    window.open(el.getAttribute('data-href'), '_blank', 'noopener');
+  }
+  document.addEventListener('click', openKg, true);
+  document.addEventListener('keydown', openKg, true);
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  function rgba(hex, a) {
+    var n = parseInt(hex.slice(1), 16);
+    return 'rgba(' + (n >> 16 & 255) + ',' + (n >> 8 & 255) + ',' + (n & 255) + ',' + a + ')';
+  }
+  function turn() {
+    if (document.hidden) return;
+    document.querySelectorAll('.cvdeck').forEach(function (deck) {
+      var ps = deck.querySelectorAll('.cvd-p'), n = ps.length;
+      var i = ((+deck.getAttribute('data-i') || 0) + 1) % n;
+      deck.setAttribute('data-i', i);
+      ps.forEach(function (p, k) {
+        var d = ((k - i) % n + n) % n;
+        if (d > n / 2) d -= n;
+        if (d < -3) d = -3;
+        p.setAttribute('data-d', d);
+      });
+      var c = ps[i];
+      deck.querySelector('.cvd-t').textContent = c.getAttribute('data-name');
+      var tags = c.getAttribute('data-tags').split('|');
+      var chips = deck.querySelectorAll('.cvd-c');
+      chips[0].textContent = tags[0]; chips[1].textContent = tags[1];
+      deck.querySelector('.cvd-w').textContent = c.getAttribute('data-where');
+      deck.querySelector('.cvd-stage').style.setProperty('--glow',
+        rgba(getComputedStyle(c).getPropertyValue('--accent').trim(), 0.55));
+    });
+  }
+  setInterval(turn, 2800);
 })();
 </script>
 </body>
