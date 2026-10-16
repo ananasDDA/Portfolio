@@ -1355,16 +1355,37 @@
   .cvd-stats { margin-top: 11px; display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
   .cvd-st {
     position: relative; padding: 11px 13px 12px; border-radius: 12px; font-family: var(--font-sans);
-    background: rgba(230,232,236,.04); border: 1px solid rgba(230,232,236,.10);
+    background: rgba(230,232,236,.04); border: 1px solid rgba(230,232,236,.10); min-width: 0;
   }
+  .cvd-st.wide { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 11px; padding: 10px 13px; }
+  .cvd-k { font-size: 10px; font-weight: 600; color: #E6E8EC; letter-spacing: -.1px; }
+  .cvd-big { margin-top: 2px; font-size: 20px; font-weight: 600; letter-spacing: -.5px; color: #E6E8EC; white-space: nowrap; }
+  .cvd-big span { font-size: 12px; font-weight: 400; color: rgba(230,232,236,.45); margin: 0 3px; }
+  .cvd-st.wide .cvd-big { margin: 0; font-size: 18px; }
+  .cvd-sc { margin-top: 6px; font-size: 9px; line-height: 1.4; color: rgba(230,232,236,.55); }
+  .cvd-st.wide .cvd-sc { margin: 0; flex: 1; }
+  .cvd-bars { margin-top: 8px; }
+  .cvd-bk { font-size: 8.5px; color: rgba(230,232,236,.55); margin: 5px 0 3px; }
+  .cvd-bar { position: relative; height: 13px; width: var(--w); border-radius: 4px; }
+  .cvd-bar.a { background: #3B8DFF; }
+  .cvd-bar.b { background: rgba(230,232,236,.22); }
+  .cvd-bar i {
+    position: absolute; top: 0; line-height: 13px; font-style: normal; font-family: var(--font-mono);
+    font-size: 8px; color: #E6E8EC; white-space: nowrap;
+  }
+  .cvd-bar.a i { left: calc(100% + 6px); }
+  .cvd-bar.b i { left: 7px; }
+  .cvd-ch { display: block; width: 100%; height: auto; margin-top: 6px; overflow: visible; }
+  .cvd-ch .lim { stroke: rgba(230,232,236,.14); stroke-width: 1; stroke-dasharray: 3 4; }
+  .cvd-ch .bl { fill: none; stroke: rgba(230,232,236,.55); stroke-width: 2.4; stroke-linejoin: round; }
+  .cvd-ch .bd { fill: rgba(230,232,236,.75); }
+  .cvd-ch .al { stroke: #3B8DFF; stroke-width: 3.2; stroke-linecap: round; }
+  .cvd-ch text { font-family: var(--font-mono); font-size: 10.5px; fill: rgba(230,232,236,.5); }
+  .cvd-ch .v { fill: #E6E8EC; font-size: 12px; }
+  .cvd-ch .v.a { fill: #3B8DFF; }
+  .cvd-kg { font-size: 12px; font-weight: 800; letter-spacing: -.02em; color: #20BEFF; white-space: nowrap; }
   .cvd-st.kg { cursor: pointer; transition: border-color .2s ease, background .2s ease; }
   .cvd-st.kg:hover, .cvd-st.kg:focus-visible { border-color: rgba(32,190,255,.6); background: rgba(32,190,255,.07); outline: none; }
-  .cvd-big { font-size: 23px; font-weight: 600; letter-spacing: -.5px; color: #E6E8EC; }
-  .cvd-sc { margin-top: 3px; font-size: 9.5px; line-height: 1.4; color: rgba(230,232,236,.6); }
-  .cvd-kg {
-    position: absolute; top: 11px; right: 12px;
-    font-size: 12px; font-weight: 800; letter-spacing: -.02em; color: #20BEFF;
-  }
   .cvd-meta { margin-top: 11px; display: flex; flex-wrap: wrap; gap: 0; font-family: var(--font-sans); font-size: 9.5px; color: rgba(230,232,236,.5); }
   .cvd-meta span + span::before { content: "·"; margin: 0 7px; opacity: .7; }
   .cfoot {
@@ -2066,8 +2087,26 @@
                     <div class="cvd-info"><div class="cvd-line"><b class="cvd-t">Rosalinda Barral</b><span class="cvd-c">senior</span><span class="cvd-c">ml</span></div><div class="cvd-w">Spain · Spanish Native · English C1 · French B1</div></div>
                   </div>
                   <div class="cvd-stats">
-                    <div class="cvd-st kg" role="link" tabindex="0" data-href="https://www.kaggle.com/datasets/snehaanbhawal/resume-dataset" title="Resume Dataset on Kaggle"><div class="cvd-big">2,483</div><div class="cvd-sc" data-i18n-cv="cv_kag">real résumés from Kaggle, 90% relevant in the top 10</div><span class="cvd-kg">kaggle ↗</span></div>
-                    <div class="cvd-st"><div class="cvd-big">3.5×</div><div class="cvd-sc" data-i18n-cv="cv_tok">fewer tokens than every CV pasted into the prompt</div></div>
+                    <div class="cvd-st">
+                      <div class="cvd-k" data-i18n-cv="cv_t1">3.7× fewer tokens</div>
+                      <div class="cvd-big">3.0k <span>vs</span> 11.0k</div>
+                      <div class="cvd-bars">
+                        <div class="cvd-bk" data-i18n-cv="cv_t1a">with tools</div><div class="cvd-bar a" style="--w:27%"><i>3.0k</i></div>
+                        <div class="cvd-bk" data-i18n-cv="cv_t1b">every CV in the prompt</div><div class="cvd-bar b" style="--w:100%"><i>11.0k</i></div>
+                      </div>
+                      <div class="cvd-sc" data-i18n-cv="cv_t1c">Same quality, 26/27 vs 25/27</div>
+                    </div>
+                    <div class="cvd-st">
+                      <div class="cvd-k" data-i18n-cv="cv_t2">Flat as the base grows</div>
+                      <div class="cvd-big">2.7k <span>vs</span> 1.9M</div>
+                      <svg class="cvd-ch" viewBox="12 20 222 112" aria-hidden="true"><line x1="16" y1="67" x2="226" y2="67" class="lim"/><line x1="16" y1="40.3" x2="226" y2="40.3" class="lim"/><polyline points="17.2,99.0 20.2,82.6 24.4,73.6 32.8,64.7 58.0,52.8 100.0,43.8 142.0,38.5 184.0,34.8 226.0,31.9" class="bl"/><circle cx="226" cy="31.9" r="3.2" class="bd"/><circle cx="17.2" cy="99" r="3.2" class="bd"/><text x="222" y="27" text-anchor="end" class="v">1.9M</text><line x1="16" y1="117" x2="226" y2="117" class="al"/><text x="222" y="130" text-anchor="end" class="v a">2.7k</text><text x="18" y="130" class="t">14</text><text x="120" y="130" text-anchor="middle" class="t">→ 2,500</text></svg>
+                      <div class="cvd-sc" data-i18n-cv="cv_t2c">Tokens per question, projected to 2,500 résumés</div>
+                    </div>
+                    <div class="cvd-st kg wide" role="link" tabindex="0" data-href="https://www.kaggle.com/datasets/snehaanbhawal/resume-dataset" title="Resume Dataset on Kaggle">
+                      <span class="cvd-kg">kaggle ↗</span>
+                      <div class="cvd-big">2,483</div>
+                      <div class="cvd-sc" data-i18n-cv="cv_kag">real résumés · 71% category accuracy · 90% relevant in the top 10</div>
+                    </div>
                   </div>
                   <div class="cvd-meta"><span>Python 3.12</span><span>ChromaDB</span><span>bge-small</span><span>stdio MCP</span></div>
                   <div class="cfoot" data-i18n-cv="cv_foot">MCP server · plugs into any agent</div>
@@ -2163,7 +2202,7 @@
         </div>
         <div>
           <div class="pi-k" data-i18n-cv="cv_kind">Pet project · AI agent</div>
-          <p class="pi-t" data-i18n-cv="cv_desc">I generate a synthetic résumé base with PDFs, index it into ChromaDB and search it both by meaning and by exact fields such as language, seniority and stack. The search runs as an MCP server, so it plugs into any agent you like. In hosts that support MCP Apps, results come back as interactive widgets right in the chat. An agent with tools answers as accurately as a model with every résumé in the prompt and spends 3.5 times fewer tokens.<br><br>I also checked the search on real data and published it as a public Kaggle notebook. On the Resume Dataset of 2,483 résumés, a model with no fine-tuning gets the category right 71% of the time, and a role query finds 90% relevant résumés in the top 10. The notebook shows how much the popular solutions on this dataset rest on the job title alone.</p>
+          <p class="pi-t" data-i18n-cv="cv_desc">I generate a synthetic résumé base with PDFs, index it into ChromaDB and search it both by meaning and by exact fields such as language, seniority and stack. The search runs as an MCP server, so it plugs into any agent you like. In hosts that support MCP Apps, results come back as interactive widgets right in the chat. An agent with tools answers as accurately as a model with every résumé in the prompt and spends 3.7 times fewer tokens.<br><br>I also checked the search on real data and published it as a public Kaggle notebook. On the Resume Dataset of 2,483 résumés, a model with no fine-tuning gets the category right 71% of the time, and a role query finds 90% relevant résumés in the top 10. The notebook shows how much the popular solutions on this dataset rest on the job title alone.</p>
           <div class="pi-s" data-i18n-cv="cv_st">Python 3.12 · ChromaDB · OpenRouter · MCP · Pydantic · pytest &amp; evals</div>
           <a class="pi-l" href="https://ananasdda.github.io/cv-screener/" target="_blank" rel="noopener" data-i18n-cv="pi_land">Landing →</a>
           <a class="pi-l" href="https://github.com/ananasDDA/cv-screener" target="_blank" rel="noopener" data-i18n-cv="pi_gh">GitHub →</a>
@@ -2774,12 +2813,17 @@
     cv_kind: "Pet project · AI agent",
     cv_tag: "An agent that answers a recruiter’s questions about a résumé base",
     cv_foot: "MCP server · plugs into any agent",
-    cv_desc: "I generate a synthetic résumé base with PDFs, index it into ChromaDB and search it both by meaning and by exact fields such as language, seniority and stack. The search runs as an MCP server, so it plugs into any agent you like. In hosts that support MCP Apps, results come back as interactive widgets right in the chat. An agent with tools answers as accurately as a model with every résumé in the prompt and spends 3.5 times fewer tokens.<br><br>I also checked the search on real data and published it as a public Kaggle notebook. On the Resume Dataset of 2,483 résumés, a model with no fine-tuning gets the category right 71% of the time, and a role query finds 90% relevant résumés in the top 10. The notebook shows how much the popular solutions on this dataset rest on the job title alone.",
+    cv_desc: "I generate a synthetic résumé base with PDFs, index it into ChromaDB and search it both by meaning and by exact fields such as language, seniority and stack. The search runs as an MCP server, so it plugs into any agent you like. In hosts that support MCP Apps, results come back as interactive widgets right in the chat. An agent with tools answers as accurately as a model with every résumé in the prompt and spends 3.7 times fewer tokens.<br><br>I also checked the search on real data and published it as a public Kaggle notebook. On the Resume Dataset of 2,483 résumés, a model with no fine-tuning gets the category right 71% of the time, and a role query finds 90% relevant résumés in the top 10. The notebook shows how much the popular solutions on this dataset rest on the job title alone.",
     cv_st: "Python 3.12 · ChromaDB · OpenRouter · MCP · Pydantic · pytest &amp; evals",
     pi_land: "Landing →",
     pi_kg: "Kaggle →",
-    cv_kag: "real résumés from Kaggle, 90% relevant in the top 10",
-    cv_tok: "fewer tokens than every CV pasted into the prompt"
+    cv_t1: "3.7× fewer tokens",
+    cv_t1a: "with tools",
+    cv_t1b: "every CV in the prompt",
+    cv_t1c: "Same quality, 26/27 vs 25/27",
+    cv_t2: "Flat as the base grows",
+    cv_t2c: "Tokens per question, projected to 2,500 résumés",
+    cv_kag: "real résumés · 71% category accuracy · 90% relevant in the top 10"
   };
   const FORK_RU = {
     pv: "\u041e\u0442\u043a\u0440\u044b\u0442\u044c \u2192",
@@ -2872,12 +2916,17 @@
     cv_kind: "Пет-проект · AI-агент",
     cv_tag: "Агент, который отвечает на вопросы рекрутёра по базе резюме",
     cv_foot: "MCP-сервер · подключается к любому агенту",
-    cv_desc: "Генерирую синтетическую базу резюме с PDF, индексирую её в ChromaDB и ищу по смыслу и по точным полям вроде языка, грейда и стека. Поиск работает как MCP-сервер, его можно подключить к любому вашему любимому агенту. В хостах с поддержкой MCP Apps результаты приходят интерактивными виджетами прямо в чате. Агент с инструментами отвечает так же точно, как модель со всеми резюме в промпте, и тратит в 3,5 раза меньше токенов.<br><br>Отдельно проверил поиск на настоящих данных и выложил это публичным ноутбуком на Kaggle. На Resume Dataset из 2 483 резюме модель без дообучения угадывает категорию в 71% случаев, а поиск по роли находит 90% релевантных резюме в первой десятке. В ноутбуке видно, насколько популярные решения на этом датасете держатся на одном только названии должности.",
+    cv_desc: "Генерирую синтетическую базу резюме с PDF, индексирую её в ChromaDB и ищу по смыслу и по точным полям вроде языка, грейда и стека. Поиск работает как MCP-сервер, его можно подключить к любому вашему любимому агенту. В хостах с поддержкой MCP Apps результаты приходят интерактивными виджетами прямо в чате. Агент с инструментами отвечает так же точно, как модель со всеми резюме в промпте, и тратит в 3,7 раза меньше токенов.<br><br>Отдельно проверил поиск на настоящих данных и выложил это публичным ноутбуком на Kaggle. На Resume Dataset из 2 483 резюме модель без дообучения угадывает категорию в 71% случаев, а поиск по роли находит 90% релевантных резюме в первой десятке. В ноутбуке видно, насколько популярные решения на этом датасете держатся на одном только названии должности.",
     cv_st: "Python 3.12 · ChromaDB · OpenRouter · MCP · Pydantic · pytest и evals",
     pi_land: "Лендинг →",
     pi_kg: "Kaggle →",
-    cv_kag: "настоящих резюме с Kaggle, 90% релевантных в первой десятке",
-    cv_tok: "меньше токенов, чем со всеми резюме в промпте"
+    cv_t1: "В 3,7 раза меньше токенов",
+    cv_t1a: "с инструментами",
+    cv_t1b: "все резюме в промпте",
+    cv_t1c: "То же качество, 26/27 против 25/27",
+    cv_t2: "Не растёт вместе с базой",
+    cv_t2c: "Токены на вопрос, прогноз до 2 500 резюме",
+    cv_kag: "настоящих резюме · 71% точность категории · 90% релевантных в топ-10"
   };
   [CV_AQA_EN, CV_PM_EN, CV_ML_EN].forEach(d => Object.assign(d, FORK_EN));
   [CV_AQA_RU, CV_PM_RU, CV_ML_RU].forEach(d => Object.assign(d, FORK_RU));
