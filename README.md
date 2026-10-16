@@ -82,7 +82,8 @@ operating systems; machine learning and recommender systems in progress.
 | --- | --- | --- |
 | FITA | Fitness app built around an agent that remembers the user. iOS + Android, Kotlin Multiplatform. | [appfita.ru](https://appfita.ru) |
 | P.R.O. | Sports app with AI. I built the backend and the AI features - recommendations, goals, forecasting, assistant. | [App Store](https://apps.apple.com/us/app/p-r-o/id6749865568?l=ru) |
-| PRO Local AI Lab | On-device inference of language and multimodal models on iPhone: MLX, llama.cpp, Core ML, Whisper, Hugging Face. | - |
+| Pocket AI Lab | On-device inference of language and multimodal models on iPhone: MLX, llama.cpp, Core ML, Whisper, Hugging Face. | [App Store](https://apps.apple.com/us/app/pocket-ai-lab/id6802253142) · [GitHub](https://github.com/ananasDDA/pocket-ai-lab) |
+| CV Screener | An agent that answers a recruiter's questions about a résumé base: hybrid search over ChromaDB, served as an MCP server to any agent. Checked on 2,483 real résumés from Kaggle. | [landing](https://ananasdda.github.io/cv-screener/) · [GitHub](https://github.com/ananasDDA/cv-screener) · [Kaggle](https://www.kaggle.com/code/oneananas/what-the-job-title-is-worth-on-the-resume-dataset) |
 | AI Travel Copilot | Trip-planning assistant. Prize-winning prototype from a case championship. | [prototype](https://ananasDDA.github.io/t-travel-copilot-prototype/) |
 
 There is a DOOM.app on the Macintosh desktop in the hero section. It runs

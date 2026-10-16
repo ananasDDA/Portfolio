@@ -1294,6 +1294,78 @@
     font-family: var(--font-sans); font-size: 9.5px; line-height: 1.35; color: rgba(0,0,0,0.5);
   }
 
+    /* CV Screener -- a chat with a résumé base; paper card, Claude-orange accent, Kaggle-blue stat */
+  .pcard[data-brand="cvs"] {
+    --pbg: #F4F1EA; --pink: #1C1B19; --pmuted: #77716A; --pbrand: #C9603F;
+    --pline: rgba(28,27,25,0.13);
+    --pserif: var(--serif); --pmono: var(--font-mono); --pdisp: var(--font-mono);
+  }
+  .pcard[data-brand="cvs"] .p-art {
+    background:
+      radial-gradient(95% 65% at 96% 2%, rgba(217,119,87,0.16), transparent 60%),
+      radial-gradient(80% 55% at 0% 100%, rgba(32,190,255,0.08), transparent 60%);
+  }
+  .cchat {
+    background: #FFFFFF; border: 1px solid rgba(28,27,25,0.12); border-radius: 12px;
+    padding: 13px 13px 12px; display: flex; flex-direction: column; gap: 9px;
+    box-shadow: 0 6px 18px rgba(28,27,25,0.06);
+  }
+  .cchat .cq {
+    align-self: flex-end; max-width: 82%;
+    background: #1C1B19; color: #F4F1EA; border-radius: 12px 12px 3px 12px;
+    padding: 7px 11px; font-family: var(--font-sans); font-size: 11px; line-height: 1.35;
+  }
+  .cchat .ctool {
+    font-family: var(--pmono); font-size: 9.5px; line-height: 1.6; color: #77716A;
+    border-left: 2px solid #D97757; padding: 2px 0 2px 9px;
+  }
+  .cchat .ctool .ct-f { color: #C9603F; }
+  .cchat .ctool b { color: #1C1B19; font-weight: 400; }
+  .cchat .cres { display: flex; flex-direction: column; gap: 6px; }
+  .cchat .cr {
+    display: flex; align-items: center; gap: 9px;
+    border: 1px solid rgba(28,27,25,0.10); border-radius: 9px; padding: 6px 8px;
+  }
+  .cchat .cav {
+    width: 24px; height: 24px; flex: 0 0 auto; border-radius: 50%;
+    display: grid; place-items: center;
+    background: rgba(217,119,87,0.16); color: #C9603F;
+    font-family: var(--pmono); font-size: 8.5px; font-weight: 700; letter-spacing: 0.04em;
+  }
+  .cchat .cn { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  .cchat .cn b { font-family: var(--font-sans); font-size: 10.5px; font-weight: 600; color: #1C1B19; }
+  .cchat .cn em { font-style: normal; font-family: var(--pmono); font-size: 8.5px; color: #77716A; }
+  .cchat .clv {
+    font-family: var(--pmono); font-size: 8px; letter-spacing: 0.08em; color: #1C1B19;
+    border: 1px solid rgba(28,27,25,0.18); border-radius: 999px; padding: 2px 7px; white-space: nowrap;
+  }
+  .cchat .ca {
+    align-self: flex-start; max-width: 92%;
+    background: rgba(28,27,25,0.05); color: #1C1B19; border-radius: 12px 12px 12px 3px;
+    padding: 7px 11px; font-family: var(--font-sans); font-size: 10.5px; line-height: 1.4;
+  }
+  .ckag {
+    margin-top: 11px; padding: 10px 12px;
+    background: rgba(32,190,255,0.08); border: 1px solid rgba(32,190,255,0.35); border-radius: 10px;
+    display: flex; align-items: center; gap: 11px;
+  }
+  .ckag .ck-m {
+    font-family: var(--font-sans); font-size: 15px; font-weight: 800; letter-spacing: -0.02em;
+    color: #20BEFF; flex: 0 0 auto;
+  }
+  .ckag .ck-b { display: flex; flex-direction: column; gap: 1px; }
+  .ckag .ck-n { font-family: var(--pmono); font-size: 12px; font-weight: 700; color: #1C1B19; }
+  .ckag .ck-t { font-family: var(--pmono); font-size: 9px; line-height: 1.4; color: #77716A; }
+  .cchips { margin-top: 11px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .cchips span {
+    font-family: var(--pmono); font-size: 8.5px; letter-spacing: 0.1em; color: #4A4640;
+    border: 1px solid rgba(28,27,25,0.18); border-radius: 999px; padding: 3px 9px;
+  }
+  .cfoot {
+    margin-top: 12px; font-family: var(--pmono); font-size: 8.5px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: #77716A;
+  }
+
   .pcard[data-brand="soon"] {
     --pbg: #090909; --pink: rgba(245,245,247,0.82); --pmuted: rgba(245,245,247,0.34);
     --pbrand: rgba(245,245,247,0.42);
@@ -1975,6 +2047,32 @@
             </a>
           </div>
           <div class="pslot">
+            <a class="pcard" data-brand="cvs" data-glow="217,119,87" href="https://ananasdda.github.io/cv-screener/" target="_blank" rel="noopener" aria-label="CV Screener">
+              <div class="p-art">
+                <div class="p-mark"><span data-i18n-cv="cv_kind">Pet project · AI agent</span><span class="p-arrow">↗</span></div>
+                <div class="p-name">CV Screener</div>
+                <div class="p-tag" data-i18n-cv="cv_tag">An agent that answers a recruiter’s questions about a résumé base</div>
+                <div class="p-deco">
+                  <div class="cchat">
+                    <div class="cq" data-i18n-cv="cv_q">Who speaks Spanish and writes Python?</div>
+                    <div class="ctool"><span class="ct-f">search_candidates</span>(languages=[es], skills=[python])<br><b data-i18n-cv="cv_tl">2 matches · ranked by language level</b></div>
+                    <div class="cres">
+                      <div class="cr"><span class="cav">RB</span><span class="cn"><b>Rosalinda Barral</b><em data-i18n-cv="cv_r1">Senior ML Engineer</em></span><span class="clv">ES · NATIVE</span></div>
+                      <div class="cr"><span class="cav">MH</span><span class="cn"><b>Marisela Herrera</b><em data-i18n-cv="cv_r2">AppSec Engineer</em></span><span class="clv">ES · NATIVE</span></div>
+                    </div>
+                    <div class="ca" data-i18n-cv="cv_a">Two candidates match. Rosalinda is a senior ML engineer, Marisela works in application security.</div>
+                  </div>
+                  <div class="ckag">
+                    <span class="ck-m">kaggle</span>
+                    <span class="ck-b"><span class="ck-n">2,483</span><span class="ck-t" data-i18n-cv="cv_kag">real résumés from Kaggle · 90% relevant in the top 10</span></span>
+                  </div>
+                  <div class="cchips"><span>ChromaDB</span><span>MCP</span><span>OpenRouter</span><span>Pydantic</span><span>pytest</span></div>
+                  <div class="cfoot" data-i18n-cv="cv_foot">MCP server · plugs into any agent</div>
+                </div>
+              </div>
+            </a>
+          </div>
+          <div class="pslot">
             <a class="pcard" data-brand="tt" data-glow="255,221,45" href="https://ananasDDA.github.io/t-travel-copilot-prototype/" target="_blank" rel="noopener" aria-label="AI Travel Copilot">
               <div class="p-art">
                 <div class="p-mark"><span data-i18n-cv="tt_kind">Case championship · Prototype</span><span class="p-arrow">↗</span></div>
@@ -2059,6 +2157,14 @@
           <div class="pi-s" data-i18n-cv="la_st">MLX · llama.cpp · Core ML · Whisper · Hugging Face</div>
           <a class="pi-l" href="https://apps.apple.com/us/app/pocket-ai-lab/id6802253142" target="_blank" rel="noopener" data-i18n-cv="pi_store">App Store →</a>
           <a class="pi-l" href="https://github.com/ananasDDA/pocket-ai-lab" target="_blank" rel="noopener" data-i18n-cv="pi_gh">GitHub →</a>
+        </div>
+        <div>
+          <div class="pi-k" data-i18n-cv="cv_kind">Pet project · AI agent</div>
+          <p class="pi-t" data-i18n-cv="cv_desc">I generate a synthetic résumé base with PDFs, index it into ChromaDB and search it both by meaning and by exact fields such as language, seniority and stack. The search runs as an MCP server, so it plugs into any agent you like. In hosts that support MCP Apps, results come back as interactive widgets right in the chat. An agent with tools answers as accurately as a model with every résumé in the prompt and spends 3.5 times fewer tokens.<br><br>I also checked the search on real data and published it as a public Kaggle notebook. On the Resume Dataset of 2,483 résumés, a model with no fine-tuning gets the category right 71% of the time, and a role query finds 90% relevant résumés in the top 10. The notebook shows how much the popular solutions on this dataset rest on the job title alone.</p>
+          <div class="pi-s" data-i18n-cv="cv_st">Python 3.12 · ChromaDB · OpenRouter · MCP · Pydantic · pytest &amp; evals</div>
+          <a class="pi-l" href="https://ananasdda.github.io/cv-screener/" target="_blank" rel="noopener" data-i18n-cv="pi_land">Landing →</a>
+          <a class="pi-l" href="https://github.com/ananasDDA/cv-screener" target="_blank" rel="noopener" data-i18n-cv="pi_gh">GitHub →</a>
+          <a class="pi-l" href="https://www.kaggle.com/code/oneananas/what-the-job-title-is-worth-on-the-resume-dataset" target="_blank" rel="noopener" data-i18n-cv="pi_kg">Kaggle →</a>
         </div>
         <div>
           <div class="pi-k" data-i18n-cv="tt_kind">Case championship · Prototype</div>
@@ -2256,6 +2362,9 @@
         </a>
         <a class="fnd-row" href="https://github.com/ananasDDA/pocket-ai-lab" target="_blank" rel="noopener">
           <span class="f-n"><svg viewBox="0 0 24 24" fill="none" stroke="#1f5fae" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/></svg>Pocket AI Lab</span><span>research</span><span>298K</span><span>Jun 2026</span>
+        </a>
+        <a class="fnd-row" href="https://github.com/ananasDDA/cv-screener" target="_blank" rel="noopener">
+          <span class="f-n"><svg viewBox="0 0 24 24" fill="none" stroke="#1f5fae" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/></svg>CV Screener</span><span>agent</span><span>6.7M</span><span>Sep 2026</span>
         </a>
         <a class="fnd-row" href="https://ananasDDA.github.io/t-travel-copilot-prototype/" target="_blank" rel="noopener">
           <span class="f-n"><svg viewBox="0 0 24 24" fill="none" stroke="#1f5fae" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/></svg>AI Travel Copilot</span><span>prototype</span><span>274K</span><span>Feb 2026</span>
@@ -2658,7 +2767,20 @@
     fd2: "Deciding where AI earns its cost",
     fd3: "LLMs and VLMs running in production, not in demos",
     dl_h: "Download the résumé · PDF",
-    dl_h1: "Download this résumé · PDF"
+    dl_h1: "Download this résumé · PDF",
+    cv_kind: "Pet project · AI agent",
+    cv_tag: "An agent that answers a recruiter’s questions about a résumé base",
+    cv_q: "Who speaks Spanish and writes Python?",
+    cv_tl: "2 matches · ranked by language level",
+    cv_r1: "Senior ML Engineer",
+    cv_r2: "AppSec Engineer",
+    cv_a: "Two candidates match. Rosalinda is a senior ML engineer, Marisela works in application security.",
+    cv_kag: "real résumés from Kaggle · 90% relevant in the top 10",
+    cv_foot: "MCP server · plugs into any agent",
+    cv_desc: "I generate a synthetic résumé base with PDFs, index it into ChromaDB and search it both by meaning and by exact fields such as language, seniority and stack. The search runs as an MCP server, so it plugs into any agent you like. In hosts that support MCP Apps, results come back as interactive widgets right in the chat. An agent with tools answers as accurately as a model with every résumé in the prompt and spends 3.5 times fewer tokens.<br><br>I also checked the search on real data and published it as a public Kaggle notebook. On the Resume Dataset of 2,483 résumés, a model with no fine-tuning gets the category right 71% of the time, and a role query finds 90% relevant résumés in the top 10. The notebook shows how much the popular solutions on this dataset rest on the job title alone.",
+    cv_st: "Python 3.12 · ChromaDB · OpenRouter · MCP · Pydantic · pytest &amp; evals",
+    pi_land: "Landing →",
+    pi_kg: "Kaggle →"
   };
   const FORK_RU = {
     pv: "\u041e\u0442\u043a\u0440\u044b\u0442\u044c \u2192",
@@ -2747,7 +2869,20 @@
     fd2: "\u0420\u0435\u0448\u0430\u044e, \u0433\u0434\u0435 AI \u043e\u043a\u0443\u043f\u0430\u0435\u0442 \u0441\u0432\u043e\u044e \u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c",
     fd3: "LLM \u0438 VLM, \u0440\u0430\u0431\u043e\u0442\u0430\u044e\u0449\u0438\u0435 \u0432 production, \u0430 \u043d\u0435 \u0432 \u0434\u0435\u043c\u043e",
     dl_h: "\u0421\u043a\u0430\u0447\u0430\u0442\u044c \u0440\u0435\u0437\u044e\u043c\u0435 \u00b7 PDF",
-    dl_h1: "\u0421\u043a\u0430\u0447\u0430\u0442\u044c \u044d\u0442\u043e \u0440\u0435\u0437\u044e\u043c\u0435 \u00b7 PDF"
+    dl_h1: "\u0421\u043a\u0430\u0447\u0430\u0442\u044c \u044d\u0442\u043e \u0440\u0435\u0437\u044e\u043c\u0435 \u00b7 PDF",
+    cv_kind: "Пет-проект · AI-агент",
+    cv_tag: "Агент, который отвечает на вопросы рекрутёра по базе резюме",
+    cv_q: "Кто говорит по-испански и пишет на Python?",
+    cv_tl: "2 совпадения · по уровню языка",
+    cv_r1: "Senior ML-инженер",
+    cv_r2: "AppSec-инженер",
+    cv_a: "Подходят двое. Розалинда - senior ML-инженер, Марисела занимается безопасностью приложений.",
+    cv_kag: "настоящих резюме с Kaggle · 90% релевантных в первой десятке",
+    cv_foot: "MCP-сервер · подключается к любому агенту",
+    cv_desc: "Генерирую синтетическую базу резюме с PDF, индексирую её в ChromaDB и ищу по смыслу и по точным полям вроде языка, грейда и стека. Поиск работает как MCP-сервер, его можно подключить к любому вашему любимому агенту. В хостах с поддержкой MCP Apps результаты приходят интерактивными виджетами прямо в чате. Агент с инструментами отвечает так же точно, как модель со всеми резюме в промпте, и тратит в 3,5 раза меньше токенов.<br><br>Отдельно проверил поиск на настоящих данных и выложил это публичным ноутбуком на Kaggle. На Resume Dataset из 2 483 резюме модель без дообучения угадывает категорию в 71% случаев, а поиск по роли находит 90% релевантных резюме в первой десятке. В ноутбуке видно, насколько популярные решения на этом датасете держатся на одном только названии должности.",
+    cv_st: "Python 3.12 · ChromaDB · OpenRouter · MCP · Pydantic · pytest и evals",
+    pi_land: "Лендинг →",
+    pi_kg: "Kaggle →"
   };
   [CV_AQA_EN, CV_PM_EN, CV_ML_EN].forEach(d => Object.assign(d, FORK_EN));
   [CV_AQA_RU, CV_PM_RU, CV_ML_RU].forEach(d => Object.assign(d, FORK_RU));
